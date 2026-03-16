@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lucky Draw</title>
+</head>
+
+<body>
+
+<h1>Lucky Draw Entry</h1>
+
+<input type="text" id="name" placeholder="Enter Name">
+<button onclick="addName()">Add</button>
+
+<ul id="list"></ul>
+
+<button onclick="pickWinner()">Pick Winner</button>
+
+<h2 id="winner"></h2>
+
+<script>
+
+let names = [];
+
+function addName(){
+let name = document.getElementById("name").value;
+names.push(name);
+
+let li = document.createElement("li");
+li.innerText = name;
+
+document.getElementById("list").appendChild(li);
+}
+
+function pickWinner(){
+let random = Math.floor(Math.random()*names.length);
+document.getElementById("winner").innerText =
+"Winner: "+names[random];
+}
+
+</script>
+
+</body>
+</html>

@@ -37,6 +37,10 @@ a {
     padding: 10px 15px;
     border-radius: 5px;
 }
+
+.qr {
+    margin-top: 15px;
+}
 </style>
 
 </head>
@@ -61,6 +65,21 @@ a {
 <button onclick="pickWinner()">Pick Winner</button>
 
 <h2 id="winner"></h2>
+
+<br><br>
+
+<!-- 💰 PAYMENT SECTION START -->
+<h2>Pay Entry Fee</h2>
+
+<p><b>Entry Fee: ₹10</b></p>
+
+<p>UPI ID: <b>amangupta9712@nyes</b></p>
+
+<img class="qr" 
+src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=amangupta9712@nyes&pn=LuckyDraw&am=10&cu=INR">
+
+<p>📌 Payment karne ke baad hi form fill karein</p>
+<!-- 💰 PAYMENT SECTION END -->
 
 <br><br>
 

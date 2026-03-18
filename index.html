@@ -1,40 +1,57 @@
-<script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lucky Draw</title>
+</head>
+<body>
 
+<h2>🎉 Lucky Draw</h2>
+
+<input type="text" id="name" placeholder="Enter name">
+<button onclick="addName()">Add</button>
+
+<ul id="list"></ul>
+
+<br>
+<button onclick="pickWinner()">Pick Winner</button>
+
+<h3 id="winner"></h3>
+
+<script>
 let users = [];
 
 function addName(){
-let name = document.getElementById("name").value;
+  let name = document.getElementById("name").value;
 
-if(name==""){
-alert("Enter name");
-return;
-}
+  if(name===""){
+    alert("Enter name");
+    return;
+  }
 
-let ticket = "LD" + Math.floor(1000 + Math.random()*9000);
+  let ticket = "LD-" + Math.floor(1000 + Math.random()*9000);
 
-users.push({name: name, ticket: ticket});
+  users.push({name: name, ticket: ticket});
 
-let li = document.createElement("li");
-li.innerText = name + " (Ticket: " + ticket + ")";
+  let li = document.createElement("li");
+  li.innerText = name + " (Ticket: " + ticket + ")";
 
-document.getElementById("list").appendChild(li);
-
-document.getElementById("name").value = "";
+  document.getElementById("list").appendChild(li);
+  document.getElementById("name").value = "";
 }
 
 function pickWinner(){
+  if(users.length===0){
+    alert("No users");
+    return;
+  }
 
-if(users.length==0){
-alert("No users");
-return;
+  let random = Math.floor(Math.random()*users.length);
+  let winner = users[random];
+
+  document.getElementById("winner").innerText =
+    "🏆 Winner: " + winner.name + " (Ticket: " + winner.ticket + ")";
 }
-
-let random = Math.floor(Math.random()*users.length);
-
-let winner = users[random];
-
-document.getElementById("winner").innerText =
-"🏆 Winner: " + winner.name + " (Ticket: " + winner.ticket + ")";
-}
-
 </script>
+
+</body>
+</html>

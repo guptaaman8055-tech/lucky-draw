@@ -1,115 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Lucky Draw</title>
-
-<style>
-body {
-    font-family: Arial;
-    text-align: center;
-    background: linear-gradient(to right, #4facfe, #00f2fe);
-    color: white;
-}
-
-.container {
-    background: white;
-    color: black;
-    padding: 20px;
-    margin: 50px auto;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    background: #ff9800;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-a {
-    text-decoration: none;
-    color: white;
-    background: #28a745;
-    padding: 10px 15px;
-    border-radius: 5px;
-}
-
-.qr {
-    margin-top: 15px;
-}
-</style>
-
-</head>
-
-<body>
-
-<h1>🎉 Lucky Draw 🎉</h1>
-
-<div class="container">
-
-<h2>Enter Your Name</h2>
-
-<input type="text" id="name" placeholder="Enter Name">
-<br><br>
-
-<button onclick="addName()">Add</button>
-
-<ul id="list"></ul>
-
-<br>
-
-<button onclick="pickWinner()">Pick Winner</button>
-
-<h2 id="winner"></h2>
-
-<br><br>
-
-<!-- 💰 PAYMENT SECTION START -->
-<h2>Pay Entry Fee</h2>
-
-<p><b>Entry Fee: ₹10</b></p>
-
-<p>UPI ID: <b>amangupta9712@nyes</b></p>
-
-<img class="qr" 
-src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=amangupta9712@nyes&pn=LuckyDraw&am=10&cu=INR">
-
-<p>📌 Payment karne ke baad hi form fill karein</p>
-<!-- 💰 PAYMENT SECTION END -->
-
-<br><br>
-
-<h2>Register for Lucky Draw</h2>
-
-<a href="https://docs.google.com/forms/d/e/1FAIpQLScYmKMR7Ce40LH3NBRkCdWIiZ5MIJokxlXwCVEnEIw4yIh8Cg/viewform" target="_blank">
-Register Now
-</a>
-
-</div>
-
 <script>
-let names = [];
+
+let users = [];
 
 function addName(){
 let name = document.getElementById("name").value;
-names.push(name);
+
+if(name==""){
+alert("Enter name");
+return;
+}
+
+let ticket = "LD" + Math.floor(1000 + Math.random()*9000);
+
+users.push({name: name, ticket: ticket});
 
 let li = document.createElement("li");
-li.innerText = name;
+li.innerText = name + " (Ticket: " + ticket + ")";
 
 document.getElementById("list").appendChild(li);
+
+document.getElementById("name").value = "";
 }
 
 function pickWinner(){
-let random = Math.floor(Math.random()*names.length);
-document.getElementById("winner").innerText =
-"🏆 Winner: " + names[random];
-}
-</script>
 
-</body>
-</html>
+if(users.length==0){
+alert("No users");
+return;
+}
+
+let random = Math.floor(Math.random()*users.length);
+
+let winner = users[random];
+
+document.getElementById("winner").innerText =
+"🏆 Winner: " + winner.name + " (Ticket: " + winner.ticket + ")";
+}
+
+</script>

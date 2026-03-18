@@ -2,7 +2,28 @@
 <html>
 <head>
   <title>Lucky Draw</title>
+
+  <style>
+    body {
+      background: #111;
+      color: white;
+      text-align: center;
+      font-family: Arial;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+    }
+    button {
+      background: green;
+      color: white;
+      border: none;
+    }
+  </style>
+
 </head>
+
 <body>
 
 <h2>🎉 Lucky Draw</h2>
@@ -13,6 +34,19 @@
 <ul id="list"></ul>
 
 <br>
+
+<!-- PAYMENT BUTTON -->
+<button id="payBtn">Pay ₹50</button>
+
+<br><br>
+
+<!-- GOOGLE FORM -->
+<h3>Fill Details</h3>
+<iframe src="https://docs.google.com/forms/d/e/YOUR_FORM_LINK/viewform?embedded=true"
+width="100%" height="400"></iframe>
+
+<br>
+
 <button onclick="pickWinner()">Pick Winner</button>
 
 <h3 id="winner"></h3>

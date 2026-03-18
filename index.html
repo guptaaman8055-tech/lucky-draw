@@ -5,23 +5,59 @@
 
   <style>
     body {
-      background: #111;
+      background: #0f172a;
       color: white;
       text-align: center;
       font-family: Arial;
+      padding: 20px;
     }
-    input, button {
+
+    h2 {
+      font-size: 28px;
+    }
+
+    input {
       padding: 10px;
-      margin: 5px;
+      width: 200px;
       border-radius: 5px;
-    }
-    button {
-      background: green;
-      color: white;
       border: none;
     }
-  </style>
 
+    button {
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+      background: green;
+      color: white;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: darkgreen;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px;
+    }
+
+    iframe {
+      border: none;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    #winner {
+      margin-top: 20px;
+      font-size: 20px;
+      color: gold;
+    }
+  </style>
 </head>
 
 <body>
@@ -36,18 +72,17 @@
 <br>
 
 <!-- PAYMENT BUTTON -->
-<button id="payBtn">Pay ₹50</button>
+<button onclick="payNow()">Pay ₹50</button>
 
 <br><br>
 
 <!-- GOOGLE FORM -->
 <h3>Fill Details</h3>
 
-<!-- YAHAN PASTE KARO -->
-<iframe src="https://docs.google.com/forms/d/e/FORM_ID/viewform?embedded=true"
-width="100%" height="500"></iframe>
-<iframe src="https://docs.google.com/forms/d/e/YOUR_FORM_LINK/viewform?embedded=true"
-width="100%" height="400"></iframe>
+<iframe 
+src="https://docs.google.com/forms/d/e/1FAIpQLSdEXAMPLE_FORM_LINK/viewform?embedded=true" 
+width="100%" height="500">
+</iframe>
 
 <br>
 
@@ -58,6 +93,7 @@ width="100%" height="400"></iframe>
 <script>
 let users = [];
 
+// ADD NAME
 function addName(){
   let name = document.getElementById("name").value;
 
@@ -77,6 +113,12 @@ function addName(){
   document.getElementById("name").value = "";
 }
 
+// PAYMENT (DEMO)
+function payNow(){
+  alert("Payment system coming soon!");
+}
+
+// PICK WINNER
 function pickWinner(){
   if(users.length===0){
     alert("No users");

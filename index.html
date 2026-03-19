@@ -61,19 +61,23 @@ button {
 </div>
 
 <div class="card">
-<button class="pay" onclick="payNow()">Pay ₹50</button>
+
+<!-- RAZORPAY BUTTON -->
+<button class="pay" onclick="payNow()">Pay ₹50 (Online)</button>
 
 <p class="status" id="status">❌ Payment Required</p>
 
-<!-- SIMPLE UPI BACKUP -->
-<a href="upi://pay?pa=yourupi@upi&pn=LuckyDraw&am=50&cu=INR">
+<!-- ✅ UPI PAYMENT (YOUR ID ADDED) -->
+<a href="upi://pay?pa=6391609712-2@ibl&pn=LuckyDraw&am=50&cu=INR">
 <button>Pay via UPI</button>
 </a>
+
 </div>
 
 <div id="formBox" class="card">
 <h3>📋 Fill Details</h3>
 
+<!-- 👉 Yahan apna Google Form link daalo -->
 <iframe src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true"
 width="100%" height="400"></iframe>
 
@@ -111,7 +115,7 @@ document.getElementById("formBox").style.display="block";
 
 loadUI();
 
-// PAYMENT
+// RAZORPAY PAYMENT
 function payNow(){
 
 let options={
@@ -122,12 +126,9 @@ let options={
 "description":"Entry Fee",
 
 "handler":function(){
-
 alert("✅ Payment Successful");
-
 paid="yes";
 localStorage.setItem("paid","yes");
-
 loadUI();
 }
 };

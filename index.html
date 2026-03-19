@@ -36,8 +36,8 @@ button{
 }
 
 .add{background:green;color:white;}
-.pay{background:orange;}
-.win{background:#22c55e;}
+.pay{background:orange;color:white;}
+.win{background:#22c55e;color:white;}
 
 #qr{display:none;}
 </style>
@@ -57,8 +57,8 @@ button{
 
 <h3>💰 Pay ₹50 Entry Fee</h3>
 
-<!-- ✅ UPI BUTTON -->
-<a href="upi://pay?pa=6391609712-2@ibl&pn=AmanGupta&am=50&cu=INR">
+<!-- ✅ UPDATED UPI BUTTON -->
+<a href="upi://pay?pa=guptaaman8055-1@oksbi&pn=Aman%20Gupta&am=50&cu=INR">
 <button class="pay" onclick="markPaid()">Pay via UPI</button>
 </a>
 
@@ -68,7 +68,7 @@ button{
 
 <br><br>
 
-<!-- 👉 QR IMAGE (optional) -->
+<!-- 👉 QR IMAGE -->
 <img id="qr" src="qr.png" width="200">
 
 <p id="status">❌ Payment Required</p>
@@ -107,7 +107,7 @@ function showQR(){
 document.getElementById("qr").style.display="block";
 }
 
-// Fake payment mark (after clicking)
+// Payment mark
 function markPaid(){
 paid="yes";
 localStorage.setItem("paid","yes");

@@ -1,7 +1,8 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-<title>Lucky Draw</title>
+<title>Lucky Draw - Legal</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -12,145 +13,79 @@ body{
   text-align:center;
   padding:20px;
 }
-
 .box{
   background:#1e293b;
   padding:20px;
   margin:10px;
   border-radius:10px;
 }
-
-input{
-  padding:10px;
-  border:none;
-  border-radius:5px;
-}
-
 button{
-  padding:10px 15px;
+  padding:12px;
   margin:5px;
   border:none;
-  border-radius:5px;
+  border-radius:6px;
   font-weight:bold;
-  cursor:pointer;
 }
-
-.add{background:green;color:white;}
-.pay{background:orange;color:white;}
-.win{background:#22c55e;color:white;}
-
-#qr{display:none;}
+.pay{background:orange;}
+.win{background:#22c55e;}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw</h2>
+<h2>🎉 Lucky Draw Contest</h2>
 
 <div class="box">
-<input id="name" placeholder="Enter name">
-<button class="add" onclick="addName()">Add</button>
-<ul id="list"></ul>
-</div>
+<h3>💰 Entry Fee ₹50</h3>
 
-<div class="box">
-
-<h3>💰 Pay ₹50 Entry Fee</h3>
-
-<!-- ✅ UPDATED UPI BUTTON -->
 <a href="upi://pay?pa=guptaaman8055-1@oksbi&pn=Aman%20Gupta&am=50&cu=INR">
-<button class="pay" onclick="markPaid()">Pay via UPI</button>
+<button class="pay">Pay Now</button>
 </a>
 
-<br>
+<p>👉 Payment ke baad form fill karein</p>
+</div>
 
-<button onclick="showQR()">Show QR Code</button>
+<div class="box">
+<h3>📝 Fill Details</h3>
 
-<br><br>
-
-<!-- 👉 QR IMAGE -->
-<img id="qr" src="qr.png" width="200">
-
-<p id="status">❌ Payment Required</p>
+<!-- 👉 YAHAN APNA GOOGLE FORM LINK PASTE KARNA -->
+<iframe src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true" width="100%" height="500"></iframe>
 
 </div>
 
 <div class="box">
-<button class="win" onclick="pickWinner()">🎯 Pick Winner</button>
-<h3 id="winner"></h3>
+<h3>🏆 Winner</h3>
+<p>Winner daily announce hoga</p>
+<h2 id="winner">Coming Soon...</h2>
+<button class="win" onclick="pickWinner()">Pick Winner (Admin)</button>
+</div>
+
+<div class="box">
+<h3>📜 Rules</h3>
+<p>
+✔ Entry fee ₹50 hai<br>
+✔ Payment verify hone ke baad entry milegi<br>
+✔ Winner random select hoga<br>
+✔ Fake entry cancel hogi<br>
+</p>
 </div>
 
 <script>
 
-let users = JSON.parse(localStorage.getItem("users")) || [];
-let paid = localStorage.getItem("paid") || "no";
+let users = [];
 
-// Load UI
-function load(){
-document.getElementById("list").innerHTML="";
-
-users.forEach(u=>{
-let li=document.createElement("li");
-li.innerText=u.name+" (Ticket: "+u.ticket+")";
-document.getElementById("list").appendChild(li);
-});
-
-if(paid==="yes"){
-document.getElementById("status").innerText="✅ Payment Done";
-}
-}
-
-load();
-
-// Show QR
-function showQR(){
-document.getElementById("qr").style.display="block";
-}
-
-// Payment mark
-function markPaid(){
-paid="yes";
-localStorage.setItem("paid","yes");
-load();
-}
-
-// Add Name
-function addName(){
-
-if(paid!=="yes"){
-alert("⚠️ पहले payment करो");
-return;
-}
-
-let name=document.getElementById("name").value;
-
-if(name===""){
-alert("Enter name");
-return;
-}
-
-let ticket="LD-"+Math.floor(Math.random()*10000);
-
-users.push({name,ticket});
-localStorage.setItem("users",JSON.stringify(users));
-
-load();
-
-document.getElementById("name").value="";
-}
-
-// Pick Winner
 function pickWinner(){
 
 if(users.length===0){
-alert("No users");
+alert("No verified users");
 return;
 }
 
 let winner=users[Math.floor(Math.random()*users.length)];
 
 document.getElementById("winner").innerText=
-"🏆 Winner: "+winner.name+" ("+winner.ticket+")";
+"🏆 Winner: "+winner;
+
 }
 
 </script>

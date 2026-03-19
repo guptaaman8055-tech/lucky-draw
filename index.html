@@ -1,143 +1,120 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-<title>Lucky Draw Pro Max</title>
+<title>Lucky Draw</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body {
-  margin:0;
-  font-family: Arial;
-  background: linear-gradient(135deg,#000428,#004e92);
+body{
+  font-family:Arial;
+  background:#0f172a;
   color:white;
   text-align:center;
+  padding:20px;
 }
 
-.container { padding:20px; }
-
-.card {
-  background:#1c1c1c;
-  margin:15px;
-  padding:15px;
+.box{
+  background:#1e293b;
+  padding:20px;
+  margin:10px;
   border-radius:10px;
 }
 
-input {
-  padding:12px;
+input{
+  padding:10px;
   border:none;
   border-radius:5px;
 }
 
-button {
-  padding:12px;
+button{
+  padding:10px 15px;
+  margin:5px;
   border:none;
   border-radius:5px;
-  margin:5px;
   font-weight:bold;
   cursor:pointer;
 }
 
-.pay { background:orange; }
-.add { background:green; }
-.win { background:#00c853; }
+.add{background:green;color:white;}
+.pay{background:orange;}
+.win{background:#22c55e;}
 
-#formBox { display:none; }
-
-.status { font-size:18px; }
+#qr{display:none;}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<h2>🎉 Lucky Draw</h2>
 
-<h2>🎉 Lucky Draw Pro Max</h2>
-
-<div class="card">
-<input id="name" placeholder="Enter Name">
-<button class="add" onclick="addName()">Add Entry</button>
-
+<div class="box">
+<input id="name" placeholder="Enter name">
+<button class="add" onclick="addName()">Add</button>
 <ul id="list"></ul>
 </div>
 
-<div class="card">
+<div class="box">
 
-<!-- RAZORPAY BUTTON -->
-<button class="pay" onclick="payNow()">Pay ₹50 (Online)</button>
+<h3>💰 Pay ₹50 Entry Fee</h3>
 
-<p class="status" id="status">❌ Payment Required</p>
-
-<!-- ✅ UPI PAYMENT (YOUR ID ADDED) -->
-<a href="upi://pay?pa=6391609712-2@ibl&pn=LuckyDraw&am=50&cu=INR">
-<button>Pay via UPI</button>
+<!-- ✅ UPI BUTTON -->
+<a href="upi://pay?pa=6391609712-2@ibl&pn=AmanGupta&am=50&cu=INR">
+<button class="pay" onclick="markPaid()">Pay via UPI</button>
 </a>
 
+<br>
+
+<button onclick="showQR()">Show QR Code</button>
+
+<br><br>
+
+<!-- 👉 QR IMAGE (optional) -->
+<img id="qr" src="qr.png" width="200">
+
+<p id="status">❌ Payment Required</p>
+
 </div>
 
-<div id="formBox" class="card">
-<h3>📋 Fill Details</h3>
-
-<!-- 👉 Yahan apna Google Form link daalo -->
-<iframe src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true"
-width="100%" height="400"></iframe>
-
-</div>
-
-<div class="card">
+<div class="box">
 <button class="win" onclick="pickWinner()">🎯 Pick Winner</button>
 <h3 id="winner"></h3>
 </div>
-
-</div>
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
 
 let users = JSON.parse(localStorage.getItem("users")) || [];
 let paid = localStorage.getItem("paid") || "no";
 
-// LOAD UI
-function loadUI(){
+// Load UI
+function load(){
 document.getElementById("list").innerHTML="";
 
 users.forEach(u=>{
 let li=document.createElement("li");
-li.innerText=u.name+" (Ticket:"+u.ticket+")";
+li.innerText=u.name+" (Ticket: "+u.ticket+")";
 document.getElementById("list").appendChild(li);
 });
 
 if(paid==="yes"){
 document.getElementById("status").innerText="✅ Payment Done";
-document.getElementById("formBox").style.display="block";
 }
 }
 
-loadUI();
+load();
 
-// RAZORPAY PAYMENT
-function payNow(){
+// Show QR
+function showQR(){
+document.getElementById("qr").style.display="block";
+}
 
-let options={
-"key":"YOUR_RAZORPAY_KEY",
-"amount":5000,
-"currency":"INR",
-"name":"Lucky Draw",
-"description":"Entry Fee",
-
-"handler":function(){
-alert("✅ Payment Successful");
+// Fake payment mark (after clicking)
+function markPaid(){
 paid="yes";
 localStorage.setItem("paid","yes");
-loadUI();
-}
-};
-
-let rzp=new Razorpay(options);
-rzp.open();
+load();
 }
 
-// ADD ENTRY
+// Add Name
 function addName(){
 
 if(paid!=="yes"){
@@ -152,27 +129,21 @@ alert("Enter name");
 return;
 }
 
-// duplicate block
-if(users.find(u=>u.name===name)){
-alert("Already added");
-return;
-}
-
 let ticket="LD-"+Math.floor(Math.random()*10000);
 
 users.push({name,ticket});
 localStorage.setItem("users",JSON.stringify(users));
 
-loadUI();
+load();
 
 document.getElementById("name").value="";
 }
 
-// WINNER
+// Pick Winner
 function pickWinner(){
 
 if(users.length===0){
-alert("No entries");
+alert("No users");
 return;
 }
 

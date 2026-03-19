@@ -1,136 +1,145 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html>
 <head>
-  <title>Lucky Draw</title>
+<title>Lucky Draw Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      font-family: Arial;
-      padding: 20px;
-    }
+<style>
+body {
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
 
-    h2 {
-      font-size: 28px;
-    }
+.box {
+  margin-top: 50px;
+}
 
-    input {
-      padding: 10px;
-      width: 200px;
-      border-radius: 5px;
-      border: none;
-    }
+input {
+  padding: 12px;
+  border-radius: 5px;
+  border: none;
+}
 
-    button {
-      padding: 10px 15px;
-      margin: 5px;
-      border-radius: 5px;
-      border: none;
-      background: green;
-      color: white;
-      font-weight: bold;
-    }
+button {
+  padding: 12px;
+  border-radius: 5px;
+  border: none;
+  margin: 5px;
+  cursor: pointer;
+}
 
-    button:hover {
-      background: darkgreen;
-    }
+.pay { background: orange; }
+.add { background: green; }
+.win { background: #28a745; }
 
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    li {
-      margin: 5px;
-    }
-
-    iframe {
-      border: none;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-
-    #winner {
-      margin-top: 20px;
-      font-size: 20px;
-      color: gold;
-    }
-  </style>
+#formBox { display:none; margin-top:20px; }
+</style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw</h2>
+<div class="box">
+<h2>🎉 Lucky Draw Pro</h2>
 
-<input type="text" id="name" placeholder="Enter name">
-<button onclick="addName()">Add</button>
+<input id="name" placeholder="Enter Name">
+<button class="add" onclick="addName()">Add</button>
 
 <ul id="list"></ul>
 
 <br>
 
-<!-- PAYMENT BUTTON -->
-<button onclick="payNow()">Pay ₹50</button>
+<button class="pay" onclick="payNow()">Pay ₹50</button>
 
-<br><br>
-
-<!-- GOOGLE FORM -->
+<div id="formBox">
 <h3>Fill Details</h3>
 
-<iframe 
-src="https://docs.google.com/forms/d/e/1FAIpQLSdEXAMPLE_FORM_LINK/viewform?embedded=true" 
-width="100%" height="500">
-</iframe>
+<!-- 🔴 APNA GOOGLE FORM LINK YAHA DALO -->
+<iframe src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true"
+width="100%" height="400"></iframe>
+
+</div>
 
 <br>
 
-<button onclick="pickWinner()">Pick Winner</button>
+<button class="win" onclick="pickWinner()">Pick Winner</button>
 
 <h3 id="winner"></h3>
 
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
+
 let users = [];
+let paidUsers = [];
 
-// ADD NAME
-function addName(){
-  let name = document.getElementById("name").value;
-
-  if(name===""){
-    alert("Enter name");
-    return;
-  }
-
-  let ticket = "LD-" + Math.floor(1000 + Math.random()*9000);
-
-  users.push({name: name, ticket: ticket});
-
-  let li = document.createElement("li");
-  li.innerText = name + " (Ticket: " + ticket + ")";
-
-  document.getElementById("list").appendChild(li);
-  document.getElementById("name").value = "";
-}
-
-// PAYMENT (DEMO)
 function payNow(){
-  alert("Payment system coming soon!");
+
+let options = {
+"key": "YOUR_KEY_HERE",
+"amount": 5000,
+"currency": "INR",
+"name": "Lucky Draw Pro",
+"description": "Entry Fee",
+
+"handler": function (){
+
+alert("Payment Success ✅");
+
+localStorage.setItem("paid","yes");
+
+document.getElementById("formBox").style.display="block";
+}
+};
+
+let rzp = new Razorpay(options);
+rzp.open();
 }
 
-// PICK WINNER
+
+function addName(){
+
+if(localStorage.getItem("paid") !== "yes"){
+alert("⚠️ पहले payment करो");
+return;
+}
+
+let name = document.getElementById("name").value;
+
+if(name===""){
+alert("Enter name");
+return;
+}
+
+let ticket = "LD-"+Math.floor(Math.random()*10000);
+
+users.push({name,ticket});
+
+let li = document.createElement("li");
+li.innerText = name + " (Ticket: "+ticket+")";
+
+document.getElementById("list").appendChild(li);
+
+document.getElementById("name").value="";
+}
+
+
 function pickWinner(){
-  if(users.length===0){
-    alert("No users");
-    return;
-  }
 
-  let random = Math.floor(Math.random()*users.length);
-  let winner = users[random];
-
-  document.getElementById("winner").innerText =
-    "🏆 Winner: " + winner.name + " (Ticket: " + winner.ticket + ")";
+if(users.length==0){
+alert("No users");
+return;
 }
+
+let winner = users[Math.floor(Math.random()*users.length)];
+
+document.getElementById("winner").innerText =
+"🏆 Winner: "+winner.name+" ("+winner.ticket+")";
+}
+
 </script>
 
 </body>

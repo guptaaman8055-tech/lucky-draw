@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Ultra Pro</title>
+<title>Ultimate Lucky Draw</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -15,9 +15,10 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 .selected{background:#22c55e;}
 .taken{background:red;}
 #wheel{
-width:200px;height:200px;border-radius:50%;
+width:220px;height:220px;border-radius:50%;
 border:8px solid white;margin:20px auto;
 display:flex;align-items:center;justify-content:center;
+font-size:20px;
 transition:transform 3s;
 }
 </style>
@@ -25,12 +26,10 @@ transition:transform 3s;
 
 <body>
 
-<h2>🎉 Lucky Draw Contest</h2>
+<h2>🎉 Ultimate Lucky Draw</h2>
 
-<!-- INFO -->
 <div class="box">
 <h3>💰 Entry ₹50 | 🏆 Win up to ₹50000</h3>
-<p>Fair & Transparent System</p>
 </div>
 
 <!-- TIMER -->
@@ -39,120 +38,111 @@ transition:transform 3s;
 <h2 id="timer"></h2>
 </div>
 
+<!-- PAYMENT -->
+<div class="box">
+<h3>💳 Payment</h3>
+<button onclick="pay()">Pay ₹50</button>
+<p id="payStatus">❌ Not Paid</p>
+</div>
+
 <!-- USER -->
 <div class="box">
 <input id="name" placeholder="Enter Name">
 </div>
 
 <!-- NUMBERS -->
-<div class="box" id="numbers"></div>
-
-<!-- BOOK -->
 <div class="box">
-<button onclick="request()">Request Entry</button>
+<h3>Select Number</h3>
+<div id="numbers"></div>
+</div>
+
+<!-- ENTRY -->
+<div class="box">
+<button onclick="request()">Submit Entry</button>
 </div>
 
 <!-- ADMIN -->
 <div class="box">
-<h3>🔐 Admin Panel</h3>
+<h3>Admin Panel</h3>
 <input type="password" id="pass" placeholder="Password">
 <button onclick="login()">Login</button>
 
 <div id="admin" style="display:none;">
-<h4>Approve Entries</h4>
 <ul id="reqList"></ul>
 </div>
 </div>
 
 <!-- SPIN -->
 <div class="box">
-<h3>🎡 Spin Wheel</h3>
 <div id="wheel">SPIN</div>
 <button onclick="spin()">Spin</button>
 </div>
 
 <!-- DRAW -->
 <div class="box">
-<button onclick="draw()">🎯 Draw Winner</button>
+<button onclick="draw()">Draw Winner</button>
 <h2 id="winner"></h2>
 </div>
 
-<!-- RESULTS -->
+<!-- RESULT -->
 <div class="box">
-<h3>📊 Results</h3>
 <ul id="results"></ul>
-</div>
-
-<!-- TERMS -->
-<div class="box">
-<h3>📜 Terms</h3>
-<p>
-• Entry fee ₹50 (manual process)<br>
-• Max reward ₹50000<br>
-• Winner random system se select hota hai<br>
-• No guarantee of winning
-</p>
-</div>
-
-<!-- SUPPORT -->
-<div class="box">
-<h3>💬 Customer Support</h3>
-<p>Email: support@luckydraw.com</p>
 </div>
 
 <script>
 
-// 🔴 Firebase config (yahan apna daalna)
+// 🔴 Firebase config
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  databaseURL: "YOUR_DB",
-  projectId: "YOUR_ID"
+ apiKey:"YOUR_KEY",
+ authDomain:"YOUR_DOMAIN",
+ databaseURL:"YOUR_DB",
+ projectId:"YOUR_ID"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let selected=null;
+let paid=false;
+let drawOpen=false;
 
-/* Numbers 1–15 */
+/* Numbers */
 for(let i=1;i<=15;i++){
  let btn=document.createElement("button");
  btn.innerText=i;
  btn.className="num";
 
- btn.onclick=()=>{
-  if(selected) return alert("Only one number allowed");
-  selected=i;
-  btn.classList.add("selected");
- };
+ btn.onclick=()=>{selected=i; btn.classList.add("selected");};
 
  document.getElementById("numbers").appendChild(btn);
+}
+
+/* Payment (Demo / Razorpay ready) */
+function pay(){
+ paid=true;
+ document.getElementById("payStatus").innerText="✅ Paid";
+ // Razorpay integration yahan add hoga
 }
 
 /* Request Entry */
 function request(){
  let name=document.getElementById("name").value;
+ if(!paid) return alert("Pay first");
  if(!name||!selected) return alert("Fill all");
 
- db.ref("requests/"+Date.now()).set({
-  name:name,
-  number:selected
- });
-
- alert("Request sent (Admin approval pending)");
+ db.ref("requests/"+Date.now()).set({name,number:selected});
+ alert("Request sent");
 }
 
-/* Admin Login */
+/* Admin */
 function login(){
  if(document.getElementById("pass").value==="1234"){
   document.getElementById("admin").style.display="block";
-  loadRequests();
- } else alert("Wrong password");
+  loadReq();
+ }
 }
 
-/* Load Requests */
-function loadRequests(){
+function loadReq(){
  db.ref("requests").on("value",snap=>{
   let data=snap.val()||{};
   let list=document.getElementById("reqList");
@@ -166,12 +156,8 @@ function loadRequests(){
    btn.innerText="Approve";
 
    btn.onclick=()=>{
-    db.ref("users/"+r.number).once("value",s=>{
-     if(s.exists()) return alert("Number taken");
-
-     db.ref("users/"+r.number).set(r);
-     db.ref("requests/"+id).remove();
-    });
+    db.ref("users/"+r.number).set(r);
+    db.ref("requests/"+id).remove();
    };
 
    li.appendChild(btn);
@@ -189,14 +175,17 @@ function spin(){
 
 /* Draw */
 function draw(){
+ if(!drawOpen) return alert("Timer not finished");
+
  let num=Math.floor(Math.random()*15)+1;
 
  db.ref("users/"+num).once("value",snap=>{
   let res;
+
   if(snap.exists()){
-   res="🏆 "+snap.val().name+" (No: "+num+")";
+   res="🏆 "+snap.val().name+" (No:"+num+")";
   } else {
-   res="No Winner (No: "+num+")";
+   res="No Winner ("+num+")";
   }
 
   document.getElementById("winner").innerText=res;
@@ -208,13 +197,21 @@ function draw(){
 }
 
 /* Timer */
-let end=new Date().getTime()+600000;
+let end=new Date().getTime()+300000;
+
 setInterval(()=>{
  let now=new Date().getTime();
  let d=end-now;
+
  let m=Math.floor(d/(1000*60));
  let s=Math.floor((d%(1000*60))/1000);
+
  document.getElementById("timer").innerText=m+"m "+s+"s";
+
+ if(d<=0){
+  drawOpen=true;
+  document.getElementById("timer").innerText="DRAW OPEN";
+ }
 },1000);
 
 </script>

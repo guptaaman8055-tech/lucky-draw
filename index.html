@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +11,8 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 .num{background:#334155;color:white;}
 .selected{background:#22c55e;}
 .taken{background:red;}
+.win{background:gold !important;color:black;font-weight:bold;}
+
 #wheel{
 width:200px;height:200px;border-radius:50%;
 border:8px solid white;margin:20px auto;
@@ -24,42 +26,40 @@ transition:transform 3s;
 
 <h2>🎉 Lucky Draw Dashboard</h2>
 
-<!-- INFO -->
+<!-- AUDIO -->
+<audio id="bgMusic" src="bg.mp3" loop></audio>
+<audio id="tickSound" src="tick.mp3"></audio>
+<audio id="winSound" src="win.mp3"></audio>
+
 <div class="box">
 <h3>💰 Entry ₹50 | 🏆 Win up to ₹50000</h3>
 </div>
 
-<!-- TIMER -->
 <div class="box">
 <h3>⏳ Countdown Timer</h3>
 <h2 id="timer"></h2>
 </div>
 
-<!-- PAYMENT -->
 <div class="box">
 <h3>💳 Payment Panel</h3>
 <button onclick="pay()">Pay ₹50</button>
 <p id="payStatus">❌ Not Paid</p>
 </div>
 
-<!-- USER -->
 <div class="box">
 <input id="name" placeholder="Enter Name">
 </div>
 
-<!-- NUMBERS -->
 <div class="box">
 <h3>Select Number</h3>
 <div id="numbers"></div>
 <p id="chosen"></p>
 </div>
 
-<!-- ENTRY -->
 <div class="box">
 <button onclick="request()">Submit Entry</button>
 </div>
 
-<!-- ADMIN -->
 <div class="box">
 <h3>🔐 Admin Panel</h3>
 <input type="password" id="pass" placeholder="Password">
@@ -70,29 +70,19 @@ transition:transform 3s;
 </div>
 </div>
 
-<!-- SPIN -->
 <div class="box">
 <h3>🎡 Spin</h3>
 <div id="wheel">SPIN</div>
 <button onclick="spin()">Spin</button>
 </div>
 
-<!-- DRAW -->
 <div class="box">
-<button onclick="draw()">🎯 Draw Winner</button>
 <h2 id="winner">Result Locked</h2>
 </div>
 
-<!-- RESULTS -->
 <div class="box">
 <h3>📊 Results</h3>
 <ul id="results"></ul>
-</div>
-
-<!-- SUPPORT -->
-<div class="box">
-<h3>💬 Customer Support</h3>
-<p>Email: support@luckydraw.com</p>
 </div>
 
 <script>
@@ -101,7 +91,13 @@ let selected=null;
 let paid=false;
 let users=JSON.parse(localStorage.getItem("users"))||[];
 let requests=[];
-let drawOpen=false;
+let drawDone=false;
+
+/* Start background music on first click */
+document.body.addEventListener("click", ()=>{
+ document.getElementById("bgMusic").volume=0.2;
+ document.getElementById("bgMusic").play().catch(()=>{});
+},{once:true});
 
 /* Numbers */
 let div=document.getElementById("numbers");
@@ -124,7 +120,7 @@ for(let i=1;i<=15;i++){
  div.appendChild(btn);
 }
 
-/* Payment (demo) */
+/* Payment */
 function pay(){
  paid=true;
  document.getElementById("payStatus").innerText="✅ Paid";
@@ -148,7 +144,6 @@ function login(){
  }
 }
 
-/* Approve */
 function loadReq(){
  let list=document.getElementById("reqList");
  list.innerHTML="";
@@ -179,25 +174,35 @@ function spin(){
  w.style.transform="rotate("+deg+"deg)";
 }
 
-/* Draw */
-function draw(){
- if(!drawOpen) return alert("Timer not finished");
+/* 🎯 AUTO DRAW */
+function autoDraw(){
 
  let num=Math.floor(Math.random()*15)+1;
  let win=users.find(u=>u.number===num);
 
+ // remove old highlight
+ document.querySelectorAll(".num").forEach(b=>{
+  b.classList.remove("win");
+ });
+
+ // highlight winning number
+ document.querySelectorAll(".num")[num-1].classList.add("win");
+
  let res;
  if(win){
-  res="🏆 "+win.name+" (No: "+num+")";
+  res="🏆 Winner: "+win.name+" (No: "+num+")";
  } else {
-  res="No Winner (No: "+num+")";
+  res="❌ No Winner (Winning No: "+num+")";
  }
 
  document.getElementById("winner").innerText=res;
 
  let li=document.createElement("li");
- li.innerText=res;
+ li.innerText="Winning Number: "+num;
  document.getElementById("results").appendChild(li);
+
+ // 🎉 sound
+ document.getElementById("winSound").play();
 }
 
 /* Timer */
@@ -212,10 +217,20 @@ setInterval(()=>{
 
  document.getElementById("timer").innerText=m+"m "+s+"s";
 
- if(d<=0){
-  drawOpen=true;
-  document.getElementById("timer").innerText="DRAW OPEN";
+ // ⏳ last 10 sec sound
+ if(d<=10000 && d>0){
+  let t=document.getElementById("tickSound");
+  t.currentTime=0;
+  t.play();
  }
+
+ // 🔥 auto draw after timer
+ if(d<=0 && !drawDone){
+  document.getElementById("timer").innerText="DRAW DONE";
+  drawDone=true;
+  autoDraw();
+ }
+
 },1000);
 
 </script>

@@ -2,42 +2,56 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Numbers</title>
+<title>Secure Lucky Draw</title>
 
 <style>
-body {font-family:Arial; background:#0f172a; color:white; text-align:center;}
-.box {background:#1e293b; padding:15px; margin:15px; border-radius:10px;}
-button {padding:10px; margin:5px; border:none; border-radius:6px; cursor:pointer;}
-.num {background:#334155; color:white;}
-.selected {background:#22c55e;}
-#wheel {
-  width:200px; height:200px; border-radius:50%;
-  border:8px solid white; margin:20px auto;
-  display:flex; align-items:center; justify-content:center;
-  transition: transform 3s ease-out;
-}
+body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
+.box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
+button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
+.num{background:#334155;color:white;}
+.taken{background:red;}
+.selected{background:#22c55e;}
+input{padding:8px;border:none;border-radius:5px;}
+#wheel{width:200px;height:200px;border-radius:50%;border:8px solid white;margin:20px auto;display:flex;align-items:center;justify-content:center;transition:transform 3s;}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw (1–15)</h2>
+<h2>🎉 Secure Lucky Draw (1–15)</h2>
 
-<!-- NUMBER SELECT -->
+<!-- TIMER -->
 <div class="box">
-<h3>🔢 Choose Your Number</h3>
+<h3>⏳ Timer</h3>
+<h2 id="timer"></h2>
+</div>
+
+<!-- NUMBER -->
+<div class="box">
+<h3>Choose Number</h3>
 <div id="numbers"></div>
-<p id="chosen">No number selected</p>
+<p id="chosen"></p>
 </div>
 
 <!-- USER -->
 <div class="box">
 <input id="name" placeholder="Enter name">
-<button onclick="saveEntry()">Confirm Entry</button>
-<ul id="list"></ul>
+<button onclick="requestEntry()">Request Entry</button>
+<ul id="requests"></ul>
 </div>
 
-<!-- WHEEL -->
+<!-- ADMIN -->
+<div class="box">
+<h3>Admin Panel</h3>
+<input type="password" id="pass" placeholder="Password">
+<button onclick="login()">Login</button>
+<div id="adminArea" style="display:none;">
+<h4>Approve Entries</h4>
+<ul id="approveList"></ul>
+</div>
+</div>
+
+<!-- SPIN -->
 <div class="box">
 <h3>🎡 Spin</h3>
 <div id="wheel">SPIN</div>
@@ -46,73 +60,107 @@ button {padding:10px; margin:5px; border:none; border-radius:6px; cursor:pointer
 
 <!-- DRAW -->
 <div class="box">
-<button onclick="draw()">🎯 Draw Winner</button>
-<h2 id="winner">No Winner</h2>
+<button onclick="draw()">Draw Winner</button>
+<h2 id="winner"></h2>
 </div>
 
 <script>
 
-let selectedNumber = null;
-let users = [];
+let selected=null;
+let users=JSON.parse(localStorage.getItem("users"))||[];
+let requests=[];
 
-/* Create numbers 1–15 */
-let numDiv = document.getElementById("numbers");
+/* Numbers */
+let div=document.getElementById("numbers");
 for(let i=1;i<=15;i++){
-  let btn=document.createElement("button");
-  btn.innerText=i;
-  btn.className="num";
-  btn.onclick=()=>selectNumber(i,btn);
-  numDiv.appendChild(btn);
+ let btn=document.createElement("button");
+ btn.innerText=i;
+ btn.className="num";
+ btn.onclick=()=>select(i,btn);
+ div.appendChild(btn);
 }
 
-function selectNumber(num,btn){
-  if(selectedNumber!==null){
-    alert("Sirf 1 number choose kar sakte ho");
-    return;
-  }
-  selectedNumber=num;
-  btn.classList.add("selected");
-  document.getElementById("chosen").innerText="Selected: "+num;
+function select(n,btn){
+ if(selected) return alert("Only 1 number allowed");
+ if(users.find(u=>u.number===n)) return alert("Already taken");
+
+ selected=n;
+ btn.classList.add("selected");
+ document.getElementById("chosen").innerText="Selected: "+n;
 }
 
-/* Save Entry */
-function saveEntry(){
-  let name=document.getElementById("name").value;
-  if(!name || selectedNumber===null){
-    alert("Name aur number select karo");
-    return;
-  }
+/* Request Entry */
+function requestEntry(){
+ let name=document.getElementById("name").value;
+ if(!name||!selected) return alert("Fill all");
 
-  users.push({name,number:selectedNumber});
+ requests.push({name,number:selected});
 
+ let li=document.createElement("li");
+ li.innerText=name+" ("+selected+") Pending";
+ document.getElementById("requests").appendChild(li);
+}
+
+/* Admin Login */
+function login(){
+ if(document.getElementById("pass").value==="1234"){
+  document.getElementById("adminArea").style.display="block";
+  loadRequests();
+ } else alert("Wrong password");
+}
+
+/* Approve */
+function loadRequests(){
+ let list=document.getElementById("approveList");
+ list.innerHTML="";
+ requests.forEach((r,i)=>{
   let li=document.createElement("li");
-  li.innerText=name+" (No: "+selectedNumber+")";
-  document.getElementById("list").appendChild(li);
+  li.innerText=r.name+" ("+r.number+")";
 
-  document.getElementById("name").value="";
+  let btn=document.createElement("button");
+  btn.innerText="Approve";
+  btn.onclick=()=>{
+    users.push(r);
+    localStorage.setItem("users",JSON.stringify(users));
+    requests.splice(i,1);
+    loadRequests();
+  };
+
+  li.appendChild(btn);
+  list.appendChild(li);
+ });
 }
 
 /* Spin */
 function spin(){
-  let w=document.getElementById("wheel");
-  let deg=3600+Math.random()*1000;
-  w.style.transform="rotate("+deg+"deg)";
+ let w=document.getElementById("wheel");
+ let deg=3600+Math.random()*1000;
+ w.style.transform="rotate("+deg+"deg)";
 }
 
 /* Draw */
 function draw(){
-  let winNumber = Math.floor(Math.random()*15)+1;
+ let num=Math.floor(Math.random()*15)+1;
+ let win=users.find(u=>u.number===num);
 
-  let winners = users.filter(u=>u.number===winNumber);
-
-  if(winners.length>0){
-    document.getElementById("winner").innerText =
-      "🏆 Winning Number: "+winNumber+" | Winner: "+winners[0].name;
-  } else {
-    document.getElementById("winner").innerText =
-      "Winning Number: "+winNumber+" | No Winner";
-  }
+ if(win){
+  document.getElementById("winner").innerText=
+   "🏆 "+win.name+" (No: "+num+")";
+ } else {
+  document.getElementById("winner").innerText=
+   "No winner (Number "+num+")";
+ }
 }
+
+/* Timer */
+let end=new Date().getTime()+300000;
+setInterval(()=>{
+ let now=new Date().getTime();
+ let d=end-now;
+ let m=Math.floor(d/(1000*60));
+ let s=Math.floor((d%(1000*60))/1000);
+ document.getElementById("timer").innerText=m+"m "+s+"s";
+},1000);
 
 </script>
 

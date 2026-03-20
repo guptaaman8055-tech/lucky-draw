@@ -2,27 +2,27 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ultra Pro Lucky Draw</title>
+<title>Lucky Draw Pro</title>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
 .box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
 button{padding:10px;margin:5px;border:none;border-radius:6px;}
 .num{background:#334155;color:white;}
-.taken{background:red;}
 .selected{background:#22c55e;}
+.taken{background:red;}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Ultra Pro Lucky Draw</h2>
+<h2>🎉 Lucky Draw Pro</h2>
 
 <div class="box">
-<input id="name" placeholder="Enter name">
+<input id="name" placeholder="Enter Name">
 </div>
 
 <div class="box" id="numbers"></div>
@@ -36,9 +36,14 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;}
 <h2 id="winner"></h2>
 </div>
 
+<div class="box">
+<h3>📊 Participants</h3>
+<ul id="list"></ul>
+</div>
+
 <script>
 
-// 🔴 Firebase config yahan paste karo
+// 🔴 Firebase config (apna daalna)
 const firebaseConfig = {
   apiKey: "YOUR_KEY",
   authDomain: "YOUR_DOMAIN",
@@ -51,14 +56,38 @@ const db = firebase.database();
 
 let selected=null;
 
-/* Numbers */
+/* Create numbers */
 for(let i=1;i<=15;i++){
  let btn=document.createElement("button");
  btn.innerText=i;
  btn.className="num";
- btn.onclick=()=>selected=i;
+
+ btn.onclick=()=>{
+   selected=i;
+   document.querySelectorAll(".num").forEach(b=>b.classList.remove("selected"));
+   btn.classList.add("selected");
+ };
+
  document.getElementById("numbers").appendChild(btn);
 }
+
+/* Load users */
+db.ref("users").on("value",snap=>{
+ let data=snap.val()||{};
+ document.getElementById("list").innerHTML="";
+
+ document.querySelectorAll(".num").forEach(btn=>{
+   btn.classList.remove("taken");
+ });
+
+ Object.values(data).forEach(u=>{
+   let li=document.createElement("li");
+   li.innerText=u.name+" (No: "+u.number+")";
+   document.getElementById("list").appendChild(li);
+
+   document.querySelectorAll(".num")[u.number-1].classList.add("taken");
+ });
+});
 
 /* Book */
 function book(){
@@ -66,13 +95,14 @@ function book(){
  if(!name||!selected) return alert("Fill all");
 
  db.ref("users/"+selected).once("value",snap=>{
-  if(snap.exists()) return alert("Already booked");
+   if(snap.exists()) return alert("Already booked");
 
-  db.ref("users/"+selected).set({
-    name:name,
-    number:selected
-  });
-  alert("Booked!");
+   db.ref("users/"+selected).set({
+     name:name,
+     number:selected
+   });
+
+   alert("Booked successfully");
  });
 }
 
@@ -81,13 +111,13 @@ function draw(){
  let num=Math.floor(Math.random()*15)+1;
 
  db.ref("users/"+num).once("value",snap=>{
-  if(snap.exists()){
-    document.getElementById("winner").innerText =
-      "🏆 "+snap.val().name+" (No: "+num+")";
-  } else {
-    document.getElementById("winner").innerText =
-      "No Winner (No: "+num+")";
-  }
+   if(snap.exists()){
+     document.getElementById("winner").innerText =
+       "🏆 "+snap.val().name+" (No: "+num+")";
+   } else {
+     document.getElementById("winner").innerText =
+       "No Winner (No: "+num+")";
+   }
  });
 }
 

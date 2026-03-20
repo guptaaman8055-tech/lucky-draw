@@ -2,165 +2,94 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Secure Lucky Draw</title>
+<title>Ultra Pro Lucky Draw</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
 .box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
-button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
+button{padding:10px;margin:5px;border:none;border-radius:6px;}
 .num{background:#334155;color:white;}
 .taken{background:red;}
 .selected{background:#22c55e;}
-input{padding:8px;border:none;border-radius:5px;}
-#wheel{width:200px;height:200px;border-radius:50%;border:8px solid white;margin:20px auto;display:flex;align-items:center;justify-content:center;transition:transform 3s;}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Secure Lucky Draw (1–15)</h2>
+<h2>🎉 Ultra Pro Lucky Draw</h2>
 
-<!-- TIMER -->
-<div class="box">
-<h3>⏳ Timer</h3>
-<h2 id="timer"></h2>
-</div>
-
-<!-- NUMBER -->
-<div class="box">
-<h3>Choose Number</h3>
-<div id="numbers"></div>
-<p id="chosen"></p>
-</div>
-
-<!-- USER -->
 <div class="box">
 <input id="name" placeholder="Enter name">
-<button onclick="requestEntry()">Request Entry</button>
-<ul id="requests"></ul>
 </div>
 
-<!-- ADMIN -->
+<div class="box" id="numbers"></div>
+
 <div class="box">
-<h3>Admin Panel</h3>
-<input type="password" id="pass" placeholder="Password">
-<button onclick="login()">Login</button>
-<div id="adminArea" style="display:none;">
-<h4>Approve Entries</h4>
-<ul id="approveList"></ul>
-</div>
+<button onclick="book()">Book Number</button>
 </div>
 
-<!-- SPIN -->
 <div class="box">
-<h3>🎡 Spin</h3>
-<div id="wheel">SPIN</div>
-<button onclick="spin()">Spin</button>
-</div>
-
-<!-- DRAW -->
-<div class="box">
-<button onclick="draw()">Draw Winner</button>
+<button onclick="draw()">🎯 Draw Winner</button>
 <h2 id="winner"></h2>
 </div>
 
 <script>
 
+// 🔴 Firebase config yahan paste karo
+const firebaseConfig = {
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  databaseURL: "YOUR_DB",
+  projectId: "YOUR_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 let selected=null;
-let users=JSON.parse(localStorage.getItem("users"))||[];
-let requests=[];
 
 /* Numbers */
-let div=document.getElementById("numbers");
 for(let i=1;i<=15;i++){
  let btn=document.createElement("button");
  btn.innerText=i;
  btn.className="num";
- btn.onclick=()=>select(i,btn);
- div.appendChild(btn);
+ btn.onclick=()=>selected=i;
+ document.getElementById("numbers").appendChild(btn);
 }
 
-function select(n,btn){
- if(selected) return alert("Only 1 number allowed");
- if(users.find(u=>u.number===n)) return alert("Already taken");
-
- selected=n;
- btn.classList.add("selected");
- document.getElementById("chosen").innerText="Selected: "+n;
-}
-
-/* Request Entry */
-function requestEntry(){
+/* Book */
+function book(){
  let name=document.getElementById("name").value;
  if(!name||!selected) return alert("Fill all");
 
- requests.push({name,number:selected});
+ db.ref("users/"+selected).once("value",snap=>{
+  if(snap.exists()) return alert("Already booked");
 
- let li=document.createElement("li");
- li.innerText=name+" ("+selected+") Pending";
- document.getElementById("requests").appendChild(li);
-}
-
-/* Admin Login */
-function login(){
- if(document.getElementById("pass").value==="1234"){
-  document.getElementById("adminArea").style.display="block";
-  loadRequests();
- } else alert("Wrong password");
-}
-
-/* Approve */
-function loadRequests(){
- let list=document.getElementById("approveList");
- list.innerHTML="";
- requests.forEach((r,i)=>{
-  let li=document.createElement("li");
-  li.innerText=r.name+" ("+r.number+")";
-
-  let btn=document.createElement("button");
-  btn.innerText="Approve";
-  btn.onclick=()=>{
-    users.push(r);
-    localStorage.setItem("users",JSON.stringify(users));
-    requests.splice(i,1);
-    loadRequests();
-  };
-
-  li.appendChild(btn);
-  list.appendChild(li);
+  db.ref("users/"+selected).set({
+    name:name,
+    number:selected
+  });
+  alert("Booked!");
  });
-}
-
-/* Spin */
-function spin(){
- let w=document.getElementById("wheel");
- let deg=3600+Math.random()*1000;
- w.style.transform="rotate("+deg+"deg)";
 }
 
 /* Draw */
 function draw(){
  let num=Math.floor(Math.random()*15)+1;
- let win=users.find(u=>u.number===num);
 
- if(win){
-  document.getElementById("winner").innerText=
-   "🏆 "+win.name+" (No: "+num+")";
- } else {
-  document.getElementById("winner").innerText=
-   "No winner (Number "+num+")";
- }
+ db.ref("users/"+num).once("value",snap=>{
+  if(snap.exists()){
+    document.getElementById("winner").innerText =
+      "🏆 "+snap.val().name+" (No: "+num+")";
+  } else {
+    document.getElementById("winner").innerText =
+      "No Winner (No: "+num+")";
+  }
+ });
 }
-
-/* Timer */
-let end=new Date().getTime()+300000;
-setInterval(()=>{
- let now=new Date().getTime();
- let d=end-now;
- let m=Math.floor(d/(1000*60));
- let s=Math.floor((d%(1000*60))/1000);
- document.getElementById("timer").innerText=m+"m "+s+"s";
-},1000);
 
 </script>
 

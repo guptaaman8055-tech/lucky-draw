@@ -13,7 +13,6 @@ body{
   margin:0;
 }
 
-/* MENU */
 .topbar{
   background:#020617;
   padding:10px;
@@ -61,19 +60,16 @@ button{
 
 <body>
 
-<!-- 🔥 TOP MENU -->
 <div class="topbar">
   <h3>🎉 Lucky Draw</h3>
   <button onclick="toggleMenu()">☰ Menu</button>
 </div>
 
-<!-- 🔥 MENU -->
 <div id="menuBox" class="menu">
   <p><b>💰 Entry Fee:</b> ₹50 Only</p>
   <p><b>🏆 Winning Prize:</b> ₹5,00,000 तक</p>
   <hr>
-  <p><b>📞 Contact:</b> 6391609712</p>
-  <p><b>📧 Email:</b> support@luckydraw.com</p>
+  <p><b>📩 Customer Support:</b> support@luckydraw.com</p>
   <hr>
   <p style="font-size:12px;color:#94a3b8;">
     ⚠️ Lucky draw result random system se nikala jata hai.
@@ -82,18 +78,17 @@ button{
 
 <h2>🎉 Lucky Draw Contest</h2>
 
-<!-- 👤 USER SECTION -->
 <div class="box">
 <input id="name" placeholder="Enter name">
 <button class="add" onclick="addName()">Add</button>
 <ul id="list"></ul>
 </div>
 
-<!-- 💰 PAYMENT -->
 <div class="box">
 <h3>💰 Pay ₹50 Entry Fee</h3>
 
-<a href="upi://pay?pa=6391609712-2@ibl&pn=AmanGupta&am=50&cu=INR">
+<!-- ✅ UPDATED UPI -->
+<a href="upi://pay?pa=amangupta9712@nyes&pn=AmanGupta&am=50&cu=INR">
 <button class="pay" onclick="markPaid()">Pay Now</button>
 </a>
 
@@ -103,12 +98,12 @@ button{
 
 <br><br>
 
-<img id="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=6391609712-2@ibl&pn=AmanGupta&am=50&cu=INR">
+<!-- ✅ UPDATED QR -->
+<img id="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=amangupta9712@nyes&pn=AmanGupta&am=50&cu=INR">
 
 <p id="status">❌ Payment Required</p>
 </div>
 
-<!-- 🎯 WINNER -->
 <div class="box">
 <button class="win" onclick="pickWinner()">🎯 Pick Winner</button>
 <h3 id="winner"></h3>
@@ -119,13 +114,11 @@ button{
 let users = JSON.parse(localStorage.getItem("users")) || [];
 let paid = localStorage.getItem("paid") || "no";
 
-/* MENU */
 function toggleMenu(){
   let menu = document.getElementById("menuBox");
   menu.style.display = (menu.style.display==="block")?"none":"block";
 }
 
-/* LOAD */
 function load(){
 document.getElementById("list").innerHTML="";
 
@@ -142,19 +135,16 @@ document.getElementById("status").innerText="✅ Payment Done";
 
 load();
 
-/* QR */
 function showQR(){
 document.getElementById("qr").style.display="block";
 }
 
-/* PAYMENT MARK */
 function markPaid(){
 paid="yes";
 localStorage.setItem("paid","yes");
 load();
 }
 
-/* ADD NAME */
 function addName(){
 
 if(paid!=="yes"){
@@ -179,7 +169,6 @@ load();
 document.getElementById("name").value="";
 }
 
-/* WINNER */
 function pickWinner(){
 
 if(users.length===0){

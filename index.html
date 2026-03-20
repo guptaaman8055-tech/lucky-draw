@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,13 +12,6 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 .selected{background:#22c55e;}
 .taken{background:red;}
 .win{background:gold !important;color:black;font-weight:bold;}
-
-#wheel{
-width:200px;height:200px;border-radius:50%;
-border:8px solid white;margin:20px auto;
-display:flex;align-items:center;justify-content:center;
-transition:transform 3s;
-}
 </style>
 </head>
 
@@ -27,9 +20,14 @@ transition:transform 3s;
 <h2>🎉 Lucky Draw Dashboard</h2>
 
 <!-- AUDIO -->
-<audio id="bgMusic" src="bg.mp3" loop></audio>
+<audio id="bgMusic" src="bg.mp3" loop preload="auto"></audio>
 <audio id="tickSound" src="tick.mp3"></audio>
 <audio id="winSound" src="win.mp3"></audio>
+
+<!-- MUSIC CONTROL -->
+<div class="box">
+<button onclick="toggleMusic()">🎵 Music ON/OFF</button>
+</div>
 
 <div class="box">
 <h3>💰 Entry ₹50 | 🏆 Win up to ₹50000</h3>
@@ -41,7 +39,7 @@ transition:transform 3s;
 </div>
 
 <div class="box">
-<h3>💳 Payment Panel</h3>
+<h3>💳 Payment</h3>
 <button onclick="pay()">Pay ₹50</button>
 <p id="payStatus">❌ Not Paid</p>
 </div>
@@ -64,16 +62,9 @@ transition:transform 3s;
 <h3>🔐 Admin Panel</h3>
 <input type="password" id="pass" placeholder="Password">
 <button onclick="login()">Login</button>
-
 <div id="admin" style="display:none;">
 <ul id="reqList"></ul>
 </div>
-</div>
-
-<div class="box">
-<h3>🎡 Spin</h3>
-<div id="wheel">SPIN</div>
-<button onclick="spin()">Spin</button>
 </div>
 
 <div class="box">
@@ -81,7 +72,6 @@ transition:transform 3s;
 </div>
 
 <div class="box">
-<h3>📊 Results</h3>
 <ul id="results"></ul>
 </div>
 
@@ -92,12 +82,32 @@ let paid=false;
 let users=JSON.parse(localStorage.getItem("users"))||[];
 let requests=[];
 let drawDone=false;
+let musicOn=false;
 
-/* Start background music on first click */
-document.body.addEventListener("click", ()=>{
- document.getElementById("bgMusic").volume=0.2;
- document.getElementById("bgMusic").play().catch(()=>{});
-},{once:true});
+/* 🔥 MUSIC START FIX */
+function startMusic(){
+ let bg=document.getElementById("bgMusic");
+ bg.volume=0.3;
+
+ bg.play().then(()=>{
+  musicOn=true;
+ }).catch(()=>{});
+}
+
+document.addEventListener("click", startMusic, {once:true});
+document.addEventListener("touchstart", startMusic, {once:true});
+
+/* 🎛️ MUSIC TOGGLE */
+function toggleMusic(){
+ let bg=document.getElementById("bgMusic");
+
+ if(musicOn){
+  bg.pause();
+  musicOn=false;
+ } else {
+  startMusic();
+ }
+}
 
 /* Numbers */
 let div=document.getElementById("numbers");
@@ -110,7 +120,7 @@ for(let i=1;i<=15;i++){
 
  btn.onclick=()=>{
   if(selected) return alert("Only 1 number allowed");
-  if(users.find(u=>u.number===i)) return alert("Already taken");
+  if(users.find(u=>u.number===i)) return alert("Taken");
 
   selected=i;
   btn.classList.add("selected");
@@ -122,6 +132,7 @@ for(let i=1;i<=15;i++){
 
 /* Payment */
 function pay(){
+ startMusic();
  paid=true;
  document.getElementById("payStatus").innerText="✅ Paid";
 }
@@ -167,32 +178,23 @@ function loadReq(){
  });
 }
 
-/* Spin */
-function spin(){
- let w=document.getElementById("wheel");
- let deg=3600+Math.random()*1000;
- w.style.transform="rotate("+deg+"deg)";
-}
-
 /* 🎯 AUTO DRAW */
 function autoDraw(){
 
  let num=Math.floor(Math.random()*15)+1;
  let win=users.find(u=>u.number===num);
 
- // remove old highlight
  document.querySelectorAll(".num").forEach(b=>{
   b.classList.remove("win");
  });
 
- // highlight winning number
  document.querySelectorAll(".num")[num-1].classList.add("win");
 
  let res;
  if(win){
   res="🏆 Winner: "+win.name+" (No: "+num+")";
  } else {
-  res="❌ No Winner (Winning No: "+num+")";
+  res="❌ No Winner (No: "+num+")";
  }
 
  document.getElementById("winner").innerText=res;
@@ -201,7 +203,6 @@ function autoDraw(){
  li.innerText="Winning Number: "+num;
  document.getElementById("results").appendChild(li);
 
- // 🎉 sound
  document.getElementById("winSound").play();
 }
 
@@ -217,17 +218,15 @@ setInterval(()=>{
 
  document.getElementById("timer").innerText=m+"m "+s+"s";
 
- // ⏳ last 10 sec sound
  if(d<=10000 && d>0){
   let t=document.getElementById("tickSound");
   t.currentTime=0;
   t.play();
  }
 
- // 🔥 auto draw after timer
  if(d<=0 && !drawDone){
-  document.getElementById("timer").innerText="DRAW DONE";
   drawDone=true;
+  document.getElementById("timer").innerText="DRAW DONE";
   autoDraw();
  }
 

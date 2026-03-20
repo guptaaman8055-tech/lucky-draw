@@ -1,150 +1,168 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Lucky Draw Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lucky Draw 1–15</title>
 
 <style>
-body{
-  font-family:Arial;
-  background:#0f172a;
-  color:white;
-  text-align:center;
-  padding:15px;
+body {font-family: Arial; background:#0f172a; color:white; text-align:center;}
+.box {background:#1e293b; padding:15px; margin:15px; border-radius:10px;}
+button {padding:10px; margin:5px; border:none; border-radius:6px; cursor:pointer;}
+input {padding:8px; border-radius:5px; border:none;}
+#wheel {
+  margin:20px auto;
+  width:200px; height:200px;
+  border-radius:50%;
+  border:8px solid white;
+  display:flex; align-items:center; justify-content:center;
+  transition: transform 3s ease-out;
 }
-
-.box{
-  background:#1e293b;
-  padding:20px;
-  margin:10px;
-  border-radius:12px;
-}
-
-h2{color:#38bdf8;}
-
-input{
-  padding:10px;
-  border:none;
-  border-radius:5px;
-}
-
-button{
-  padding:10px 15px;
-  margin:5px;
-  border:none;
-  border-radius:6px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.add{background:#22c55e;color:white;}
-.pay{background:#f59e0b;color:black;}
-.win{background:#38bdf8;color:black;}
-
-img{border-radius:10px;margin-top:10px;max-width:100%;}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw Contest</h2>
+<h2>🎉 Lucky Draw (1–15)</h2>
 
+<!-- TIMER -->
 <div class="box">
-<h3>💰 Entry Fee ₹50</h3>
-
-<a href="upi://pay?pa=guptaaman8055-1@oksbi&pn=AmanGupta&am=50&cu=INR">
-<button class="pay">📲 Pay Now</button>
-</a>
-
-<p>👉 QR scan karke payment karein</p>
-
-<!-- ✅ YOUR QR CODE EMBEDDED -->
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..." />
-
-<br><br>
-
-<button onclick="confirmPayment()">✅ I Paid</button>
-
-<p id="status">❌ Payment Not Done</p>
+<h3>⏳ Countdown</h3>
+<h2 id="timer"></h2>
 </div>
 
+<!-- ENTRY -->
 <div class="box">
-<h3>📝 Enter Name</h3>
-
+<h3>👥 Enter Name</h3>
 <input id="name" placeholder="Enter name">
-<button class="add" onclick="addName()">Add</button>
-
+<button onclick="addUser()">Add</button>
 <ul id="list"></ul>
 </div>
 
+<!-- WHEEL -->
 <div class="box">
-<button class="win" onclick="pickWinner()">🎯 Pick Winner</button>
-<h3 id="winner"></h3>
+<h3>🎡 Spin Wheel</h3>
+<div id="wheel">SPIN</div>
+<button onclick="spin()">Spin</button>
+</div>
+
+<!-- DRAW -->
+<div class="box">
+<h3>🏆 Winner</h3>
+<button onclick="draw()">Draw Winner</button>
+<button onclick="autoDraw()">Auto Draw</button>
+<h2 id="winner">No Winner</h2>
+</div>
+
+<!-- RESULT -->
+<div class="box">
+<h3>📊 Results</h3>
+<ul id="results"></ul>
+</div>
+
+<!-- ADMIN -->
+<div class="box">
+<h3>⚙️ Admin Panel</h3>
+<input type="password" id="adminPass" placeholder="Enter password">
+<button onclick="adminLogin()">Login</button>
+<button onclick="reset()">Reset Data</button>
+</div>
+
+<!-- TERMS -->
+<div class="box">
+<h3>📜 Terms</h3>
+<p>
+• Winner randomly select hota hai<br>
+• 1–15 numbers assign honge<br>
+• Fair system hai, koi guarantee nahi<br>
+</p>
+</div>
+
+<!-- SUPPORT -->
+<div class="box">
+<h3>💬 Support</h3>
+<p>Email: support@luckydraw.com</p>
 </div>
 
 <script>
+let users = [];
+let numbers = [];
+let results = [];
+let admin = false;
 
-let users = JSON.parse(localStorage.getItem("users")) || [];
-let paid = localStorage.getItem("paid") || "no";
+/* Add User */
+function addUser(){
+  let name = document.getElementById("name").value;
+  if(!name) return alert("Name likho");
 
-function load(){
-document.getElementById("list").innerHTML="";
+  if(users.length>=15) return alert("Limit 15 users");
 
-users.forEach(u=>{
-let li=document.createElement("li");
-li.innerText=u.name+" (Ticket: "+u.ticket+")";
-document.getElementById("list").appendChild(li);
-});
+  let number = users.length + 1;
 
-if(paid==="yes"){
-document.getElementById("status").innerText="✅ Payment Done";
-}
-}
+  users.push({name, number});
+  numbers.push(number);
 
-load();
+  let li = document.createElement("li");
+  li.innerText = name + " (No: " + number + ")";
+  document.getElementById("list").appendChild(li);
 
-function confirmPayment(){
-paid="yes";
-localStorage.setItem("paid","yes");
-load();
+  document.getElementById("name").value="";
 }
 
-function addName(){
+/* Draw Winner */
+function draw(){
+  if(users.length==0) return alert("No users");
 
-if(paid!=="yes"){
-alert("⚠️ Pehle payment karo");
-return;
+  let rand = Math.floor(Math.random()*users.length);
+  let win = users[rand];
+
+  document.getElementById("winner").innerText =
+    "🏆 " + win.name + " (No: "+win.number+")";
+
+  let li=document.createElement("li");
+  li.innerText = win.name + " (No: "+win.number+")";
+  document.getElementById("results").appendChild(li);
 }
 
-let name=document.getElementById("name").value;
-
-if(name===""){
-alert("Enter name");
-return;
+/* Auto Draw */
+function autoDraw(){
+  setInterval(draw,5000);
 }
 
-let ticket="LD-"+Math.floor(Math.random()*10000);
-
-users.push({name,ticket});
-localStorage.setItem("users",JSON.stringify(users));
-
-load();
-document.getElementById("name").value="";
+/* Spin */
+function spin(){
+  let w=document.getElementById("wheel");
+  let deg=3600+Math.random()*1000;
+  w.style.transform="rotate("+deg+"deg)";
 }
 
-function pickWinner(){
+/* Timer */
+let end = new Date().getTime()+600000;
+setInterval(()=>{
+  let now=new Date().getTime();
+  let d=end-now;
+  let m=Math.floor(d/(1000*60));
+  let s=Math.floor((d%(1000*60))/1000);
+  document.getElementById("timer").innerHTML=m+"m "+s+"s";
+},1000);
 
-if(users.length===0){
-alert("No users");
-return;
+/* Admin */
+function adminLogin(){
+  let pass=document.getElementById("adminPass").value;
+  if(pass==="1234"){
+    admin=true;
+    alert("Admin login success");
+  } else alert("Wrong password");
 }
 
-let winner=users[Math.floor(Math.random()*users.length)];
+/* Reset */
+function reset(){
+  if(!admin) return alert("Admin login required");
 
-document.getElementById("winner").innerText=
-"🏆 Winner: "+winner.name+" ("+winner.ticket+")";
+  users=[]; results=[];
+  document.getElementById("list").innerHTML="";
+  document.getElementById("results").innerHTML="";
+  document.getElementById("winner").innerText="No Winner";
 }
-
 </script>
 
 </body>

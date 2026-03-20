@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Pro</title>
+<title>Lucky Draw Ultra Pro</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -10,40 +10,99 @@
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
 .box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
-button{padding:10px;margin:5px;border:none;border-radius:6px;}
+button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 .num{background:#334155;color:white;}
 .selected{background:#22c55e;}
 .taken{background:red;}
+#wheel{
+width:200px;height:200px;border-radius:50%;
+border:8px solid white;margin:20px auto;
+display:flex;align-items:center;justify-content:center;
+transition:transform 3s;
+}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw Pro</h2>
+<h2>🎉 Lucky Draw Contest</h2>
 
+<!-- INFO -->
+<div class="box">
+<h3>💰 Entry ₹50 | 🏆 Win up to ₹50000</h3>
+<p>Fair & Transparent System</p>
+</div>
+
+<!-- TIMER -->
+<div class="box">
+<h3>⏳ Countdown</h3>
+<h2 id="timer"></h2>
+</div>
+
+<!-- USER -->
 <div class="box">
 <input id="name" placeholder="Enter Name">
 </div>
 
+<!-- NUMBERS -->
 <div class="box" id="numbers"></div>
 
+<!-- BOOK -->
 <div class="box">
-<button onclick="book()">Book Number</button>
+<button onclick="request()">Request Entry</button>
 </div>
 
+<!-- ADMIN -->
+<div class="box">
+<h3>🔐 Admin Panel</h3>
+<input type="password" id="pass" placeholder="Password">
+<button onclick="login()">Login</button>
+
+<div id="admin" style="display:none;">
+<h4>Approve Entries</h4>
+<ul id="reqList"></ul>
+</div>
+</div>
+
+<!-- SPIN -->
+<div class="box">
+<h3>🎡 Spin Wheel</h3>
+<div id="wheel">SPIN</div>
+<button onclick="spin()">Spin</button>
+</div>
+
+<!-- DRAW -->
 <div class="box">
 <button onclick="draw()">🎯 Draw Winner</button>
 <h2 id="winner"></h2>
 </div>
 
+<!-- RESULTS -->
 <div class="box">
-<h3>📊 Participants</h3>
-<ul id="list"></ul>
+<h3>📊 Results</h3>
+<ul id="results"></ul>
+</div>
+
+<!-- TERMS -->
+<div class="box">
+<h3>📜 Terms</h3>
+<p>
+• Entry fee ₹50 (manual process)<br>
+• Max reward ₹50000<br>
+• Winner random system se select hota hai<br>
+• No guarantee of winning
+</p>
+</div>
+
+<!-- SUPPORT -->
+<div class="box">
+<h3>💬 Customer Support</h3>
+<p>Email: support@luckydraw.com</p>
 </div>
 
 <script>
 
-// 🔴 Firebase config (apna daalna)
+// 🔴 Firebase config (yahan apna daalna)
 const firebaseConfig = {
   apiKey: "YOUR_KEY",
   authDomain: "YOUR_DOMAIN",
@@ -56,54 +115,76 @@ const db = firebase.database();
 
 let selected=null;
 
-/* Create numbers */
+/* Numbers 1–15 */
 for(let i=1;i<=15;i++){
  let btn=document.createElement("button");
  btn.innerText=i;
  btn.className="num";
 
  btn.onclick=()=>{
-   selected=i;
-   document.querySelectorAll(".num").forEach(b=>b.classList.remove("selected"));
-   btn.classList.add("selected");
+  if(selected) return alert("Only one number allowed");
+  selected=i;
+  btn.classList.add("selected");
  };
 
  document.getElementById("numbers").appendChild(btn);
 }
 
-/* Load users */
-db.ref("users").on("value",snap=>{
- let data=snap.val()||{};
- document.getElementById("list").innerHTML="";
-
- document.querySelectorAll(".num").forEach(btn=>{
-   btn.classList.remove("taken");
- });
-
- Object.values(data).forEach(u=>{
-   let li=document.createElement("li");
-   li.innerText=u.name+" (No: "+u.number+")";
-   document.getElementById("list").appendChild(li);
-
-   document.querySelectorAll(".num")[u.number-1].classList.add("taken");
- });
-});
-
-/* Book */
-function book(){
+/* Request Entry */
+function request(){
  let name=document.getElementById("name").value;
  if(!name||!selected) return alert("Fill all");
 
- db.ref("users/"+selected).once("value",snap=>{
-   if(snap.exists()) return alert("Already booked");
-
-   db.ref("users/"+selected).set({
-     name:name,
-     number:selected
-   });
-
-   alert("Booked successfully");
+ db.ref("requests/"+Date.now()).set({
+  name:name,
+  number:selected
  });
+
+ alert("Request sent (Admin approval pending)");
+}
+
+/* Admin Login */
+function login(){
+ if(document.getElementById("pass").value==="1234"){
+  document.getElementById("admin").style.display="block";
+  loadRequests();
+ } else alert("Wrong password");
+}
+
+/* Load Requests */
+function loadRequests(){
+ db.ref("requests").on("value",snap=>{
+  let data=snap.val()||{};
+  let list=document.getElementById("reqList");
+  list.innerHTML="";
+
+  Object.entries(data).forEach(([id,r])=>{
+   let li=document.createElement("li");
+   li.innerText=r.name+" ("+r.number+")";
+
+   let btn=document.createElement("button");
+   btn.innerText="Approve";
+
+   btn.onclick=()=>{
+    db.ref("users/"+r.number).once("value",s=>{
+     if(s.exists()) return alert("Number taken");
+
+     db.ref("users/"+r.number).set(r);
+     db.ref("requests/"+id).remove();
+    });
+   };
+
+   li.appendChild(btn);
+   list.appendChild(li);
+  });
+ });
+}
+
+/* Spin */
+function spin(){
+ let w=document.getElementById("wheel");
+ let deg=3600+Math.random()*1000;
+ w.style.transform="rotate("+deg+"deg)";
 }
 
 /* Draw */
@@ -111,17 +192,32 @@ function draw(){
  let num=Math.floor(Math.random()*15)+1;
 
  db.ref("users/"+num).once("value",snap=>{
-   if(snap.exists()){
-     document.getElementById("winner").innerText =
-       "🏆 "+snap.val().name+" (No: "+num+")";
-   } else {
-     document.getElementById("winner").innerText =
-       "No Winner (No: "+num+")";
-   }
+  let res;
+  if(snap.exists()){
+   res="🏆 "+snap.val().name+" (No: "+num+")";
+  } else {
+   res="No Winner (No: "+num+")";
+  }
+
+  document.getElementById("winner").innerText=res;
+
+  let li=document.createElement("li");
+  li.innerText=res;
+  document.getElementById("results").appendChild(li);
  });
 }
+
+/* Timer */
+let end=new Date().getTime()+600000;
+setInterval(()=>{
+ let now=new Date().getTime();
+ let d=end-now;
+ let m=Math.floor(d/(1000*60));
+ let s=Math.floor((d%(1000*60))/1000);
+ document.getElementById("timer").innerText=m+"m "+s+"s";
+},1000);
 
 </script>
 
 </body>
-</html>
+  </html>

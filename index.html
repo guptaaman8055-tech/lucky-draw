@@ -2,18 +2,17 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw 1–15</title>
+<title>Lucky Draw Numbers</title>
 
 <style>
-body {font-family: Arial; background:#0f172a; color:white; text-align:center;}
+body {font-family:Arial; background:#0f172a; color:white; text-align:center;}
 .box {background:#1e293b; padding:15px; margin:15px; border-radius:10px;}
 button {padding:10px; margin:5px; border:none; border-radius:6px; cursor:pointer;}
-input {padding:8px; border-radius:5px; border:none;}
+.num {background:#334155; color:white;}
+.selected {background:#22c55e;}
 #wheel {
-  margin:20px auto;
-  width:200px; height:200px;
-  border-radius:50%;
-  border:8px solid white;
+  width:200px; height:200px; border-radius:50%;
+  border:8px solid white; margin:20px auto;
   display:flex; align-items:center; justify-content:center;
   transition: transform 3s ease-out;
 }
@@ -24,108 +23,73 @@ input {padding:8px; border-radius:5px; border:none;}
 
 <h2>🎉 Lucky Draw (1–15)</h2>
 
-<!-- TIMER -->
+<!-- NUMBER SELECT -->
 <div class="box">
-<h3>⏳ Countdown</h3>
-<h2 id="timer"></h2>
+<h3>🔢 Choose Your Number</h3>
+<div id="numbers"></div>
+<p id="chosen">No number selected</p>
 </div>
 
-<!-- ENTRY -->
+<!-- USER -->
 <div class="box">
-<h3>👥 Enter Name</h3>
 <input id="name" placeholder="Enter name">
-<button onclick="addUser()">Add</button>
+<button onclick="saveEntry()">Confirm Entry</button>
 <ul id="list"></ul>
 </div>
 
 <!-- WHEEL -->
 <div class="box">
-<h3>🎡 Spin Wheel</h3>
+<h3>🎡 Spin</h3>
 <div id="wheel">SPIN</div>
 <button onclick="spin()">Spin</button>
 </div>
 
 <!-- DRAW -->
 <div class="box">
-<h3>🏆 Winner</h3>
-<button onclick="draw()">Draw Winner</button>
-<button onclick="autoDraw()">Auto Draw</button>
+<button onclick="draw()">🎯 Draw Winner</button>
 <h2 id="winner">No Winner</h2>
 </div>
 
-<!-- RESULT -->
-<div class="box">
-<h3>📊 Results</h3>
-<ul id="results"></ul>
-</div>
-
-<!-- ADMIN -->
-<div class="box">
-<h3>⚙️ Admin Panel</h3>
-<input type="password" id="adminPass" placeholder="Enter password">
-<button onclick="adminLogin()">Login</button>
-<button onclick="reset()">Reset Data</button>
-</div>
-
-<!-- TERMS -->
-<div class="box">
-<h3>📜 Terms</h3>
-<p>
-• Winner randomly select hota hai<br>
-• 1–15 numbers assign honge<br>
-• Fair system hai, koi guarantee nahi<br>
-</p>
-</div>
-
-<!-- SUPPORT -->
-<div class="box">
-<h3>💬 Support</h3>
-<p>Email: support@luckydraw.com</p>
-</div>
-
 <script>
+
+let selectedNumber = null;
 let users = [];
-let numbers = [];
-let results = [];
-let admin = false;
 
-/* Add User */
-function addUser(){
-  let name = document.getElementById("name").value;
-  if(!name) return alert("Name likho");
+/* Create numbers 1–15 */
+let numDiv = document.getElementById("numbers");
+for(let i=1;i<=15;i++){
+  let btn=document.createElement("button");
+  btn.innerText=i;
+  btn.className="num";
+  btn.onclick=()=>selectNumber(i,btn);
+  numDiv.appendChild(btn);
+}
 
-  if(users.length>=15) return alert("Limit 15 users");
+function selectNumber(num,btn){
+  if(selectedNumber!==null){
+    alert("Sirf 1 number choose kar sakte ho");
+    return;
+  }
+  selectedNumber=num;
+  btn.classList.add("selected");
+  document.getElementById("chosen").innerText="Selected: "+num;
+}
 
-  let number = users.length + 1;
+/* Save Entry */
+function saveEntry(){
+  let name=document.getElementById("name").value;
+  if(!name || selectedNumber===null){
+    alert("Name aur number select karo");
+    return;
+  }
 
-  users.push({name, number});
-  numbers.push(number);
+  users.push({name,number:selectedNumber});
 
-  let li = document.createElement("li");
-  li.innerText = name + " (No: " + number + ")";
+  let li=document.createElement("li");
+  li.innerText=name+" (No: "+selectedNumber+")";
   document.getElementById("list").appendChild(li);
 
   document.getElementById("name").value="";
-}
-
-/* Draw Winner */
-function draw(){
-  if(users.length==0) return alert("No users");
-
-  let rand = Math.floor(Math.random()*users.length);
-  let win = users[rand];
-
-  document.getElementById("winner").innerText =
-    "🏆 " + win.name + " (No: "+win.number+")";
-
-  let li=document.createElement("li");
-  li.innerText = win.name + " (No: "+win.number+")";
-  document.getElementById("results").appendChild(li);
-}
-
-/* Auto Draw */
-function autoDraw(){
-  setInterval(draw,5000);
 }
 
 /* Spin */
@@ -135,34 +99,21 @@ function spin(){
   w.style.transform="rotate("+deg+"deg)";
 }
 
-/* Timer */
-let end = new Date().getTime()+600000;
-setInterval(()=>{
-  let now=new Date().getTime();
-  let d=end-now;
-  let m=Math.floor(d/(1000*60));
-  let s=Math.floor((d%(1000*60))/1000);
-  document.getElementById("timer").innerHTML=m+"m "+s+"s";
-},1000);
+/* Draw */
+function draw(){
+  let winNumber = Math.floor(Math.random()*15)+1;
 
-/* Admin */
-function adminLogin(){
-  let pass=document.getElementById("adminPass").value;
-  if(pass==="1234"){
-    admin=true;
-    alert("Admin login success");
-  } else alert("Wrong password");
+  let winners = users.filter(u=>u.number===winNumber);
+
+  if(winners.length>0){
+    document.getElementById("winner").innerText =
+      "🏆 Winning Number: "+winNumber+" | Winner: "+winners[0].name;
+  } else {
+    document.getElementById("winner").innerText =
+      "Winning Number: "+winNumber+" | No Winner";
+  }
 }
 
-/* Reset */
-function reset(){
-  if(!admin) return alert("Admin login required");
-
-  users=[]; results=[];
-  document.getElementById("list").innerHTML="";
-  document.getElementById("results").innerHTML="";
-  document.getElementById("winner").innerText="No Winner";
-}
 </script>
 
 </body>

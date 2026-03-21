@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Ultra Max</title>
+<title>Lucky Draw Pro Dashboard</title>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
@@ -32,22 +32,18 @@ font-size:10px;
 font-weight:bold;
 }
 
-.centerText{
-position:absolute;
-font-size:20px;
-font-weight:bold;
-}
-
-.fire{font-size:30px;display:none;}
+.centerText{position:absolute;font-size:18px;font-weight:bold;}
+.fire{font-size:28px;display:none;}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw Ultra Max</h2>
+<h2>🎉 Lucky Draw Pro Dashboard</h2>
 
 <div class="box">
 <h3>💰 Entry ₹50 | 🏆 Total Prize ₹50000</h3>
+<p>👥 Users: <span id="count">0</span>/15</p>
 </div>
 
 <!-- TIMER -->
@@ -60,21 +56,20 @@ font-weight:bold;
 <h3>💳 Payment</h3>
 <img src="GooglePay_QR.png" width="200">
 <p>UPI: guptaaman8055-3@okaxis</p>
-
 <input type="file" id="proof">
 <button onclick="upload()">Upload Screenshot</button>
 </div>
 
 <!-- LOGIN -->
 <div class="box">
-<h3>🔐 User Login</h3>
-<input id="userId" placeholder="User ID / Mobile">
+<h3>🔐 Login</h3>
+<input id="userId" placeholder="User ID">
 <input id="userPass" type="password" placeholder="Password">
 <button onclick="userLogin()">Login</button>
 <p id="loginStatus"></p>
 </div>
 
-<!-- NUMBERS -->
+<!-- NUMBER -->
 <div class="box">
 <h3>Select Number</h3>
 <div id="numbers"></div>
@@ -89,11 +84,9 @@ font-weight:bold;
 <p id="adminStatus"></p>
 </div>
 
-<!-- SPIN -->
+<!-- WHEEL -->
 <div class="box">
-<div id="wheel">
-<div class="centerText">SPIN</div>
-</div>
+<div id="wheel"><div class="centerText">SPIN</div></div>
 <button onclick="spin()">Spin</button>
 </div>
 
@@ -103,31 +96,32 @@ font-weight:bold;
 <div class="fire" id="fire">🎆🎆🎆</div>
 </div>
 
+<!-- HISTORY -->
+<div class="box">
+<h3>📊 Result History</h3>
+<ul id="results"></ul>
+</div>
+
 <!-- SUPPORT -->
 <div class="box">
-<h3>💬 Customer Care</h3>
+<h3>💬 Support</h3>
 <p>📧 support@luckydraw.com</p>
-
 <a href="https://t.me/tiger7652" target="_blank">
-<button style="background:#229ED9;color:white;">📲 Telegram</button>
+<button style="background:#229ED9;color:white;">Telegram</button>
 </a>
 </div>
 
 <!-- TERMS -->
 <div class="box">
-<h3>📜 Terms & Conditions</h3>
+<h3>📜 Terms</h3>
 <p>
-Payment hone ke baad aap login kar sakte hain.  
-Aapko company ki taraf se Login ID aur Password diya jayega.  
-Aapko ek ID number diya jayega jisse aapka lucky draw open hoga.  
-Aap apni ID ya mobile number se login kar sakte hain.  
-Payment hone ke baad company ki Telegram ID par screenshot bhejein.  
-Thodi der wait karein, aapko aapka login ID aur password mil jayega.  
-Isi ID number se aap check kar sakte hain ki aap jeete hain ya hare.
+Payment ke baad login ID & password diya jayega.  
+Telegram par screenshot bhejna hoga.  
+System automatic lucky draw karega.  
+Result transparent hoga.
 </p>
 </div>
 
-<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 <audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 <audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
@@ -136,95 +130,71 @@ Isi ID number se aap check kar sakte hain ki aap jeete hain ya hare.
 let selected=null;
 let drawOpen=false;
 
-/* Prize Distribution */
-const prizeMap = {
+const prizeMap={
 1:2000,2:3000,3:2500,4:4000,5:1500,
 6:3500,7:5000,8:4500,9:3000,10:6000,
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* USER LOGIN */
+/* COUNT */
+document.getElementById("count").innerText =
+JSON.parse(localStorage.getItem("users")||"[]").length;
+
+/* LOGIN */
 function userLogin(){
- let id=document.getElementById("userId").value;
- let pass=document.getElementById("userPass").value;
-
- if(id && pass){
-  document.getElementById("loginStatus").innerText="✅ Login Successful";
- }else{
-  document.getElementById("loginStatus").innerText="❌ Enter details";
- }
+ let id=userId.value,pass=userPass.value;
+ loginStatus.innerText=(id&&pass)?"✅ Login Success":"❌ Error";
 }
 
-/* ADMIN LOGIN */
+/* ADMIN */
 function adminLogin(){
- let pass=document.getElementById("adminPass").value;
-
- if(pass==="1234"){
-  document.getElementById("adminStatus").innerText="✅ Admin Access Granted";
- }else{
-  document.getElementById("adminStatus").innerText="❌ Wrong Password";
- }
+ adminStatus.innerText=(adminPass.value==="1234")?
+ "✅ Admin Access":"❌ Wrong";
 }
 
-/* Wheel */
-let wheel=document.getElementById("wheel");
-
-for(let i=1;i<=15;i++){
- let div=document.createElement("div");
- div.className="slice";
- div.style.transform="rotate("+(i*24)+"deg)";
- div.style.background="hsl("+(i*24)+",70%,60%)";
- div.innerHTML="₹"+prizeMap[i]+"<br>#"+i;
- wheel.appendChild(div);
-}
-
-/* Numbers */
+/* NUMBERS */
 let numDiv=document.getElementById("numbers");
-
 for(let i=1;i<=15;i++){
- let btn=document.createElement("button");
- btn.innerText=i;
- btn.className="num";
-
- btn.onclick=()=>{
+ let b=document.createElement("button");
+ b.innerText=i;
+ b.className="num";
+ b.onclick=()=>{
   if(selected) return alert("Only 1 allowed");
   selected=i;
-  btn.classList.add("selected");
-  document.getElementById("chosen").innerText="Selected: "+i;
+  b.classList.add("selected");
+  chosen.innerText="Selected: "+i;
  };
-
- numDiv.appendChild(btn);
+ numDiv.appendChild(b);
 }
 
-/* Upload */
-function upload(){
- let file=document.getElementById("proof").files[0];
- if(!file) return alert("Upload screenshot");
- alert("✅ Payment Submitted");
+/* WHEEL */
+let wheel=document.getElementById("wheel");
+for(let i=1;i<=15;i++){
+ let d=document.createElement("div");
+ d.className="slice";
+ d.style.transform="rotate("+(i*24)+"deg)";
+ d.style.background="hsl("+(i*24)+",70%,60%)";
+ d.innerHTML="₹"+prizeMap[i]+"<br>#"+i;
+ wheel.appendChild(d);
 }
 
-/* Timer */
-let end=new Date().getTime()+60000;
+/* TIMER */
+let end=Date.now()+60000;
 
 setInterval(()=>{
- let d=end-new Date().getTime();
- let s=Math.floor(d/1000);
-
- document.getElementById("timer").innerText=s+" sec";
-
- if(s<=5) document.getElementById("tick").play();
-
- if(d<=0){
+ let s=Math.floor((end-Date.now())/1000);
+ timer.innerText=s+" sec";
+ if(s<=0){
   drawOpen=true;
-  document.getElementById("timer").innerText="DRAW OPEN";
+  timer.innerText="DRAW OPEN";
  }
 },1000);
 
-/* Spin */
+/* SPIN */
 function spin(){
- if(!drawOpen) return alert("Wait for timer");
+ if(!drawOpen) return alert("Wait");
 
- document.getElementById("spinSound").play();
+ spinSound.play();
 
  let num=Math.floor(Math.random()*15)+1;
  let deg=3600+(num*24);
@@ -234,13 +204,33 @@ function spin(){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* Result */
+/* RESULT */
 function showWinner(num){
- let amount=prizeMap[num];
- document.getElementById("winner").innerText="🎯 Number: "+num+" | 💰 ₹"+amount;
+ let amt=prizeMap[num];
+ let time=new Date().toLocaleTimeString();
 
- document.getElementById("fire").style.display="block";
- document.getElementById("winSound").play();
+ let res="🎯 "+num+" | ₹"+amt+" | "+time;
+
+ winner.innerText=res;
+
+ let li=document.createElement("li");
+ li.innerText=res;
+ results.prepend(li);
+
+ localStorage.setItem("results",results.innerHTML);
+
+ fire.style.display="block";
+ winSound.play();
+}
+
+/* LOAD HISTORY */
+window.onload=()=>{
+ let saved=localStorage.getItem("results");
+ if(saved) results.innerHTML=saved;
+};
+
+function upload(){
+ alert("✅ Payment Submitted");
 }
 
 </script>

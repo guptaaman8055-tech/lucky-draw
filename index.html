@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Ultra Max</title>
+<title>Lucky Draw Ultra Max FINAL</title>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
@@ -51,19 +51,50 @@ font-weight:bold;
 <h3>💰 Entry ₹50 | 🏆 Total Prize ₹50000</h3>
 </div>
 
+<!-- TIMER -->
 <div class="box">
 <h2 id="timer"></h2>
 </div>
 
-<!-- SUPPORT -->
+<!-- PAYMENT -->
 <div class="box">
-<h3>💬 Support</h3>
-<p>📧 support@luckydraw.com</p>
-<a href="https://t.me/tiger7652" target="_blank">
-<button style="background:#229ED9;color:white;">📲 Telegram</button>
-</a>
+<h3>💳 Payment</h3>
+<img src="GooglePay_QR.png" width="200">
+<p>UPI: guptaaman8055-3@okaxis</p>
+
+<input type="file" id="proof">
+<button onclick="upload()">Upload Screenshot</button>
+<p id="payStatus">❌ Not Paid</p>
 </div>
 
+<!-- NAME -->
+<div class="box">
+<input id="name" placeholder="Enter Name">
+</div>
+
+<!-- NUMBERS -->
+<div class="box">
+<h3>Select Number</h3>
+<div id="numbers"></div>
+<p id="chosen"></p>
+</div>
+
+<div class="box">
+<button onclick="request()">Submit Entry</button>
+</div>
+
+<!-- ADMIN -->
+<div class="box">
+<h3>🔐 Admin Panel</h3>
+<input type="password" id="pass">
+<button onclick="login()">Login</button>
+
+<div id="admin" style="display:none;">
+<ul id="reqList"></ul>
+</div>
+</div>
+
+<!-- SPIN -->
 <div class="box">
 <div id="wheel">
 <div class="centerText">SPIN</div>
@@ -71,47 +102,137 @@ font-weight:bold;
 <button onclick="spin()">Spin</button>
 </div>
 
+<!-- RESULT -->
 <div class="box">
 <h2 id="winner">Result Locked</h2>
-<div class="fire" id="fire">🎆🎆🎆 WINNER 🎆🎆🎆</div>
+<div class="fire" id="fire">🎆🎆🎆</div>
 </div>
 
+<!-- HISTORY -->
 <div class="box">
 <h3>📊 Results</h3>
 <ul id="results"></ul>
 </div>
 
+<!-- SUPPORT -->
+<div class="box">
+<h3>💬 Customer Support</h3>
+<p>📧 support@luckydraw.com</p>
+
+<a href="https://t.me/tiger7652" target="_blank">
+<button style="background:#229ED9;color:white;">📲 Telegram</button>
+</a>
+</div>
+
+<!-- SOUND -->
+<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+
 <script>
 
+let selected=null;
+let paid=false;
+let users=[];
+let requests=[];
 let drawOpen=false;
 let winningNumber=null;
 
-/* Prize Map */
+/* 🎯 Prize Map */
 const prizeMap = {
 1:2000,2:3000,3:2500,4:4000,5:1500,
 6:3500,7:5000,8:4500,9:3000,10:6000,
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* Create Wheel */
+/* 🎡 Wheel */
 let wheel=document.getElementById("wheel");
+
 for(let i=1;i<=15;i++){
  let div=document.createElement("div");
  div.className="slice";
  div.style.transform="rotate("+(i*24)+"deg)";
  div.style.background="hsl("+(i*24)+",70%,60%)";
- div.innerHTML="₹"+prizeMap[i];
+ div.innerHTML="₹"+prizeMap[i]+"<br>#"+i;
  wheel.appendChild(div);
 }
 
+/* Numbers */
+let numDiv=document.getElementById("numbers");
+for(let i=1;i<=15;i++){
+ let btn=document.createElement("button");
+ btn.innerText=i;
+ btn.className="num";
+
+ btn.onclick=()=>{
+  if(selected) return alert("Only 1 allowed");
+  selected=i;
+  btn.classList.add("selected");
+  document.getElementById("chosen").innerText="Selected: "+i;
+ };
+
+ numDiv.appendChild(btn);
+}
+
+/* Payment */
+function upload(){
+ let file=document.getElementById("proof").files[0];
+ if(!file) return alert("Upload screenshot");
+
+ paid=true;
+ document.getElementById("payStatus").innerText="✅ Payment Sent";
+}
+
+/* Entry */
+function request(){
+ let name=document.getElementById("name").value;
+ if(!paid) return alert("Payment required");
+ if(!name||!selected) return alert("Fill all");
+
+ requests.push({name,number:selected});
+ alert("Request Sent");
+}
+
+/* Admin */
+function login(){
+ if(document.getElementById("pass").value==="1234"){
+  document.getElementById("admin").style.display="block";
+  loadReq();
+ }
+}
+
+function loadReq(){
+ let list=document.getElementById("reqList");
+ list.innerHTML="";
+
+ requests.forEach((r,i)=>{
+  let li=document.createElement("li");
+  li.innerText=r.name+" ("+r.number+")";
+
+  let btn=document.createElement("button");
+  btn.innerText="Approve";
+
+  btn.onclick=()=>{
+   users.push(r);
+   requests.splice(i,1);
+   alert("Approved");
+  };
+
+  li.appendChild(btn);
+  list.appendChild(li);
+ });
+}
+
 /* Timer */
-let end=new Date().getTime()+20000;
+let end=new Date().getTime()+60000;
 
 setInterval(()=>{
  let d=end-new Date().getTime();
  let s=Math.floor(d/1000);
 
  document.getElementById("timer").innerText=s+" sec";
+
+ if(s<=5) document.getElementById("tick").play();
 
  if(d<=0){
   drawOpen=true;
@@ -123,6 +244,8 @@ setInterval(()=>{
 function spin(){
  if(!drawOpen) return alert("Wait for timer");
 
+ document.getElementById("spinSound").play();
+
  let num=Math.floor(Math.random()*15)+1;
  let deg=3600+(num*24);
 
@@ -131,19 +254,20 @@ function spin(){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* Winner - ONLY AMOUNT */
+/* RESULT → ONLY AMOUNT */
 function showWinner(num){
 
  let amount=prizeMap[num];
 
- let res="🏆 Winning Amount: ₹"+amount;
+ let res="🏆 WINNING AMOUNT ₹"+amount;
 
  document.getElementById("winner").innerText=res;
+
  document.getElementById("fire").style.display="block";
+ document.getElementById("winSound").play();
 
  let li=document.createElement("li");
  li.innerText=res;
-
  document.getElementById("results").appendChild(li);
 }
 

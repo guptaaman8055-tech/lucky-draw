@@ -35,7 +35,7 @@ font-weight:bold;
 
 .centerText{
 position:absolute;
-font-size:20px;
+font-size:18px;
 font-weight:bold;
 }
 
@@ -106,28 +106,13 @@ font-weight:bold;
 <ul id="results"></ul>
 </div>
 
-<!-- ✅ UPDATED SUPPORT BOX -->
+<!-- SUPPORT -->
 <div class="box">
-<h3>💬 Customer Support</h3>
-
-<p>
-📧 <a href="mailto:support@luckydraw.com" style="color:#22c55e;">
-support@luckydraw.com
-</a>
-</p>
-
-<p>
-📲 <a href="https://t.me/tiger7652" target="_blank" style="color:#38bdf8;">
-Join Telegram Support
-</a>
-</p>
-
+<h3>💬 Support</h3>
+<p>📧 support@luckydraw.com</p>
 <a href="https://t.me/tiger7652" target="_blank">
-<button style="background:#229ED9;color:white;">
-📲 Open Telegram
-</button>
+<button style="background:#229ED9;color:white;">Telegram</button>
 </a>
-
 </div>
 
 <audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
@@ -143,12 +128,32 @@ let requests=[];
 let drawOpen=false;
 let winningNumber=null;
 
-const prizeMap = {
+/* 🎯 Prize */
+const prizeMap={
 1:2000,2:3000,3:2500,4:4000,5:1500,
 6:3500,7:5000,8:4500,9:3000,10:6000,
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
+/* 🎯 Names */
+const defaultNames=[
+"Aarav","Vivaan","Aditya","Arjun","Kabir","Rohan","Mohit","Rahul",
+"Karan","Aman","Yash","Nikhil","Saurabh","Ankit","Deepak",
+"Sumit","Varun","Ravi","Akash","Manish","Raj","Vijay","Shubham",
+"Abhishek","Neeraj","Tarun","Harsh","Gaurav","Siddharth","Dev",
+"Krish","Ishaan","Lakshya","Pranav","Tushar","Ritesh","Pankaj",
+"Dinesh","Suraj","Ajay"
+];
+
+/* Auto Load Names */
+if(users.length===0){
+ defaultNames.forEach(n=>{
+  users.push({name:n,number:Math.floor(Math.random()*15)+1});
+ });
+ localStorage.setItem("users",JSON.stringify(users));
+}
+
+/* Wheel */
 let wheel=document.getElementById("wheel");
 for(let i=1;i<=15;i++){
  let div=document.createElement("div");
@@ -159,127 +164,72 @@ for(let i=1;i<=15;i++){
  wheel.appendChild(div);
 }
 
+/* Numbers */
 let numDiv=document.getElementById("numbers");
 for(let i=1;i<=15;i++){
  let btn=document.createElement("button");
  btn.innerText=i;
  btn.className="num";
-
- if(users.find(u=>u.number===i)) btn.classList.add("taken");
-
  btn.onclick=()=>{
   if(selected) return alert("Only 1 allowed");
-  if(users.find(u=>u.number===i)) return alert("Taken");
-
   selected=i;
   btn.classList.add("selected");
   document.getElementById("chosen").innerText="Selected: "+i;
  };
-
  numDiv.appendChild(btn);
 }
 
+/* Payment */
 function upload(){
  let file=document.getElementById("proof").files[0];
  if(!file) return alert("Upload screenshot");
-
  paid=true;
- document.getElementById("payStatus").innerText="✅ Sent for approval";
+ document.getElementById("payStatus").innerText="✅ Done";
 }
 
+/* Entry */
 function request(){
  let name=document.getElementById("name").value;
  if(!paid) return alert("Payment required");
  if(!name||!selected) return alert("Fill all");
-
- requests.push({name,number:selected});
- alert("Request sent");
+ users.push({name,number:selected});
+ localStorage.setItem("users",JSON.stringify(users));
+ location.reload();
 }
 
-function login(){
- if(document.getElementById("pass").value==="1234"){
-  document.getElementById("admin").style.display="block";
-  loadReq();
- }
-}
-
-function loadReq(){
- let list=document.getElementById("reqList");
- list.innerHTML="";
-
- requests.forEach((r,i)=>{
-  let li=document.createElement("li");
-  li.innerText=r.name+" ("+r.number+")";
-
-  let btn=document.createElement("button");
-  btn.innerText="Approve";
-
-  btn.onclick=()=>{
-   users.push(r);
-   localStorage.setItem("users",JSON.stringify(users));
-   requests.splice(i,1);
-   location.reload();
-  };
-
-  li.appendChild(btn);
-  list.appendChild(li);
- });
-
- document.getElementById("count").innerText=users.length;
-}
-
-let end=new Date().getTime()+120000;
-
-let timer=setInterval(()=>{
- let d=end-new Date().getTime();
- let s=Math.floor(d/1000);
-
+/* Timer */
+let end=new Date().getTime()+60000;
+setInterval(()=>{
+ let s=Math.floor((end-new Date().getTime())/1000);
  document.getElementById("timer").innerText=s+" sec";
-
  if(s<=5) document.getElementById("tick").play();
-
- if(d<=0){
-  clearInterval(timer);
-  drawOpen=true;
-  document.getElementById("timer").innerText="DRAW OPEN";
-  autoDraw();
- }
+ if(s<=0){drawOpen=true;autoDraw();}
 },1000);
 
+/* Draw */
 function autoDraw(){
  winningNumber=Math.floor(Math.random()*15)+1;
  spin();
 }
 
+/* Spin */
 function spin(){
  if(!drawOpen) return alert("Wait");
-
  document.getElementById("spinSound").play();
-
- let num=winningNumber;
- let deg=3600+(num*24);
-
+ let deg=3600+(winningNumber*24);
  wheel.style.transform="rotate("+deg+"deg)";
-
- setTimeout(()=>showWinner(num),4000);
+ setTimeout(()=>showWinner(winningNumber),4000);
 }
 
+/* Winner */
 function showWinner(num){
-
  let amount=prizeMap[num];
- let win=users.find(u=>u.number===num);
-
- let res;
-
- if(win){
-  res="🏆 "+win.name+" WON ₹"+amount+" | Number: "+num;
-  document.getElementById("fire").style.display="block";
-  document.getElementById("winSound").play();
- }else{
-  res="❌ No Winner | Number: "+num+" | ₹"+amount;
- }
+ let win=users[Math.floor(Math.random()*users.length)];
+ let res="🏆 "+win.name+" WON ₹"+amount+" | No:"+num;
 
  document.getElementById("winner").innerText=res;
+ document.getElementById("fire").style.display="block";
+ document.getElementById("winSound").play();
 
  let li=document.createElement("li");
  li.innerText=res;
@@ -288,6 +238,7 @@ function showWinner(num){
  localStorage.setItem("results",document.getElementById("results").innerHTML);
 }
 
+/* Load */
 window.onload=()=>{
  let saved=localStorage.getItem("results");
  if(saved) document.getElementById("results").innerHTML=saved;
@@ -297,4 +248,4 @@ window.onload=()=>{
 </script>
 
 </body>
- </html>
+</html>

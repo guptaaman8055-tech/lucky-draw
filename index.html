@@ -1,3 +1,101 @@
+ <!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lucky Draw Ultra Max</title>
+
+<style>
+body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
+.box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
+button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
+.num{background:#334155;color:white;}
+.selected{background:#22c55e;}
+.taken{background:red;}
+
+#wheel{
+width:260px;height:260px;border-radius:50%;
+border:8px solid white;margin:20px auto;
+display:flex;align-items:center;justify-content:center;
+font-size:22px;font-weight:bold;
+transition:transform 4s ease-out;
+background:conic-gradient(
+#f87171 0deg 24deg,#fb923c 24deg 48deg,#facc15 48deg 72deg,
+#4ade80 72deg 96deg,#38bdf8 96deg 120deg,#818cf8 120deg 144deg,
+#c084fc 144deg 168deg,#f472b6 168deg 192deg,#f87171 192deg 216deg,
+#fb923c 216deg 240deg,#facc15 240deg 264deg,#4ade80 264deg 288deg,
+#38bdf8 288deg 312deg,#818cf8 312deg 336deg,#c084fc 336deg 360deg
+);
+}
+
+.fire{font-size:30px;display:none;}
+</style>
+</head>
+
+<body>
+
+<h2>🎉 Lucky Draw Ultra Max</h2>
+
+<div class="box">
+<h3>💰 Entry ₹50 | 🏆 Win ₹50000</h3>
+</div>
+
+<div class="box">
+<h2 id="timer"></h2>
+</div>
+
+<div class="box">
+<h3>💳 Payment</h3>
+
+<img src="GooglePay_QR.png" width="200">
+<p>UPI: guptaaman8055-3@okaxis</p>
+
+<input type="file" id="proof">
+<button onclick="upload()">Upload Screenshot</button>
+<p id="payStatus">❌ Not Paid</p>
+</div>
+
+<div class="box">
+<input id="name" placeholder="Enter Name">
+</div>
+
+<div class="box">
+<h3>Select Number</h3>
+<div id="numbers"></div>
+<p id="chosen"></p>
+</div>
+
+<div class="box">
+<button onclick="request()">Submit Entry</button>
+</div>
+
+<div class="box">
+<h3>🔐 Admin</h3>
+<input type="password" id="pass">
+<button onclick="login()">Login</button>
+
+<div id="admin" style="display:none;">
+<ul id="reqList"></ul>
+</div>
+</div>
+
+<div class="box">
+<div id="wheel">SPIN</div>
+<button onclick="spin()">Spin</button>
+</div>
+
+<div class="box">
+<h2 id="winner">Result Locked</h2>
+<div class="fire" id="fire">🎆🎆🎆 WINNER 🎆🎆🎆</div>
+</div>
+
+<div class="box">
+<ul id="results"></ul>
+</div>
+
+<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+
 <script>
 
 let selected=null;
@@ -7,20 +105,20 @@ let requests=[];
 let drawOpen=false;
 let winningNumber=null;
 
-const PRIZE = 50000;
+const PRIZE=50000;
 
 /* Numbers */
 let div=document.getElementById("numbers");
 for(let i=1;i<=15;i++){
  let btn=document.createElement("button");
- btn.innerText="₹"+i;
+ btn.innerText=i;
  btn.className="num";
 
  if(users.find(u=>u.number===i)) btn.classList.add("taken");
 
  btn.onclick=()=>{
-  if(selected) return alert("Only 1 number allowed");
-  if(users.find(u=>u.number===i)) return alert("Already taken");
+  if(selected) return alert("Only 1 allowed");
+  if(users.find(u=>u.number===i)) return alert("Taken");
 
   selected=i;
   btn.classList.add("selected");
@@ -30,7 +128,7 @@ for(let i=1;i<=15;i++){
  div.appendChild(btn);
 }
 
-/* Upload Payment */
+/* Payment */
 function upload(){
  let file=document.getElementById("proof").files[0];
  if(!file) return alert("Upload screenshot");
@@ -42,11 +140,11 @@ function upload(){
 /* Entry */
 function request(){
  let name=document.getElementById("name").value;
- if(!paid) return alert("Payment karo");
+ if(!paid) return alert("Payment required");
  if(!name||!selected) return alert("Fill all");
 
  requests.push({name,number:selected});
- alert("Request sent to admin");
+ alert("Request sent");
 }
 
 /* Admin */
@@ -80,40 +178,38 @@ function loadReq(){
  });
 }
 
-/* TIMER + AUTO DRAW */
+/* Timer */
 let end=new Date().getTime()+120000;
 
-let timerInterval=setInterval(()=>{
- let now=new Date().getTime();
- let d=end-now;
-
+let timer=setInterval(()=>{
+ let d=end-new Date().getTime();
  let s=Math.floor(d/1000);
- document.getElementById("timer").innerText=s+" sec";
 
+ document.getElementById("timer").innerText=s+" sec";
  document.getElementById("tick").play();
 
  if(d<=0){
-  clearInterval(timerInterval);
+  clearInterval(timer);
   drawOpen=true;
   document.getElementById("timer").innerText="DRAW OPEN";
 
-  autoDraw(); // 🔥 AUTO RESULT
+  autoDraw();
  }
 },1000);
 
-/* AUTO DRAW */
+/* Auto Draw */
 function autoDraw(){
  winningNumber=Math.floor(Math.random()*15)+1;
- spin(); // auto spin
+ spin();
 }
 
-/* SPIN */
+/* Spin */
 function spin(){
- if(!drawOpen) return alert("Wait timer");
+ if(!drawOpen) return alert("Wait");
 
  document.getElementById("spinSound").play();
 
- let num=winningNumber || Math.floor(Math.random()*15)+1;
+ let num=winningNumber||Math.floor(Math.random()*15)+1;
  let deg=3600+(num*24);
 
  document.getElementById("wheel").style.transform="rotate("+deg+"deg)";
@@ -121,18 +217,18 @@ function spin(){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* WINNER */
+/* Winner */
 function showWinner(num){
 
  let win=users.find(u=>u.number===num);
  let res;
 
  if(win){
-  res="🏆 Winner: "+win.name+" | Number: "+num+" | Prize: ₹"+PRIZE;
+  res="🏆 "+win.name+" WON ₹"+PRIZE+" | No: "+num;
   document.getElementById("fire").style.display="block";
   document.getElementById("winSound").play();
  }else{
-  res="❌ No Winner | Number: "+num+" | Prize: ₹"+PRIZE;
+  res="❌ No Winner | No: "+num+" | ₹"+PRIZE;
  }
 
  document.getElementById("winner").innerText=res;
@@ -140,18 +236,17 @@ function showWinner(num){
  let li=document.createElement("li");
  li.innerText=res;
  document.getElementById("results").appendChild(li);
+
+ localStorage.setItem("results",document.getElementById("results").innerHTML);
 }
 
-/* SAVE RESULT HISTORY */
+/* Load history */
 window.onload=()=>{
  let saved=localStorage.getItem("results");
- if(saved){
-  document.getElementById("results").innerHTML=saved;
- }
-};
-
-window.onbeforeunload=()=>{
- localStorage.setItem("results",document.getElementById("results").innerHTML);
+ if(saved) document.getElementById("results").innerHTML=saved;
 };
 
 </script>
+
+</body>
+ </html>

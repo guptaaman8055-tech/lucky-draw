@@ -2,220 +2,241 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw System</title>
+<title>Lucky Draw Ultimate</title>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
 .box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
 button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
-
 .num{background:#334155;color:white;}
 .selected{background:#22c55e;}
 .taken{background:red;}
-.win{background:gold;color:black;font-weight:bold;}
-
 #wheel{
-width:250px;height:250px;border-radius:50%;
+width:260px;height:260px;border-radius:50%;
 border:8px solid white;margin:20px auto;
-position:relative;overflow:hidden;
-}
-
-.slice{
-position:absolute;width:50%;height:50%;
-top:50%;left:50%;
-transform-origin:0 0;
 display:flex;align-items:center;justify-content:center;
-font-size:12px;font-weight:bold;
+font-size:22px;font-weight:bold;
+transition:transform 4s ease-out;
+background:conic-gradient(
+#f87171 0deg 24deg,#fb923c 24deg 48deg,#facc15 48deg 72deg,
+#4ade80 72deg 96deg,#38bdf8 96deg 120deg,#818cf8 120deg 144deg,
+#c084fc 144deg 168deg,#f472b6 168deg 192deg,#f87171 192deg 216deg,
+#fb923c 216deg 240deg,#facc15 240deg 264deg,#4ade80 264deg 288deg,
+#38bdf8 288deg 312deg,#818cf8 312deg 336deg,#c084fc 336deg 360deg
+);
 }
+.fire{font-size:30px;display:none;}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw</h2>
+<h2>🎉 Lucky Draw Ultimate</h2>
+
+<div class="box">
+<h3>💰 Entry ₹50 | 🏆 Win ₹50000</h3>
+</div>
+
+<!-- TIMER -->
+<div class="box">
+<h3>⏳ Timer</h3>
+<h2 id="timer"></h2>
+</div>
 
 <!-- PAYMENT -->
 <div class="box">
-<h3>💳 Pay ₹50</h3>
+<h3>💳 Payment</h3>
 
-<a href="upi://pay?pa=guptaaman8055-3@okaxis&pn=Aman%20Gupta&am=50&cu=INR">
-<button>Pay via UPI</button>
-</a>
+<img src="GooglePay_QR.png" width="200"><br>
+<p>UPI: guptaaman8055-3@okaxis</p>
 
-<br><br>
-<button onclick="showQR()">Show QR</button>
-<br><br>
-<img id="qr" src="qr.png" width="150" style="display:none">
-
-<p id="status">❌ Payment not submitted</p>
-</div>
-
-<!-- UPLOAD -->
-<div class="box">
-<h3>📤 Upload Screenshot</h3>
 <input type="file" id="proof">
-<button onclick="submitProof()">Submit</button>
+<button onclick="upload()">Upload Screenshot</button>
+<p id="payStatus">❌ Not Paid</p>
 </div>
 
 <!-- USER -->
 <div class="box">
-<input id="name" placeholder="Name">
+<input id="name" placeholder="Enter Name">
 </div>
 
 <!-- NUMBERS -->
 <div class="box">
 <h3>Select Number</h3>
 <div id="numbers"></div>
+<p id="chosen"></p>
 </div>
 
 <!-- ENTRY -->
 <div class="box">
-<button onclick="enter()">Join Draw</button>
+<button onclick="request()">Submit Entry</button>
 </div>
 
 <!-- ADMIN -->
 <div class="box">
-<input type="password" id="pass" placeholder="Admin Password">
+<h3>🔐 Admin</h3>
+<input type="password" id="pass">
 <button onclick="login()">Login</button>
-<div id="admin" style="display:none">
-<ul id="list"></ul>
+
+<div id="admin" style="display:none;">
+<ul id="reqList"></ul>
 </div>
 </div>
 
-<!-- WHEEL -->
+<!-- SPIN -->
 <div class="box">
-<div id="wheel"></div>
+<h3>🎡 Spin</h3>
+<div id="wheel">SPIN</div>
 <button onclick="spin()">Spin</button>
 </div>
 
-<h2 id="winner"></h2>
+<!-- RESULT -->
+<div class="box">
+<h2 id="winner">Result Locked</h2>
+<div class="fire" id="fire">🎆🎆🎆 WINNER 🎆🎆🎆</div>
+</div>
 
-<ul id="history"></ul>
+<!-- HISTORY -->
+<div class="box">
+<h3>📊 Results</h3>
+<ul id="results"></ul>
+</div>
+
+<!-- SOUND -->
+<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
 
-let users=JSON.parse(localStorage.getItem("users"))||[];
-let requests=JSON.parse(localStorage.getItem("req"))||[];
-let approved=JSON.parse(localStorage.getItem("ok"))||[];
 let selected=null;
+let paid=false;
+let users=JSON.parse(localStorage.getItem("users"))||[];
+let requests=[];
+let drawOpen=false;
 
-/* QR */
-function showQR(){
- document.getElementById("qr").style.display="block";
-}
-
-/* NUMBERS */
+/* Numbers */
 let div=document.getElementById("numbers");
 for(let i=1;i<=15;i++){
- let b=document.createElement("button");
- b.innerText=i;
- b.className="num";
+ let btn=document.createElement("button");
+ btn.innerText="₹"+i;
+ btn.className="num";
 
- if(users.find(u=>u.number==i)) b.classList.add("taken");
+ if(users.find(u=>u.number===i)) btn.classList.add("taken");
 
- b.onclick=()=>{
-  if(selected) return alert("Only one");
+ btn.onclick=()=>{
+  if(selected) return alert("Only 1 number allowed");
+  if(users.find(u=>u.number===i)) return alert("Already taken");
+
   selected=i;
-  b.classList.add("selected");
+  btn.classList.add("selected");
+  document.getElementById("chosen").innerText="Selected: "+i;
  };
 
- div.appendChild(b);
+ div.appendChild(btn);
 }
 
-/* PROOF */
-function submitProof(){
+/* Upload Payment */
+function upload(){
  let file=document.getElementById("proof").files[0];
- let name=document.getElementById("name").value;
+ if(!file) return alert("Upload screenshot");
 
- let r=new FileReader();
- r.onload=()=>{
-  requests.push({name,img:r.result});
-  localStorage.setItem("req",JSON.stringify(requests));
-  alert("Waiting approval");
- };
- r.readAsDataURL(file);
+ paid=true;
+ document.getElementById("payStatus").innerText="✅ Sent for approval";
 }
 
-/* ADMIN */
+/* Entry */
+function request(){
+ let name=document.getElementById("name").value;
+ if(!paid) return alert("Payment karo");
+ if(!name||!selected) return alert("Fill all");
+
+ requests.push({name,number:selected});
+ alert("Request sent to admin");
+}
+
+/* Admin */
 function login(){
- if(document.getElementById("pass").value=="1234"){
+ if(document.getElementById("pass").value==="1234"){
   document.getElementById("admin").style.display="block";
-  load();
+  loadReq();
  }
 }
 
-function load(){
- let list=document.getElementById("list");
+function loadReq(){
+ let list=document.getElementById("reqList");
  list.innerHTML="";
 
  requests.forEach((r,i)=>{
   let li=document.createElement("li");
-
-  let img=document.createElement("img");
-  img.src=r.img;
-  img.width=80;
+  li.innerText=r.name+" ("+r.number+")";
 
   let btn=document.createElement("button");
   btn.innerText="Approve";
 
   btn.onclick=()=>{
-   approved.push(r.name);
+   users.push(r);
+   localStorage.setItem("users",JSON.stringify(users));
    requests.splice(i,1);
-   localStorage.setItem("ok",JSON.stringify(approved));
-   localStorage.setItem("req",JSON.stringify(requests));
-   load();
+   location.reload();
   };
 
-  li.innerText=r.name;
-  li.appendChild(img);
   li.appendChild(btn);
   list.appendChild(li);
  });
 }
 
-/* ENTRY */
-function enter(){
- let name=document.getElementById("name").value;
-
- if(!approved.includes(name)) return alert("Not approved");
-
- users.push({name,number:selected});
- localStorage.setItem("users",JSON.stringify(users));
- location.reload();
-}
-
-/* WHEEL */
-let wheel=document.getElementById("wheel");
-
-for(let i=1;i<=15;i++){
- let s=document.createElement("div");
- s.className="slice";
- s.style.transform="rotate("+(i*24)+"deg) skewY(66deg)";
- s.style.background="hsl("+(i*24)+",70%,40%)";
- s.innerText="₹"+i;
- wheel.appendChild(s);
-}
-
-/* SPIN */
+/* Spin */
 function spin(){
- let deg=3600+Math.random()*360;
- wheel.style.transition="4s";
- wheel.style.transform="rotate("+deg+"deg)";
+ if(!drawOpen) return alert("Wait timer");
 
- setTimeout(()=>{
-  let num=Math.floor(Math.random()*15)+1;
-  let win=users.find(u=>u.number==num);
+ document.getElementById("spinSound").play();
 
-  let res=win?win.name+" wins ("+num+")":"No Winner "+num;
+ let num=Math.floor(Math.random()*15)+1;
+ let deg=3600+(num*24);
 
-  document.getElementById("winner").innerText=res;
+ document.getElementById("wheel").style.transform="rotate("+deg+"deg)";
 
-  let li=document.createElement("li");
-  li.innerText=res;
-  document.getElementById("history").appendChild(li);
-
- },4000);
+ setTimeout(()=>showWinner(num),4000);
 }
+
+/* Winner */
+function showWinner(num){
+ let win=users.find(u=>u.number===num);
+ let res;
+
+ if(win){
+  res="🏆 "+win.name+" WON ₹"+num;
+  document.getElementById("fire").style.display="block";
+  document.getElementById("winSound").play();
+ }else{
+  res="No Winner (₹"+num+")";
+ }
+
+ document.getElementById("winner").innerText=res;
+
+ let li=document.createElement("li");
+ li.innerText=res;
+ document.getElementById("results").appendChild(li);
+}
+
+/* Timer */
+let end=new Date().getTime()+120000;
+
+setInterval(()=>{
+ let now=new Date().getTime();
+ let d=end-now;
+
+ let s=Math.floor(d/1000);
+ document.getElementById("timer").innerText=s+" sec";
+
+ document.getElementById("tick").play();
+
+ if(d<=0){
+  drawOpen=true;
+  document.getElementById("timer").innerText="DRAW OPEN";
+ }
+},1000);
 
 </script>
 

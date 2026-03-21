@@ -9,6 +9,10 @@ body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
 .box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
 button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 
+.num{background:#334155;color:white;}
+.selected{background:#22c55e;}
+.taken{background:red;}
+
 #wheel{
 width:260px;height:260px;border-radius:50%;
 border:8px solid white;margin:20px auto;
@@ -35,7 +39,6 @@ top:45%;left:50%;
 transform:translate(-50%,-50%);
 font-size:20px;font-weight:bold;
 }
-
 </style>
 </head>
 
@@ -53,28 +56,11 @@ font-size:20px;font-weight:bold;
 <h2 id="timer"></h2>
 </div>
 
-<!-- PAYMENT -->
+<!-- NUMBER SELECT -->
 <div class="box">
-<h3>💳 Payment</h3>
-<img src="GooglePay_QR.png" width="200">
-<p>UPI: guptaaman8055-3@okaxis</p>
-</div>
-
-<!-- LOGIN -->
-<div class="box">
-<h3>🔐 User Login</h3>
-<input id="uid" placeholder="User ID"><br><br>
-<input id="pass" placeholder="Password" type="password"><br><br>
-<button onclick="login()">Login</button>
-<p id="loginMsg"></p>
-</div>
-
-<!-- ADMIN -->
-<div class="box">
-<h3>🔐 Admin Panel</h3>
-<input id="adminPass" placeholder="Admin Password" type="password">
-<button onclick="adminLogin()">Enter</button>
-<p id="adminMsg"></p>
+<h3>🎯 Select Your Number</h3>
+<div id="numbers"></div>
+<p id="selectedText"></p>
 </div>
 
 <!-- SPIN -->
@@ -91,61 +77,9 @@ font-size:20px;font-weight:bold;
 <p id="winNumber"></p>
 </div>
 
-<!-- WITHDRAW -->
-<div class="box">
-<h3>💸 Withdrawal</h3>
-<input placeholder="Enter UPI ID"><br><br>
-<input placeholder="Amount"><br><br>
-<button onclick="withdraw()">Withdraw</button>
-<p id="wmsg"></p>
-</div>
-
-<!-- SUPPORT -->
-<div class="box">
-<h3>📧 Customer Care</h3>
-<p>support@luckydraw.com</p>
-
-<a href="https://t.me/tiger7652" target="_blank">
-<button style="background:#229ED9;color:white;">📲 Telegram</button>
-</a>
-</div>
-
-<!-- TERMS -->
-<div class="box">
-<h3>📜 Terms & Conditions</h3>
-<p>
-Payment ke baad aapko login ID password diya jayega.  
-Telegram par screenshot bhejna zaroori hai.  
-Result ID number se check hoga.  
-</p>
-</div>
-
 <script>
 
-/* COINS */
-let coins=50;
-
-/* LOGIN */
-function login(){
- let id=document.getElementById("uid").value;
- let pass=document.getElementById("pass").value;
-
- if(id && pass){
-  document.getElementById("loginMsg").innerText="✅ Login Success";
- }else{
-  document.getElementById("loginMsg").innerText="❌ Invalid";
- }
-}
-
-/* ADMIN */
-function adminLogin(){
- let pass=document.getElementById("adminPass").value;
- if(pass==="1234"){
-  document.getElementById("adminMsg").innerText="✅ Admin Access";
- }else{
-  document.getElementById("adminMsg").innerText="❌ Wrong Password";
- }
-}
+let selected=null;
 
 /* PRIZE MAP */
 const prizeMap={
@@ -154,8 +88,30 @@ const prizeMap={
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* WHEEL */
+/* 🎯 CREATE NUMBER BUTTONS */
+let numDiv=document.getElementById("numbers");
+
+for(let i=1;i<=15;i++){
+ let btn=document.createElement("button");
+ btn.innerText=i;
+ btn.className="num";
+
+ btn.onclick=()=>{
+  if(selected) return alert("Only 1 number allowed");
+
+  selected=i;
+  btn.classList.add("selected");
+
+  document.getElementById("selectedText").innerText=
+  "Selected Number: "+i;
+ };
+
+ numDiv.appendChild(btn);
+}
+
+/* 🎡 WHEEL */
 let wheel=document.getElementById("wheel");
+
 for(let i=1;i<=15;i++){
  let div=document.createElement("div");
  div.className="slice";
@@ -165,7 +121,7 @@ for(let i=1;i<=15;i++){
  wheel.appendChild(div);
 }
 
-/* TIMER */
+/* ⏳ TIMER */
 let end=new Date().getTime()+30000;
 
 let t=setInterval(()=>{
@@ -180,22 +136,14 @@ let t=setInterval(()=>{
  }
 },1000);
 
-/* AUTO DRAW */
+/* 🎯 AUTO DRAW */
 function autoDraw(){
  let n=Math.floor(Math.random()*15)+1;
  spin(n);
 }
 
-/* SPIN */
+/* 🎡 SPIN */
 function spin(fixed){
-
- if(coins<=0){
-  alert("No Coins");
-  return;
- }
-
- coins-=10;
- document.getElementById("coin").innerText=coins;
 
  let num=fixed || Math.floor(Math.random()*15)+1;
  let deg=3600+(num*24);
@@ -205,18 +153,15 @@ function spin(fixed){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* RESULT */
+/* 🏆 RESULT */
 function showWinner(num){
 
  let amt=prizeMap[num];
 
  document.getElementById("winner").innerText="💰 ₹"+amt;
- document.getElementById("winNumber").innerText="🎯 Number: "+num;
-}
+ document.getElementById("winNumber").innerText=
+ "🎯 Winning Number: "+num;
 
-/* WITHDRAW */
-function withdraw(){
- document.getElementById("wmsg").innerText="✅ Request Sent";
 }
 
 </script>

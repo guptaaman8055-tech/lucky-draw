@@ -93,6 +93,16 @@ animation:flash 1s infinite;
 <!-- RESULT -->
 <div class="box">
 <h2 id="winner">Result Locked</h2>
+<p id="winNumber"></p>
+</div>
+
+<!-- WITHDRAW -->
+<div class="box">
+<h3>💸 Withdrawal</h3>
+<input placeholder="Enter UPI ID"><br><br>
+<input placeholder="Amount"><br><br>
+<button onclick="withdraw()">Request Withdraw</button>
+<p id="withdrawMsg"></p>
 </div>
 
 <!-- HISTORY -->
@@ -110,17 +120,6 @@ animation:flash 1s infinite;
 </a>
 </div>
 
-<!-- TERMS -->
-<div class="box">
-<h3>📜 Terms & Conditions</h3>
-<p>
-Payment ke baad aapko login ID & password diya jayega.  
-Aap apni ID se login karke lucky draw access kar sakte hain.  
-Result ID number ke basis par check hoga.  
-Payment ke baad Telegram par screenshot bhejna zaroori hai.  
-</p>
-</div>
-
 <!-- POPUP -->
 <div id="popup">
 <div style="background:#111827;padding:30px;border-radius:12px;">
@@ -133,9 +132,6 @@ Payment ke baad Telegram par screenshot bhejna zaroori hai.
 <audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
-
-/* ❌ OLD DATA AUTO DELETE */
-localStorage.removeItem("results");
 
 /* Prize Map */
 const prizeMap={
@@ -155,21 +151,33 @@ for(let i=1;i<=15;i++){
  wheel.appendChild(div);
 }
 
-/* Timer */
-let end=new Date().getTime()+60000;
+/* TIMER AUTO DRAW */
+let end=new Date().getTime()+30000; // 30 sec
 
-setInterval(()=>{
+let timer=setInterval(()=>{
  let s=Math.floor((end-new Date().getTime())/1000);
+
  document.getElementById("timer").innerText=
- s>0? s+" sec":"DRAW OPEN";
+ s>0? "⏳ "+s+" sec":"🎯 DRAW STARTED";
+
+ if(s<=0){
+  clearInterval(timer);
+  autoDraw();
+ }
 },1000);
 
-/* Spin */
-function spin(){
+/* AUTO DRAW */
+function autoDraw(){
+ let num=Math.floor(Math.random()*15)+1;
+ spin(num);
+}
+
+/* SPIN */
+function spin(fixedNum){
 
  document.getElementById("spinSound").play();
 
- let num=Math.floor(Math.random()*15)+1;
+ let num=fixedNum || Math.floor(Math.random()*15)+1;
  let deg=3600+(num*24);
 
  wheel.style.transform="rotate("+deg+"deg)";
@@ -177,17 +185,16 @@ function spin(){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* Winner (ONLY AMOUNT) */
+/* RESULT */
 function showWinner(num){
 
  let amt=prizeMap[num];
 
- let res="₹"+amt;
-
- document.getElementById("winner").innerText=res;
+ document.getElementById("winner").innerText="💰 ₹"+amt;
+ document.getElementById("winNumber").innerText="🎯 Winning Number: "+num;
 
  let li=document.createElement("li");
- li.innerText=res;
+ li.innerText="₹"+amt+" (No: "+num+")";
  document.getElementById("results").prepend(li);
 
  document.getElementById("winSound").play();
@@ -195,9 +202,8 @@ function showWinner(num){
  showPopup(amt);
 }
 
-/* Popup */
+/* POPUP */
 function showPopup(amount){
-
  let pop=document.getElementById("popup");
  let txt=document.getElementById("popupAmount");
 
@@ -213,6 +219,12 @@ function showPopup(amount){
 
 function closePopup(){
  document.getElementById("popup").style.display="none";
+}
+
+/* WITHDRAW */
+function withdraw(){
+ let msg=document.getElementById("withdrawMsg");
+ msg.innerText="✅ Withdrawal Request Sent (Demo)";
 }
 
 </script>

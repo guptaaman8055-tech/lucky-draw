@@ -107,7 +107,6 @@ font-weight:bold;
 <div class="box">
 <h3>💬 Customer Care</h3>
 <p>📧 support@luckydraw.com</p>
-<p>📞 9876543210</p>
 
 <a href="https://t.me/tiger7652" target="_blank">
 <button style="background:#229ED9;color:white;">📲 Telegram</button>
@@ -144,7 +143,7 @@ const prizeMap = {
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* USER LOGIN (Demo) */
+/* USER LOGIN */
 function userLogin(){
  let id=document.getElementById("userId").value;
  let pass=document.getElementById("userPass").value;
@@ -179,7 +178,7 @@ for(let i=1;i<=15;i++){
  wheel.appendChild(div);
 }
 
-/* Number Select */
+/* Numbers */
 let numDiv=document.getElementById("numbers");
 
 for(let i=1;i<=15;i++){
@@ -204,7 +203,7 @@ function upload(){
  alert("✅ Payment Submitted");
 }
 
-/* TIMER */
+/* Timer */
 let end=new Date().getTime()+60000;
 
 setInterval(()=>{
@@ -221,7 +220,7 @@ setInterval(()=>{
  }
 },1000);
 
-/* SPIN */
+/* Spin */
 function spin(){
  if(!drawOpen) return alert("Wait for timer");
 
@@ -235,14 +234,10 @@ function spin(){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* RESULT */
+/* Result */
 function showWinner(num){
-
  let amount=prizeMap[num];
-
- let result="🎯 Number: "+num+" | 💰 ₹"+amount;
-
- document.getElementById("winner").innerText=result;
+ document.getElementById("winner").innerText="🎯 Number: "+num+" | 💰 ₹"+amount;
 
  document.getElementById("fire").style.display="block";
  document.getElementById("winSound").play();

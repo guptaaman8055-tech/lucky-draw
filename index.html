@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Ultra Max FINAL</title>
+<title>Lucky Draw Ultra Max</title>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
@@ -68,7 +68,7 @@ font-weight:bold;
 <!-- LOGIN -->
 <div class="box">
 <h3>🔐 User Login</h3>
-<input id="userId" placeholder="User ID">
+<input id="userId" placeholder="User ID / Mobile">
 <input id="userPass" type="password" placeholder="Password">
 <button onclick="userLogin()">Login</button>
 <p id="loginStatus"></p>
@@ -84,12 +84,9 @@ font-weight:bold;
 <!-- ADMIN -->
 <div class="box">
 <h3>🔐 Admin Panel</h3>
-<input type="password" id="pass">
-<button onclick="login()">Login</button>
-
-<div id="admin" style="display:none;">
-<ul id="reqList"></ul>
-</div>
+<input type="password" id="adminPass">
+<button onclick="adminLogin()">Login</button>
+<p id="adminStatus"></p>
 </div>
 
 <!-- SPIN -->
@@ -108,8 +105,9 @@ font-weight:bold;
 
 <!-- SUPPORT -->
 <div class="box">
-<h3>💬 Customer Support</h3>
+<h3>💬 Customer Care</h3>
 <p>📧 support@luckydraw.com</p>
+<p>📞 9876543210</p>
 
 <a href="https://t.me/tiger7652" target="_blank">
 <button style="background:#229ED9;color:white;">📲 Telegram</button>
@@ -121,13 +119,15 @@ font-weight:bold;
 <h3>📜 Terms & Conditions</h3>
 <p>
 Payment hone ke baad aap login kar sakte hain.  
-Aapko company ki taraf se User ID aur Password diya jayega.  
-Us ID ke number ke basis par aapka lucky draw open hoga.  
-Aap apni ID ke number se check kar sakte hain ki aap jeete hain ya hare.
+Aapko company ki taraf se Login ID aur Password diya jayega.  
+Aapko ek ID number diya jayega jisse aapka lucky draw open hoga.  
+Aap apni ID ya mobile number se login kar sakte hain.  
+Payment hone ke baad company ki Telegram ID par screenshot bhejein.  
+Thodi der wait karein, aapko aapka login ID aur password mil jayega.  
+Isi ID number se aap check kar sakte hain ki aap jeete hain ya hare.
 </p>
 </div>
 
-<!-- SOUND -->
 <audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 <audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 <audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
@@ -137,22 +137,33 @@ Aap apni ID ke number se check kar sakte hain ki aap jeete hain ya hare.
 let selected=null;
 let drawOpen=false;
 
-/* Prize Map */
+/* Prize Distribution */
 const prizeMap = {
 1:2000,2:3000,3:2500,4:4000,5:1500,
 6:3500,7:5000,8:4500,9:3000,10:6000,
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* Demo User Login */
+/* USER LOGIN (Demo) */
 function userLogin(){
  let id=document.getElementById("userId").value;
  let pass=document.getElementById("userPass").value;
 
- if(id==="user123" && pass==="1234"){
-  document.getElementById("loginStatus").innerText="✅ Login Success";
+ if(id && pass){
+  document.getElementById("loginStatus").innerText="✅ Login Successful";
  }else{
-  document.getElementById("loginStatus").innerText="❌ Invalid ID/Password";
+  document.getElementById("loginStatus").innerText="❌ Enter details";
+ }
+}
+
+/* ADMIN LOGIN */
+function adminLogin(){
+ let pass=document.getElementById("adminPass").value;
+
+ if(pass==="1234"){
+  document.getElementById("adminStatus").innerText="✅ Admin Access Granted";
+ }else{
+  document.getElementById("adminStatus").innerText="❌ Wrong Password";
  }
 }
 
@@ -168,8 +179,9 @@ for(let i=1;i<=15;i++){
  wheel.appendChild(div);
 }
 
-/* Numbers */
+/* Number Select */
 let numDiv=document.getElementById("numbers");
+
 for(let i=1;i<=15;i++){
  let btn=document.createElement("button");
  btn.innerText=i;
@@ -192,14 +204,7 @@ function upload(){
  alert("✅ Payment Submitted");
 }
 
-/* Admin */
-function login(){
- if(document.getElementById("pass").value==="1234"){
-  document.getElementById("admin").style.display="block";
- }
-}
-
-/* Timer */
+/* TIMER */
 let end=new Date().getTime()+60000;
 
 setInterval(()=>{
@@ -216,7 +221,7 @@ setInterval(()=>{
  }
 },1000);
 
-/* Spin */
+/* SPIN */
 function spin(){
  if(!drawOpen) return alert("Wait for timer");
 
@@ -235,9 +240,9 @@ function showWinner(num){
 
  let amount=prizeMap[num];
 
- let res="🎯 Winning Number: "+num+" | 💰 ₹"+amount;
+ let result="🎯 Number: "+num+" | 💰 ₹"+amount;
 
- document.getElementById("winner").innerText=res;
+ document.getElementById("winner").innerText=result;
 
  document.getElementById("fire").style.display="block";
  document.getElementById("winSound").play();
@@ -246,4 +251,4 @@ function showWinner(num){
 </script>
 
 </body>
- </html>
+</html>

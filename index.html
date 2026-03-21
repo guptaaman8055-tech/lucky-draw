@@ -2,29 +2,57 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Pro</title>
+<title>Lucky Draw Ultra Final</title>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
 .box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
 button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
+
 .num{background:#334155;color:white;}
 .selected{background:#22c55e;}
 .taken{background:red;}
 .win{background:gold !important;color:black;font-weight:bold;}
+
+#wheel{
+width:260px;height:260px;border-radius:50%;
+border:8px solid white;margin:20px auto;
+position:relative;overflow:hidden;
+}
+
+.slice{
+position:absolute;width:50%;height:50%;
+top:50%;left:50%;
+transform-origin:0% 0%;
+display:flex;align-items:center;justify-content:center;
+font-size:14px;font-weight:bold;color:white;
+}
+
+.slice span{transform:rotate(90deg);}
+
+/* pointer */
+#pointer{
+width:0;height:0;
+border-left:10px solid transparent;
+border-right:10px solid transparent;
+border-bottom:20px solid yellow;
+margin:auto;
+}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw Dashboard</h2>
+<h2>🎉 Lucky Draw Ultra Final</h2>
+
+<div id="pointer"></div>
 
 <!-- AUDIO -->
-<audio id="bgMusic" src="bg.mp3" loop preload="auto"></audio>
+<audio id="bgMusic" src="bg.mp3" loop></audio>
 <audio id="tickSound" src="tick.mp3"></audio>
 <audio id="winSound" src="win.mp3"></audio>
+<audio id="spinSound" src="spin.mp3"></audio>
 
-<!-- MUSIC CONTROL -->
 <div class="box">
 <button onclick="toggleMusic()">🎵 Music ON/OFF</button>
 </div>
@@ -34,12 +62,11 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 </div>
 
 <div class="box">
-<h3>⏳ Countdown Timer</h3>
+<h3>⏳ Timer</h3>
 <h2 id="timer"></h2>
 </div>
 
 <div class="box">
-<h3>💳 Payment</h3>
 <button onclick="pay()">Pay ₹50</button>
 <p id="payStatus">❌ Not Paid</p>
 </div>
@@ -59,20 +86,13 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 </div>
 
 <div class="box">
-<h3>🔐 Admin Panel</h3>
-<input type="password" id="pass" placeholder="Password">
-<button onclick="login()">Login</button>
-<div id="admin" style="display:none;">
-<ul id="reqList"></ul>
-</div>
+<h3>🎡 Spin Wheel</h3>
+<div id="wheel"></div>
+<button onclick="spin()">Spin</button>
 </div>
 
 <div class="box">
 <h2 id="winner">Result Locked</h2>
-</div>
-
-<div class="box">
-<ul id="results"></ul>
 </div>
 
 <script>
@@ -80,36 +100,24 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 let selected=null;
 let paid=false;
 let users=JSON.parse(localStorage.getItem("users"))||[];
-let requests=[];
-let drawDone=false;
 let musicOn=false;
+let finalDeg=0;
 
-/* 🔥 MUSIC START FIX */
+/* MUSIC FIX */
 function startMusic(){
  let bg=document.getElementById("bgMusic");
  bg.volume=0.3;
-
- bg.play().then(()=>{
-  musicOn=true;
- }).catch(()=>{});
+ bg.play().then(()=>musicOn=true).catch(()=>{});
 }
+document.addEventListener("click", startMusic,{once:true});
 
-document.addEventListener("click", startMusic, {once:true});
-document.addEventListener("touchstart", startMusic, {once:true});
-
-/* 🎛️ MUSIC TOGGLE */
 function toggleMusic(){
  let bg=document.getElementById("bgMusic");
-
- if(musicOn){
-  bg.pause();
-  musicOn=false;
- } else {
-  startMusic();
- }
+ if(musicOn){bg.pause();musicOn=false;}
+ else{startMusic();}
 }
 
-/* Numbers */
+/* NUMBERS */
 let div=document.getElementById("numbers");
 for(let i=1;i<=15;i++){
  let btn=document.createElement("button");
@@ -119,7 +127,7 @@ for(let i=1;i<=15;i++){
  if(users.find(u=>u.number===i)) btn.classList.add("taken");
 
  btn.onclick=()=>{
-  if(selected) return alert("Only 1 number allowed");
+  if(selected) return alert("Only 1 number");
   if(users.find(u=>u.number===i)) return alert("Taken");
 
   selected=i;
@@ -130,104 +138,100 @@ for(let i=1;i<=15;i++){
  div.appendChild(btn);
 }
 
-/* Payment */
+/* PAYMENT */
 function pay(){
  startMusic();
  paid=true;
  document.getElementById("payStatus").innerText="✅ Paid";
 }
 
-/* Entry */
+/* ENTRY */
 function request(){
  let name=document.getElementById("name").value;
  if(!paid) return alert("Payment karo");
  if(!name||!selected) return alert("Fill all");
 
- requests.push({name,number:selected});
- alert("Request sent");
+ users.push({name,number:selected});
+ localStorage.setItem("users",JSON.stringify(users));
+ location.reload();
 }
 
-/* Admin */
-function login(){
- if(document.getElementById("pass").value==="1234"){
-  document.getElementById("admin").style.display="block";
-  loadReq();
- }
+/* 🎡 WHEEL BUILD */
+let wheel=document.getElementById("wheel");
+
+for(let i=1;i<=15;i++){
+ let slice=document.createElement("div");
+ slice.className="slice";
+
+ let angle=360/15;
+ slice.style.transform="rotate("+(i*angle)+"deg) skewY("+(90-angle)+"deg)";
+ slice.style.background="hsl("+(i*24)+",70%,40%)";
+
+ let text=document.createElement("span");
+ text.innerText="₹"+i;
+
+ slice.appendChild(text);
+ wheel.appendChild(slice);
 }
 
-function loadReq(){
- let list=document.getElementById("reqList");
- list.innerHTML="";
+/* 🎡 REAL SPIN */
+function spin(){
 
- requests.forEach((r,i)=>{
-  let li=document.createElement("li");
-  li.innerText=r.name+" ("+r.number+")";
+ document.getElementById("spinSound").play();
 
-  let btn=document.createElement("button");
-  btn.innerText="Approve";
+ let extra=Math.floor(Math.random()*360);
+ finalDeg=3600+extra;
 
-  btn.onclick=()=>{
-   users.push(r);
-   localStorage.setItem("users",JSON.stringify(users));
-   requests.splice(i,1);
-   location.reload();
-  };
+ wheel.style.transition="transform 4s cubic-bezier(0.33,1,0.68,1)";
+ wheel.style.transform="rotate("+finalDeg+"deg)";
 
-  li.appendChild(btn);
-  list.appendChild(li);
- });
+ setTimeout(()=>{
+   getResult();
+ },4000);
 }
 
-/* 🎯 AUTO DRAW */
-function autoDraw(){
+/* 🎯 REAL RESULT FROM WHEEL */
+function getResult(){
 
- let num=Math.floor(Math.random()*15)+1;
- let win=users.find(u=>u.number===num);
+ let deg=finalDeg % 360;
+
+ let segment=Math.floor((360-deg)/24)+1;
+ if(segment>15) segment=1;
+
+ let win=users.find(u=>u.number===segment);
 
  document.querySelectorAll(".num").forEach(b=>{
   b.classList.remove("win");
  });
 
- document.querySelectorAll(".num")[num-1].classList.add("win");
+ document.querySelectorAll(".num")[segment-1].classList.add("win");
 
  let res;
  if(win){
-  res="🏆 Winner: "+win.name+" (No: "+num+")";
+  res="🏆 Winner: "+win.name+" (No: "+segment+")";
  } else {
-  res="❌ No Winner (No: "+num+")";
+  res="❌ No Winner (No: "+segment+")";
  }
 
  document.getElementById("winner").innerText=res;
 
- let li=document.createElement("li");
- li.innerText="Winning Number: "+num;
- document.getElementById("results").appendChild(li);
-
  document.getElementById("winSound").play();
 }
 
-/* Timer */
-let end=new Date().getTime()+300000;
+/* TIMER */
+let end=new Date().getTime()+60000;
 
 setInterval(()=>{
  let now=new Date().getTime();
  let d=end-now;
 
- let m=Math.floor(d/(1000*60));
- let s=Math.floor((d%(1000*60))/1000);
-
- document.getElementById("timer").innerText=m+"m "+s+"s";
+ let s=Math.floor(d/1000);
+ document.getElementById("timer").innerText=s+"s";
 
  if(d<=10000 && d>0){
   let t=document.getElementById("tickSound");
   t.currentTime=0;
   t.play();
- }
-
- if(d<=0 && !drawDone){
-  drawDone=true;
-  document.getElementById("timer").innerText="DRAW DONE";
-  autoDraw();
  }
 
 },1000);

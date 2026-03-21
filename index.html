@@ -8,10 +8,11 @@
 <style>
 body{
 font-family:Arial;
-background:#020617 url("https://i.imgur.com/8Km9tLL.png");
-background-size:cover;
+background:#0f172a;
 color:white;
 text-align:center;
+background-image:url('https://i.imgur.com/8Km9tLL.png');
+background-size:cover;
 }
 
 .box{
@@ -19,43 +20,42 @@ background:#1e293b;
 padding:15px;
 margin:15px;
 border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 
-input,button{
+button{
 padding:10px;
 margin:5px;
 border:none;
 border-radius:6px;
+cursor:pointer;
 }
-
-button{cursor:pointer;background:#22c55e;color:white;}
 
 #wheel{
 width:260px;height:260px;
 border-radius:50%;
-border:6px solid white;
+border:8px solid white;
 margin:20px auto;
-position:relative;
-transition:transform 4s ease-out;
+transition:transform 4s;
 }
 
-.slice{
-position:absolute;
-width:100%;height:100%;
-clip-path: polygon(50% 50%, 100% 0, 100% 100%);
-display:flex;
-justify-content:flex-end;
-padding-right:10px;
-font-size:10px;
-font-weight:bold;
+.numBtn{
+background:#334155;
+color:white;
 }
 
 .center{
-position:absolute;
-top:45%;left:50%;
-transform:translate(-50%,-50%);
-font-size:20px;font-weight:bold;
+font-size:20px;
+font-weight:bold;
+}
+
+/* popup */
+#popup{
+display:none;
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.8);
+justify-content:center;
+align-items:center;
 }
 
 .flash{
@@ -74,17 +74,19 @@ animation:flash 1s infinite;
 <h2>🎉 Lucky Draw Ultra Pro</h2>
 
 <div class="box">
-<h3>💰 Prize ₹50000</h3>
-<p>🆔 Draw ID: <b>#LD12345</b></p>
+<h3>💰 Join ₹50 | 🏆 Prize ₹50000</h3>
+<p>🎟 Lucky Draw ID: <b>#LD12345</b></p>
 <p>🪙 Coins: <span id="coins">50</span></p>
 </div>
 
 <!-- LOGIN -->
 <div class="box">
 <h3>🔐 Login</h3>
-<input placeholder="User ID"><br>
-<input placeholder="Mobile Number"><br>
-<input type="password" placeholder="Password">
+<input id="uid" placeholder="User ID"><br><br>
+<input id="mobile" placeholder="Mobile Number"><br><br>
+<input id="pass" type="password" placeholder="Password"><br><br>
+<button onclick="login()">Login</button>
+<p id="loginStatus"></p>
 </div>
 
 <!-- TIMER -->
@@ -93,58 +95,50 @@ animation:flash 1s infinite;
 <h2 id="timer"></h2>
 </div>
 
-<!-- NUMBERS -->
+<!-- QR -->
 <div class="box">
-<h3>🎯 Numbers (0–15)</h3>
-<div id="numbers"></div>
+<h3>💳 Payment</h3>
+<img src="GooglePay_QR.png" width="200"><br>
+<button onclick="pay()">Pay ₹50</button>
 </div>
 
-<!-- PAYMENT -->
+<!-- NUMBERS -->
 <div class="box">
-<h3>💳 QR Payment</h3>
-<img src="GooglePay_QR.png" width="180"><br>
-<p>UPI: guptaaman8055-3@okaxis</p>
+<h3>🎯 Select Number (0–15)</h3>
+<div id="numbers"></div>
+<p id="selected"></p>
 </div>
 
 <!-- SPIN -->
 <div class="box">
-<div id="wheel"><div class="center">SPIN</div></div>
+<div id="wheel"></div>
 <button onclick="spin()">Spin</button>
 </div>
 
 <!-- RESULT -->
 <div class="box">
-<h3>🏆 Result</h3>
-<h2 id="result">Waiting...</h2>
+<h2 id="result">Result Locked</h2>
+<p id="winNum"></p>
 </div>
 
 <!-- WITHDRAW -->
 <div class="box">
-<h3>💸 Withdraw</h3>
-<input placeholder="Enter Amount"><br>
-<input placeholder="UPI ID"><br>
-<button>Withdraw</button>
-</div>
-
-<!-- ADMIN -->
-<div class="box">
-<h3>🔐 Admin Panel</h3>
-<input type="password" id="adminPass" placeholder="Enter Password">
-<button onclick="adminLogin()">Login</button>
-
-<div id="adminPanel" style="display:none;">
-<p>✔ Total Users: 10</p>
-<p>✔ Total Coins: 500</p>
-</div>
+<h3>💸 Withdrawal</h3>
+<input placeholder="UPI ID"><br><br>
+<button>Request Withdrawal</button>
 </div>
 
 <!-- SUPPORT -->
 <div class="box">
-<h3>📧 Support</h3>
-<p>Email: support@luckydraw.com</p>
+<h3>📞 Support</h3>
+<p>📧 support@luckydraw.com</p>
 
 <a href="https://t.me/tiger7652" target="_blank">
-<button style="background:#229ED9;">📲 Telegram</button>
+<button style="background:#229ED9;color:white;">Telegram</button>
+</a>
+
+<a href="https://wa.me/919999999999" target="_blank">
+<button style="background:#25D366;color:white;">WhatsApp</button>
 </a>
 </div>
 
@@ -154,86 +148,134 @@ animation:flash 1s infinite;
 <p>
 Payment ke baad login ID & password diya jayega.  
 Telegram par screenshot bhejna zaroori hai.  
-Result ID number se check hoga.  
+Result lucky draw ID se check hoga.  
 </p>
 </div>
 
+<!-- ADMIN -->
+<div class="box">
+<h3>🔐 Admin</h3>
+<input id="adminPass" type="password" placeholder="Admin Password">
+<button onclick="admin()">Open</button>
+<p id="adminPanel"></p>
+</div>
+
+<!-- POPUP -->
+<div id="popup">
+<div style="background:#111;padding:30px;border-radius:10px;">
+<h1 id="popupText"></h1>
+<button onclick="closePop()">Close</button>
+</div>
+</div>
+
 <audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+<audio id="win" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
 
-/* 🎯 Prize Map */
-const prizeMap={
+/* Prize Map */
+const prize={
 0:1000,1:2000,2:3000,3:2500,4:4000,
 5:1500,6:3500,7:5000,8:4500,9:3000,
 10:6000,11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* Numbers UI */
+let selected=null;
+let logged=false;
+
+/* Numbers */
 let numDiv=document.getElementById("numbers");
 for(let i=0;i<=15;i++){
  let b=document.createElement("button");
  b.innerText=i;
+ b.className="numBtn";
+
+ b.onclick=()=>{
+  selected=i;
+  document.getElementById("selected").innerText="Selected: "+i;
+ };
+
  numDiv.appendChild(b);
 }
 
-/* Wheel */
-let wheel=document.getElementById("wheel");
-for(let i=0;i<=15;i++){
- let d=document.createElement("div");
- d.className="slice";
- d.style.transform="rotate("+(i*22.5)+"deg)";
- d.style.background="hsl("+(i*22)+",70%,60%)";
- d.innerHTML="₹"+prizeMap[i];
- wheel.appendChild(d);
+/* Login */
+function login(){
+ let u=document.getElementById("uid").value;
+ let m=document.getElementById("mobile").value;
+ let p=document.getElementById("pass").value;
+
+ if(u && m && p){
+  logged=true;
+  document.getElementById("loginStatus").innerText="✅ Login Success";
+ }else{
+  alert("Fill all");
+ }
 }
 
 /* Timer */
 let end=new Date().getTime()+60000;
+
 setInterval(()=>{
  let s=Math.floor((end-new Date().getTime())/1000);
- document.getElementById("timer").innerText=
- s>0? s+" sec":"DRAW OPEN";
+ document.getElementById("timer").innerText=s>0?s+" sec":"DRAW OPEN";
 
- if(s<=5 && s>0) document.getElementById("tick").play();
+ if(s<=5) document.getElementById("tick").play();
+
+ if(s<=0){
+  autoSpin();
+ }
 },1000);
+
+/* Pay */
+function pay(){
+ alert("Payment Done ₹50");
+}
 
 /* Spin */
 function spin(){
- document.getElementById("spinSound").play();
+ if(!logged) return alert("Login first");
 
  let num=Math.floor(Math.random()*16);
- let deg=3600+(num*22.5);
+ let deg=3600+(num*22);
 
- wheel.style.transform="rotate("+deg+"deg)";
+ document.getElementById("wheel").style.transform="rotate("+deg+"deg)";
 
- setTimeout(()=>{
-  showResult(num);
- },4000);
+ setTimeout(()=>show(num),4000);
+}
+
+/* Auto Spin */
+function autoSpin(){
+ spin();
 }
 
 /* Result */
-function showResult(num){
- let amt=prizeMap[num];
+function show(num){
 
- document.getElementById("result").innerHTML=
- "🎯 Number: "+num+"<br>💰 ₹"+amt;
+ let amt=prize[num];
 
- document.getElementById("result").className="flash";
+ document.getElementById("result").innerText="₹"+amt;
+ document.getElementById("winNum").innerText="Winning Number: "+num;
 
- document.getElementById("winSound").play();
+ document.getElementById("win").play();
+
+ let p=document.getElementById("popup");
+ document.getElementById("popupText").innerText="₹"+amt;
+ p.style.display="flex";
 
  if(navigator.vibrate){
   navigator.vibrate([200,100,200]);
  }
 }
 
+/* Popup close */
+function closePop(){
+ document.getElementById("popup").style.display="none";
+}
+
 /* Admin */
-function adminLogin(){
+function admin(){
  if(document.getElementById("adminPass").value==="1234"){
-  document.getElementById("adminPanel").style.display="block";
+  document.getElementById("adminPanel").innerText="Admin Access Granted";
  }
 }
 

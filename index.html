@@ -2,55 +2,39 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>Lucky Draw Ultra Pro</title>
 
 <style>
 body{
 font-family:Arial;
+background:#020617 url("https://i.imgur.com/8Km9tLL.png");
+background-size:cover;
 color:white;
 text-align:center;
-background:#0f172a;
-overflow-x:hidden;
-}
-
-/* 💰 MONEY BACKGROUND */
-body::before{
-content:"💰 💸 💵 💰 💸 💵 💰 💸 💵";
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-font-size:40px;
-opacity:0.08;
-z-index:-1;
-animation:moveBg 20s linear infinite;
-}
-@keyframes moveBg{
-0%{transform:translateY(0);}
-100%{transform:translateY(-200px);}
 }
 
 .box{
 background:#1e293b;
 padding:15px;
-margin:12px;
+margin:15px;
 border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 
-button{
-padding:8px 12px;
+input,button{
+padding:10px;
 margin:5px;
 border:none;
 border-radius:6px;
-cursor:pointer;
 }
 
-.num{background:#334155;color:white;}
-.selected{background:#22c55e;}
+button{cursor:pointer;background:#22c55e;color:white;}
 
 #wheel{
 width:260px;height:260px;
 border-radius:50%;
-border:8px solid white;
+border:6px solid white;
 margin:20px auto;
 position:relative;
 transition:transform 4s ease-out;
@@ -61,18 +45,26 @@ position:absolute;
 width:100%;height:100%;
 clip-path: polygon(50% 50%, 100% 0, 100% 100%);
 display:flex;
-flex-direction:column;
-align-items:flex-end;
+justify-content:flex-end;
 padding-right:10px;
 font-size:10px;
 font-weight:bold;
 }
 
-.centerText{
+.center{
 position:absolute;
 top:45%;left:50%;
 transform:translate(-50%,-50%);
 font-size:20px;font-weight:bold;
+}
+
+.flash{
+animation:flash 1s infinite;
+}
+@keyframes flash{
+0%{color:#22c55e;}
+50%{color:#facc15;}
+100%{color:#22c55e;}
 }
 </style>
 </head>
@@ -82,183 +74,167 @@ font-size:20px;font-weight:bold;
 <h2>🎉 Lucky Draw Ultra Pro</h2>
 
 <div class="box">
-<h3>🆔 Lucky Draw ID: LD2026</h3>
-<p>🪙 Coins: <span id="coin">50</span></p>
+<h3>💰 Prize ₹50000</h3>
+<p>🆔 Draw ID: <b>#LD12345</b></p>
+<p>🪙 Coins: <span id="coins">50</span></p>
 </div>
 
 <!-- LOGIN -->
 <div class="box">
 <h3>🔐 Login</h3>
-<input id="uid" placeholder="User ID"><br><br>
-<input id="pass" type="password" placeholder="Password"><br><br>
-<button onclick="login()">Login</button>
-<p id="loginMsg"></p>
-</div>
-
-<!-- ADMIN -->
-<div class="box">
-<h3>🔐 Admin Panel</h3>
-<input id="adminPass" placeholder="Password" type="password">
-<button onclick="adminLogin()">Enter</button>
-<p id="adminMsg"></p>
+<input placeholder="User ID"><br>
+<input placeholder="Mobile Number"><br>
+<input type="password" placeholder="Password">
 </div>
 
 <!-- TIMER -->
 <div class="box">
+<h3>⏳ Timer</h3>
 <h2 id="timer"></h2>
 </div>
 
-<!-- NUMBER -->
+<!-- NUMBERS -->
 <div class="box">
-<h3>🎯 Select Number</h3>
+<h3>🎯 Numbers (0–15)</h3>
 <div id="numbers"></div>
-<p id="selectedText"></p>
 </div>
 
-<!-- QR -->
+<!-- PAYMENT -->
 <div class="box">
-<h3>💳 Payment</h3>
-<img src="GooglePay_QR.png" width="180">
+<h3>💳 QR Payment</h3>
+<img src="GooglePay_QR.png" width="180"><br>
 <p>UPI: guptaaman8055-3@okaxis</p>
 </div>
 
-<!-- WHEEL -->
+<!-- SPIN -->
 <div class="box">
-<div id="wheel">
-<div class="centerText">SPIN</div>
-</div>
+<div id="wheel"><div class="center">SPIN</div></div>
 <button onclick="spin()">Spin</button>
 </div>
 
 <!-- RESULT -->
 <div class="box">
-<h2 id="winner">Result Locked</h2>
-<p id="winNumber"></p>
+<h3>🏆 Result</h3>
+<h2 id="result">Waiting...</h2>
 </div>
 
 <!-- WITHDRAW -->
 <div class="box">
-<h3>💸 Withdrawal</h3>
-<input placeholder="UPI ID"><br><br>
-<input placeholder="Amount"><br><br>
-<button onclick="withdraw()">Withdraw</button>
-<p id="wmsg"></p>
+<h3>💸 Withdraw</h3>
+<input placeholder="Enter Amount"><br>
+<input placeholder="UPI ID"><br>
+<button>Withdraw</button>
+</div>
+
+<!-- ADMIN -->
+<div class="box">
+<h3>🔐 Admin Panel</h3>
+<input type="password" id="adminPass" placeholder="Enter Password">
+<button onclick="adminLogin()">Login</button>
+
+<div id="adminPanel" style="display:none;">
+<p>✔ Total Users: 10</p>
+<p>✔ Total Coins: 500</p>
+</div>
 </div>
 
 <!-- SUPPORT -->
 <div class="box">
-<h3>📧 Customer Care</h3>
-<p>support@luckydraw.com</p>
+<h3>📧 Support</h3>
+<p>Email: support@luckydraw.com</p>
 
 <a href="https://t.me/tiger7652" target="_blank">
-<button style="background:#229ED9;color:white;">📲 Telegram</button>
+<button style="background:#229ED9;">📲 Telegram</button>
 </a>
 </div>
 
 <!-- TERMS -->
 <div class="box">
-<h3>📜 Terms & Conditions</h3>
+<h3>📜 Terms</h3>
 <p>
-Payment ke baad login ID password diya jayega.  
+Payment ke baad login ID & password diya jayega.  
 Telegram par screenshot bhejna zaroori hai.  
-Result ID number ke basis par check hoga.  
+Result ID number se check hoga.  
 </p>
 </div>
 
+<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+
 <script>
 
-/* DATA */
-let coins=50;
-let selected=null;
-
-/* LOGIN */
-function login(){
- let id=uid.value;
- let p=pass.value;
-
- loginMsg.innerText=(id && p)?"✅ Login Success":"❌ Invalid";
-}
-
-/* ADMIN */
-function adminLogin(){
- adminMsg.innerText=
- (adminPass.value==="1234")?"✅ Admin Access":"❌ Wrong";
-}
-
-/* PRIZE */
+/* 🎯 Prize Map */
 const prizeMap={
-1:2000,2:3000,3:2500,4:4000,5:1500,
-6:3500,7:5000,8:4500,9:3000,10:6000,
-11:2000,12:3500,13:2500,14:4000,15:5000
+0:1000,1:2000,2:3000,3:2500,4:4000,
+5:1500,6:3500,7:5000,8:4500,9:3000,
+10:6000,11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* NUMBERS */
-for(let i=1;i<=15;i++){
+/* Numbers UI */
+let numDiv=document.getElementById("numbers");
+for(let i=0;i<=15;i++){
  let b=document.createElement("button");
  b.innerText=i;
- b.className="num";
-
- b.onclick=()=>{
-  if(selected) return alert("Only 1 allowed");
-  selected=i;
-  b.classList.add("selected");
-  selectedText.innerText="Selected: "+i;
- };
-
- numbers.appendChild(b);
+ numDiv.appendChild(b);
 }
 
-/* WHEEL */
-for(let i=1;i<=15;i++){
+/* Wheel */
+let wheel=document.getElementById("wheel");
+for(let i=0;i<=15;i++){
  let d=document.createElement("div");
  d.className="slice";
- d.style.transform="rotate("+(i*24)+"deg)";
- d.style.background="hsl("+(i*24)+",70%,60%)";
- d.innerHTML="₹"+prizeMap[i]+"<br>#"+i;
+ d.style.transform="rotate("+(i*22.5)+"deg)";
+ d.style.background="hsl("+(i*22)+",70%,60%)";
+ d.innerHTML="₹"+prizeMap[i];
  wheel.appendChild(d);
 }
 
-/* TIMER */
-let end=Date.now()+30000;
+/* Timer */
+let end=new Date().getTime()+60000;
+setInterval(()=>{
+ let s=Math.floor((end-new Date().getTime())/1000);
+ document.getElementById("timer").innerText=
+ s>0? s+" sec":"DRAW OPEN";
 
-let t=setInterval(()=>{
- let s=Math.floor((end-Date.now())/1000);
-
- timer.innerText=s>0?"⏳ "+s+" sec":"🎯 DRAW START";
-
- if(s<=0){
-  clearInterval(t);
-  spin();
- }
+ if(s<=5 && s>0) document.getElementById("tick").play();
 },1000);
 
-/* SPIN */
+/* Spin */
 function spin(){
+ document.getElementById("spinSound").play();
 
- if(coins<=0) return alert("No Coins");
-
- coins-=10;
- coin.innerText=coins;
-
- let n=Math.floor(Math.random()*15)+1;
- let deg=3600+(n*24);
+ let num=Math.floor(Math.random()*16);
+ let deg=3600+(num*22.5);
 
  wheel.style.transform="rotate("+deg+"deg)";
 
- setTimeout(()=>showWinner(n),4000);
+ setTimeout(()=>{
+  showResult(num);
+ },4000);
 }
 
-/* RESULT */
-function showWinner(n){
- let amt=prizeMap[n];
+/* Result */
+function showResult(num){
+ let amt=prizeMap[num];
 
- winner.innerText="💰 ₹"+amt;
- winNumber.innerText="🎯 Number: "+n;
+ document.getElementById("result").innerHTML=
+ "🎯 Number: "+num+"<br>💰 ₹"+amt;
+
+ document.getElementById("result").className="flash";
+
+ document.getElementById("winSound").play();
+
+ if(navigator.vibrate){
+  navigator.vibrate([200,100,200]);
+ }
 }
 
-/* WITHDRAW */
-function withdraw(){
- wmsg.innerText="✅ Request Sent";
+/* Admin */
+function adminLogin(){
+ if(document.getElementById("adminPass").value==="1234"){
+  document.getElementById("adminPanel").style.display="block";
+ }
 }
 
 </script>

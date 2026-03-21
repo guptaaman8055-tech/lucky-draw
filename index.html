@@ -35,7 +35,6 @@ transform:translate(-50%,-50%);
 font-size:20px;font-weight:bold;
 }
 
-/* Popup */
 #popup{
 display:none;
 position:fixed;
@@ -43,7 +42,6 @@ top:0;left:0;width:100%;height:100%;
 background:rgba(0,0,0,0.8);
 align-items:center;
 justify-content:center;
-z-index:999;
 }
 
 .flash{
@@ -116,7 +114,7 @@ animation:flash 1s infinite;
 <div class="box">
 <h3>📜 Terms & Conditions</h3>
 <p>
-Payment ke baad aapko company ki taraf se login ID & password diya jayega.  
+Payment ke baad aapko login ID & password diya jayega.  
 Aap apni ID se login karke lucky draw access kar sakte hain.  
 Result ID number ke basis par check hoga.  
 Payment ke baad Telegram par screenshot bhejna zaroori hai.  
@@ -131,11 +129,13 @@ Payment ke baad Telegram par screenshot bhejna zaroori hai.
 </div>
 </div>
 
-<!-- SOUND -->
 <audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 <audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
+
+/* ❌ OLD DATA AUTO DELETE */
+localStorage.removeItem("results");
 
 /* Prize Map */
 const prizeMap={
@@ -177,7 +177,7 @@ function spin(){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* Winner */
+/* Winner (ONLY AMOUNT) */
 function showWinner(num){
 
  let amt=prizeMap[num];
@@ -189,9 +189,6 @@ function showWinner(num){
  let li=document.createElement("li");
  li.innerText=res;
  document.getElementById("results").prepend(li);
-
- localStorage.setItem("results",
- document.getElementById("results").innerHTML);
 
  document.getElementById("winSound").play();
 
@@ -217,12 +214,6 @@ function showPopup(amount){
 function closePopup(){
  document.getElementById("popup").style.display="none";
 }
-
-/* Load history */
-window.onload=()=>{
- let saved=localStorage.getItem("results");
- if(saved) document.getElementById("results").innerHTML=saved;
-};
 
 </script>
 

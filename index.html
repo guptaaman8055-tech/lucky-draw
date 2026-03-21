@@ -22,7 +22,9 @@ width:100%;height:100%;
 border-radius:50%;
 clip-path: polygon(50% 50%, 100% 0, 100% 100%);
 display:flex;
+flex-direction:column;
 justify-content:flex-end;
+align-items:flex-end;
 padding-right:10px;
 font-size:10px;
 font-weight:bold;
@@ -35,23 +37,6 @@ transform:translate(-50%,-50%);
 font-size:20px;font-weight:bold;
 }
 
-#popup{
-display:none;
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-background:rgba(0,0,0,0.8);
-align-items:center;
-justify-content:center;
-}
-
-.flash{
-animation:flash 1s infinite;
-}
-@keyframes flash{
-0%{color:#22c55e;}
-50%{color:#facc15;}
-100%{color:#22c55e;}
-}
 </style>
 </head>
 
@@ -68,20 +53,6 @@ animation:flash 1s infinite;
 <h2 id="timer"></h2>
 </div>
 
-<!-- PAYMENT -->
-<div class="box">
-<h3>💳 Payment</h3>
-<img src="GooglePay_QR.png" width="200">
-<p>UPI: guptaaman8055-3@okaxis</p>
-</div>
-
-<!-- LOGIN -->
-<div class="box">
-<h3>🔐 Login</h3>
-<input placeholder="User ID"><br><br>
-<input placeholder="Password" type="password">
-</div>
-
 <!-- SPIN -->
 <div class="box">
 <div id="wheel">
@@ -96,41 +67,6 @@ animation:flash 1s infinite;
 <p id="winNumber"></p>
 </div>
 
-<!-- WITHDRAW -->
-<div class="box">
-<h3>💸 Withdrawal</h3>
-<input placeholder="Enter UPI ID"><br><br>
-<input placeholder="Amount"><br><br>
-<button onclick="withdraw()">Request Withdraw</button>
-<p id="withdrawMsg"></p>
-</div>
-
-<!-- HISTORY -->
-<div class="box">
-<ul id="results"></ul>
-</div>
-
-<!-- SUPPORT -->
-<div class="box">
-<h3>📧 Customer Care</h3>
-<p>support@luckydraw.com</p>
-
-<a href="https://t.me/tiger7652" target="_blank">
-<button style="background:#229ED9;color:white;">📲 Telegram</button>
-</a>
-</div>
-
-<!-- POPUP -->
-<div id="popup">
-<div style="background:#111827;padding:30px;border-radius:12px;">
-<h1 id="popupAmount"></h1>
-<button onclick="closePopup()">Close</button>
-</div>
-</div>
-
-<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
-
 <script>
 
 /* Prize Map */
@@ -140,19 +76,23 @@ const prizeMap={
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* Create Wheel */
+/* 🎡 Create Wheel (Number + Amount BOTH) */
 let wheel=document.getElementById("wheel");
+
 for(let i=1;i<=15;i++){
  let div=document.createElement("div");
  div.className="slice";
  div.style.transform="rotate("+(i*24)+"deg)";
  div.style.background="hsl("+(i*24)+",70%,60%)";
- div.innerHTML="₹"+prizeMap[i];
+
+ // 👇 NUMBER + AMOUNT SHOW
+ div.innerHTML="₹"+prizeMap[i]+"<br>#"+i;
+
  wheel.appendChild(div);
 }
 
-/* TIMER AUTO DRAW */
-let end=new Date().getTime()+30000; // 30 sec
+/* ⏳ Timer */
+let end=new Date().getTime()+30000;
 
 let timer=setInterval(()=>{
  let s=Math.floor((end-new Date().getTime())/1000);
@@ -166,18 +106,17 @@ let timer=setInterval(()=>{
  }
 },1000);
 
-/* AUTO DRAW */
+/* 🎯 Auto Draw */
 function autoDraw(){
  let num=Math.floor(Math.random()*15)+1;
  spin(num);
 }
 
-/* SPIN */
-function spin(fixedNum){
+/* 🎡 Spin */
+function spin(fixed){
 
- document.getElementById("spinSound").play();
+ let num=fixed || Math.floor(Math.random()*15)+1;
 
- let num=fixedNum || Math.floor(Math.random()*15)+1;
  let deg=3600+(num*24);
 
  wheel.style.transform="rotate("+deg+"deg)";
@@ -185,46 +124,17 @@ function spin(fixedNum){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* RESULT */
+/* 🏆 Winner */
 function showWinner(num){
 
  let amt=prizeMap[num];
 
  document.getElementById("winner").innerText="💰 ₹"+amt;
- document.getElementById("winNumber").innerText="🎯 Winning Number: "+num;
 
- let li=document.createElement("li");
- li.innerText="₹"+amt+" (No: "+num+")";
- document.getElementById("results").prepend(li);
+ // 👇 WINNING NUMBER SHOW
+ document.getElementById("winNumber").innerText=
+ "🎯 Winning Number: "+num;
 
- document.getElementById("winSound").play();
-
- showPopup(amt);
-}
-
-/* POPUP */
-function showPopup(amount){
- let pop=document.getElementById("popup");
- let txt=document.getElementById("popupAmount");
-
- txt.innerText="💰 ₹"+amount;
- txt.className="flash";
-
- pop.style.display="flex";
-
- if(navigator.vibrate){
-  navigator.vibrate([200,100,200]);
- }
-}
-
-function closePopup(){
- document.getElementById("popup").style.display="none";
-}
-
-/* WITHDRAW */
-function withdraw(){
- let msg=document.getElementById("withdrawMsg");
- msg.innerText="✅ Withdrawal Request Sent (Demo)";
 }
 
 </script>

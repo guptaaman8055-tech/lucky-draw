@@ -10,7 +10,6 @@ body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
 button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 .num{background:#334155;color:white;}
 .selected{background:#22c55e;}
-.taken{background:red;}
 
 #wheel{
 width:260px;height:260px;border-radius:50%;
@@ -64,12 +63,15 @@ font-weight:bold;
 
 <input type="file" id="proof">
 <button onclick="upload()">Upload Screenshot</button>
-<p id="payStatus">❌ Not Paid</p>
 </div>
 
-<!-- NAME -->
+<!-- LOGIN -->
 <div class="box">
-<input id="name" placeholder="Enter Name">
+<h3>🔐 User Login</h3>
+<input id="userId" placeholder="User ID">
+<input id="userPass" type="password" placeholder="Password">
+<button onclick="userLogin()">Login</button>
+<p id="loginStatus"></p>
 </div>
 
 <!-- NUMBERS -->
@@ -77,10 +79,6 @@ font-weight:bold;
 <h3>Select Number</h3>
 <div id="numbers"></div>
 <p id="chosen"></p>
-</div>
-
-<div class="box">
-<button onclick="request()">Submit Entry</button>
 </div>
 
 <!-- ADMIN -->
@@ -108,12 +106,6 @@ font-weight:bold;
 <div class="fire" id="fire">🎆🎆🎆</div>
 </div>
 
-<!-- HISTORY -->
-<div class="box">
-<h3>📊 Results</h3>
-<ul id="results"></ul>
-</div>
-
 <!-- SUPPORT -->
 <div class="box">
 <h3>💬 Customer Support</h3>
@@ -124,6 +116,17 @@ font-weight:bold;
 </a>
 </div>
 
+<!-- TERMS -->
+<div class="box">
+<h3>📜 Terms & Conditions</h3>
+<p>
+Payment hone ke baad aap login kar sakte hain.  
+Aapko company ki taraf se User ID aur Password diya jayega.  
+Us ID ke number ke basis par aapka lucky draw open hoga.  
+Aap apni ID ke number se check kar sakte hain ki aap jeete hain ya hare.
+</p>
+</div>
+
 <!-- SOUND -->
 <audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 <audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
@@ -132,20 +135,28 @@ font-weight:bold;
 <script>
 
 let selected=null;
-let paid=false;
-let users=[];
-let requests=[];
 let drawOpen=false;
-let winningNumber=null;
 
-/* 🎯 Prize Map */
+/* Prize Map */
 const prizeMap = {
 1:2000,2:3000,3:2500,4:4000,5:1500,
 6:3500,7:5000,8:4500,9:3000,10:6000,
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* 🎡 Wheel */
+/* Demo User Login */
+function userLogin(){
+ let id=document.getElementById("userId").value;
+ let pass=document.getElementById("userPass").value;
+
+ if(id==="user123" && pass==="1234"){
+  document.getElementById("loginStatus").innerText="✅ Login Success";
+ }else{
+  document.getElementById("loginStatus").innerText="❌ Invalid ID/Password";
+ }
+}
+
+/* Wheel */
 let wheel=document.getElementById("wheel");
 
 for(let i=1;i<=15;i++){
@@ -174,53 +185,18 @@ for(let i=1;i<=15;i++){
  numDiv.appendChild(btn);
 }
 
-/* Payment */
+/* Upload */
 function upload(){
  let file=document.getElementById("proof").files[0];
  if(!file) return alert("Upload screenshot");
-
- paid=true;
- document.getElementById("payStatus").innerText="✅ Payment Sent";
-}
-
-/* Entry */
-function request(){
- let name=document.getElementById("name").value;
- if(!paid) return alert("Payment required");
- if(!name||!selected) return alert("Fill all");
-
- requests.push({name,number:selected});
- alert("Request Sent");
+ alert("✅ Payment Submitted");
 }
 
 /* Admin */
 function login(){
  if(document.getElementById("pass").value==="1234"){
   document.getElementById("admin").style.display="block";
-  loadReq();
  }
-}
-
-function loadReq(){
- let list=document.getElementById("reqList");
- list.innerHTML="";
-
- requests.forEach((r,i)=>{
-  let li=document.createElement("li");
-  li.innerText=r.name+" ("+r.number+")";
-
-  let btn=document.createElement("button");
-  btn.innerText="Approve";
-
-  btn.onclick=()=>{
-   users.push(r);
-   requests.splice(i,1);
-   alert("Approved");
-  };
-
-  li.appendChild(btn);
-  list.appendChild(li);
- });
 }
 
 /* Timer */
@@ -254,24 +230,20 @@ function spin(){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* RESULT → ONLY AMOUNT */
+/* RESULT */
 function showWinner(num){
 
  let amount=prizeMap[num];
 
- let res="🏆 WINNING AMOUNT ₹"+amount;
+ let res="🎯 Winning Number: "+num+" | 💰 ₹"+amount;
 
  document.getElementById("winner").innerText=res;
 
  document.getElementById("fire").style.display="block";
  document.getElementById("winSound").play();
-
- let li=document.createElement("li");
- li.innerText=res;
- document.getElementById("results").appendChild(li);
 }
 
 </script>
 
 </body>
-</html>
+ </html>

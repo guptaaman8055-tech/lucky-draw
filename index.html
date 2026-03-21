@@ -2,12 +2,12 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Ultra Max Pro</title>
+<title>Lucky Draw Ultimate Dashboard</title>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
 .box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
-button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
+button{padding:8px 12px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 
 .num{background:#334155;color:white;}
 .selected{background:#22c55e;}
@@ -44,11 +44,28 @@ font-size:20px;font-weight:bold;
 
 <body>
 
-<h2>🎉 Lucky Draw Ultra Max Pro</h2>
+<h2>🎉 Lucky Draw Ultimate Dashboard</h2>
 
 <div class="box">
 <h3>💰 Entry ₹50 | 🏆 Total Prize ₹50000</h3>
 <p>🪙 Coins: <span id="coin">50</span></p>
+</div>
+
+<!-- LOGIN -->
+<div class="box">
+<h3>🔐 User Login</h3>
+<input id="uid" placeholder="User ID"><br><br>
+<input id="upass" type="password" placeholder="Password"><br><br>
+<button onclick="login()">Login</button>
+<p id="loginMsg"></p>
+</div>
+
+<!-- ADMIN -->
+<div class="box">
+<h3>🔐 Admin Panel</h3>
+<input id="adminPass" placeholder="Enter Password" type="password">
+<button onclick="adminLogin()">Enter</button>
+<p id="adminMsg"></p>
 </div>
 
 <!-- TIMER -->
@@ -58,9 +75,16 @@ font-size:20px;font-weight:bold;
 
 <!-- NUMBER SELECT -->
 <div class="box">
-<h3>🎯 Select Your Number</h3>
+<h3>🎯 Select Number</h3>
 <div id="numbers"></div>
 <p id="selectedText"></p>
+</div>
+
+<!-- PAYMENT -->
+<div class="box">
+<h3>💳 QR Payment</h3>
+<img src="GooglePay_QR.png" width="180"><br>
+<p>UPI: guptaaman8055-3@okaxis</p>
 </div>
 
 <!-- SPIN -->
@@ -77,9 +101,62 @@ font-size:20px;font-weight:bold;
 <p id="winNumber"></p>
 </div>
 
+<!-- WITHDRAW -->
+<div class="box">
+<h3>💸 Withdrawal</h3>
+<input placeholder="Enter UPI ID"><br><br>
+<input placeholder="Amount"><br><br>
+<button onclick="withdraw()">Withdraw</button>
+<p id="wmsg"></p>
+</div>
+
+<!-- SUPPORT -->
+<div class="box">
+<h3>📧 Customer Care</h3>
+<p>support@luckydraw.com</p>
+
+<a href="https://t.me/tiger7652" target="_blank">
+<button style="background:#229ED9;color:white;">📲 Telegram</button>
+</a>
+</div>
+
+<!-- TERMS -->
+<div class="box">
+<h3>📜 Terms & Conditions</h3>
+<p>
+Payment ke baad login ID password diya jayega.  
+Telegram par screenshot bhejna zaroori hai.  
+Result ID number se check hoga.  
+</p>
+</div>
+
 <script>
 
+/* COINS */
+let coins=50;
 let selected=null;
+
+/* LOGIN */
+function login(){
+ let id=document.getElementById("uid").value;
+ let pass=document.getElementById("upass").value;
+
+ if(id && pass){
+  document.getElementById("loginMsg").innerText="✅ Login Success";
+ }else{
+  document.getElementById("loginMsg").innerText="❌ Invalid";
+ }
+}
+
+/* ADMIN */
+function adminLogin(){
+ let pass=document.getElementById("adminPass").value;
+ if(pass==="1234"){
+  document.getElementById("adminMsg").innerText="✅ Admin Access";
+ }else{
+  document.getElementById("adminMsg").innerText="❌ Wrong Password";
+ }
+}
 
 /* PRIZE MAP */
 const prizeMap={
@@ -88,7 +165,7 @@ const prizeMap={
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* 🎯 CREATE NUMBER BUTTONS */
+/* NUMBER BUTTONS */
 let numDiv=document.getElementById("numbers");
 
 for(let i=1;i<=15;i++){
@@ -98,18 +175,15 @@ for(let i=1;i<=15;i++){
 
  btn.onclick=()=>{
   if(selected) return alert("Only 1 number allowed");
-
   selected=i;
   btn.classList.add("selected");
-
-  document.getElementById("selectedText").innerText=
-  "Selected Number: "+i;
+  document.getElementById("selectedText").innerText="Selected: "+i;
  };
 
  numDiv.appendChild(btn);
 }
 
-/* 🎡 WHEEL */
+/* WHEEL */
 let wheel=document.getElementById("wheel");
 
 for(let i=1;i<=15;i++){
@@ -121,7 +195,7 @@ for(let i=1;i<=15;i++){
  wheel.appendChild(div);
 }
 
-/* ⏳ TIMER */
+/* TIMER */
 let end=new Date().getTime()+30000;
 
 let t=setInterval(()=>{
@@ -136,14 +210,22 @@ let t=setInterval(()=>{
  }
 },1000);
 
-/* 🎯 AUTO DRAW */
+/* AUTO DRAW */
 function autoDraw(){
  let n=Math.floor(Math.random()*15)+1;
  spin(n);
 }
 
-/* 🎡 SPIN */
+/* SPIN */
 function spin(fixed){
+
+ if(coins<=0){
+  alert("No Coins");
+  return;
+ }
+
+ coins-=10;
+ document.getElementById("coin").innerText=coins;
 
  let num=fixed || Math.floor(Math.random()*15)+1;
  let deg=3600+(num*24);
@@ -153,15 +235,17 @@ function spin(fixed){
  setTimeout(()=>showWinner(num),4000);
 }
 
-/* 🏆 RESULT */
+/* RESULT */
 function showWinner(num){
-
  let amt=prizeMap[num];
 
  document.getElementById("winner").innerText="💰 ₹"+amt;
- document.getElementById("winNumber").innerText=
- "🎯 Winning Number: "+num;
+ document.getElementById("winNumber").innerText="🎯 Number: "+num;
+}
 
+/* WITHDRAW */
+function withdraw(){
+ document.getElementById("wmsg").innerText="✅ Request Sent";
 }
 
 </script>

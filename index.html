@@ -10,6 +10,7 @@ body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
 button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 .num{background:#334155;color:white;}
 .selected{background:#22c55e;}
+.taken{background:red;}
 
 #wheel{
 width:260px;height:260px;border-radius:50%;
@@ -80,18 +81,38 @@ font-weight:bold;
 </div>
 
 <div class="box">
+<h3>🔐 Admin</h3>
+<input type="password" id="pass">
+<button onclick="login()">Login</button>
+<div id="admin" style="display:none;">
+<ul id="reqList"></ul>
+</div>
+</div>
+
+<div class="box">
 <div id="wheel">
 <div class="centerText">SPIN</div>
 </div>
+<button onclick="spin()">Spin</button>
 </div>
 
 <div class="box">
-<h2 id="winner">Waiting...</h2>
-<div class="fire" id="fire">🎆 WINNER 🎆</div>
+<h2 id="winner">Result Locked</h2>
+<div class="fire" id="fire">🎆🎆🎆 WINNER 🎆🎆🎆</div>
 </div>
 
 <div class="box">
+<h3>📊 Results</h3>
 <ul id="results"></ul>
+</div>
+
+<!-- SUPPORT -->
+<div class="box">
+<h3>💬 Support</h3>
+<p>📧 support@luckydraw.com</p>
+<a href="https://t.me/tiger7652" target="_blank">
+<button style="background:#229ED9;color:white;">Telegram</button>
+</a>
 </div>
 
 <audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
@@ -103,16 +124,18 @@ font-weight:bold;
 let selected=null;
 let paid=false;
 let users=JSON.parse(localStorage.getItem("users"))||[];
+let requests=[];
+let drawOpen=false;
 let winningNumber=null;
 
-/* Prize */
+/* 🎯 Prize */
 const prizeMap={
 1:2000,2:3000,3:2500,4:4000,5:1500,
 6:3500,7:5000,8:4500,9:3000,10:6000,
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* Names */
+/* 🎯 Names */
 const defaultNames=[
 "Aarav","Vivaan","Aditya","Arjun","Kabir","Rohan","Mohit","Rahul",
 "Karan","Aman","Yash","Nikhil","Saurabh","Ankit","Deepak",
@@ -122,7 +145,7 @@ const defaultNames=[
 "Dinesh","Suraj","Ajay"
 ];
 
-/* Auto load names */
+/* Auto Load Names */
 if(users.length===0){
  defaultNames.forEach(n=>{
   users.push({name:n,number:Math.floor(Math.random()*15)+1});
@@ -174,33 +197,24 @@ function request(){
  location.reload();
 }
 
-/* 🔥 LOOP TIMER */
-let duration = 60;
-let timeLeft = duration;
-
+/* Timer */
+let end=new Date().getTime()+60000;
 setInterval(()=>{
-
- document.getElementById("timer").innerText = timeLeft + " sec";
-
- if(timeLeft <=5 && timeLeft>0){
-  document.getElementById("tick").play();
- }
-
- if(timeLeft === 0){
-
-  winningNumber = Math.floor(Math.random()*15)+1;
-  spin();
-
-  timeLeft = duration;
-
- } else {
-  timeLeft--;
- }
-
+ let s=Math.floor((end-new Date().getTime())/1000);
+ document.getElementById("timer").innerText=s+" sec";
+ if(s<=5) document.getElementById("tick").play();
+ if(s<=0){drawOpen=true;autoDraw();}
 },1000);
+
+/* Draw */
+function autoDraw(){
+ winningNumber=Math.floor(Math.random()*15)+1;
+ spin();
+}
 
 /* Spin */
 function spin(){
+ if(!drawOpen) return alert("Wait");
  document.getElementById("spinSound").play();
  let deg=3600+(winningNumber*24);
  wheel.style.transform="rotate("+deg+"deg)";
@@ -211,7 +225,6 @@ function spin(){
 function showWinner(num){
  let amount=prizeMap[num];
  let win=users[Math.floor(Math.random()*users.length)];
-
  let res="🏆 "+win.name+" WON ₹"+amount+" | No:"+num;
 
  document.getElementById("winner").innerText=res;
@@ -227,12 +240,12 @@ function showWinner(num){
 
 /* Load */
 window.onload=()=>{
- document.getElementById("count").innerText=users.length;
  let saved=localStorage.getItem("results");
  if(saved) document.getElementById("results").innerHTML=saved;
+ document.getElementById("count").innerText=users.length;
 };
 
 </script>
 
 </body>
-  </html>
+</html>

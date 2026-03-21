@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Ultra Pro</title>
+<title>Lucky Draw System</title>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
@@ -12,10 +12,10 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
 .num{background:#334155;color:white;}
 .selected{background:#22c55e;}
 .taken{background:red;}
-.win{background:gold !important;color:black;font-weight:bold;}
+.win{background:gold;color:black;font-weight:bold;}
 
 #wheel{
-width:260px;height:260px;border-radius:50%;
+width:250px;height:250px;border-radius:50%;
 border:8px solid white;margin:20px auto;
 position:relative;overflow:hidden;
 }
@@ -23,239 +23,201 @@ position:relative;overflow:hidden;
 .slice{
 position:absolute;width:50%;height:50%;
 top:50%;left:50%;
-transform-origin:0% 0%;
+transform-origin:0 0;
 display:flex;align-items:center;justify-content:center;
-font-size:14px;font-weight:bold;color:white;
-}
-
-.slice span{transform:rotate(90deg);}
-
-#pointer{
-width:0;height:0;
-border-left:10px solid transparent;
-border-right:10px solid transparent;
-border-bottom:20px solid yellow;
-margin:auto;
-}
-
-canvas{
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-pointer-events:none;
+font-size:12px;font-weight:bold;
 }
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw Ultra Pro</h2>
-<div id="pointer"></div>
+<h2>🎉 Lucky Draw</h2>
 
-<!-- AUDIO -->
-<audio id="bgMusic" src="bg.mp3" loop></audio>
-<audio id="tickSound" src="tick.mp3"></audio>
-<audio id="winSound" src="win.mp3"></audio>
-<audio id="spinSound" src="spin.mp3"></audio>
-
+<!-- PAYMENT -->
 <div class="box">
-<button onclick="toggleMusic()">🎵 Music ON/OFF</button>
+<h3>💳 Pay ₹50</h3>
+
+<a href="upi://pay?pa=guptaaman8055-3@okaxis&pn=Aman%20Gupta&am=50&cu=INR">
+<button>Pay via UPI</button>
+</a>
+
+<br><br>
+<button onclick="showQR()">Show QR</button>
+<br><br>
+<img id="qr" src="qr.png" width="150" style="display:none">
+
+<p id="status">❌ Payment not submitted</p>
 </div>
 
+<!-- UPLOAD -->
 <div class="box">
-<h3>💰 Entry ₹50 | 🏆 Win up to ₹50000</h3>
-<p id="earn">Earnings: ₹0</p>
+<h3>📤 Upload Screenshot</h3>
+<input type="file" id="proof">
+<button onclick="submitProof()">Submit</button>
 </div>
 
+<!-- USER -->
 <div class="box">
-<h3>⏳ Timer</h3>
-<h2 id="timer"></h2>
+<input id="name" placeholder="Name">
 </div>
 
-<div class="box">
-<button onclick="pay()">Pay ₹50</button>
-<p id="payStatus">❌ Not Paid</p>
-</div>
-
-<div class="box">
-<input id="name" placeholder="Enter Name">
-</div>
-
+<!-- NUMBERS -->
 <div class="box">
 <h3>Select Number</h3>
 <div id="numbers"></div>
 </div>
 
+<!-- ENTRY -->
 <div class="box">
-<button onclick="request()">Submit Entry</button>
+<button onclick="enter()">Join Draw</button>
 </div>
 
+<!-- ADMIN -->
 <div class="box">
-<h3>🎡 Spin Wheel</h3>
+<input type="password" id="pass" placeholder="Admin Password">
+<button onclick="login()">Login</button>
+<div id="admin" style="display:none">
+<ul id="list"></ul>
+</div>
+</div>
+
+<!-- WHEEL -->
+<div class="box">
 <div id="wheel"></div>
 <button onclick="spin()">Spin</button>
 </div>
 
-<div class="box">
-<h2 id="winner">Result Locked</h2>
-</div>
+<h2 id="winner"></h2>
 
-<div class="box">
-<h3>📊 Result History</h3>
 <ul id="history"></ul>
-</div>
-
-<canvas id="fire"></canvas>
 
 <script>
 
-// ===== BASIC STATE =====
 let users=JSON.parse(localStorage.getItem("users"))||[];
+let requests=JSON.parse(localStorage.getItem("req"))||[];
+let approved=JSON.parse(localStorage.getItem("ok"))||[];
 let selected=null;
-let paid=false;
-let finalDeg=0;
 
-// earnings
-document.getElementById("earn").innerText="Earnings: ₹"+(users.length*50);
-
-// ===== MUSIC =====
-function startMusic(){
- let bg=document.getElementById("bgMusic");
- bg.volume=0.3;
- bg.play().catch(()=>{});
-}
-document.addEventListener("click",startMusic,{once:true});
-
-function toggleMusic(){
- let bg=document.getElementById("bgMusic");
- if(bg.paused) bg.play(); else bg.pause();
+/* QR */
+function showQR(){
+ document.getElementById("qr").style.display="block";
 }
 
-// ===== NUMBERS =====
+/* NUMBERS */
 let div=document.getElementById("numbers");
-
 for(let i=1;i<=15;i++){
- let btn=document.createElement("button");
- btn.innerText=i;
- btn.className="num";
+ let b=document.createElement("button");
+ b.innerText=i;
+ b.className="num";
 
- if(users.find(u=>u.number===i)) btn.classList.add("taken");
+ if(users.find(u=>u.number==i)) b.classList.add("taken");
 
- btn.onclick=()=>{
-  if(selected) return alert("Only 1 number");
-  if(users.find(u=>u.number===i)) return alert("Taken");
+ b.onclick=()=>{
+  if(selected) return alert("Only one");
   selected=i;
-  btn.classList.add("selected");
+  b.classList.add("selected");
  };
 
- div.appendChild(btn);
+ div.appendChild(b);
 }
 
-// ===== PAYMENT =====
-function pay(){
- paid=true;
- document.getElementById("payStatus").innerText="✅ Paid (Demo)";
-}
-
-// ===== ENTRY =====
-function request(){
+/* PROOF */
+function submitProof(){
+ let file=document.getElementById("proof").files[0];
  let name=document.getElementById("name").value;
- if(!paid) return alert("Payment karo");
- if(!name||!selected) return alert("Fill all");
+
+ let r=new FileReader();
+ r.onload=()=>{
+  requests.push({name,img:r.result});
+  localStorage.setItem("req",JSON.stringify(requests));
+  alert("Waiting approval");
+ };
+ r.readAsDataURL(file);
+}
+
+/* ADMIN */
+function login(){
+ if(document.getElementById("pass").value=="1234"){
+  document.getElementById("admin").style.display="block";
+  load();
+ }
+}
+
+function load(){
+ let list=document.getElementById("list");
+ list.innerHTML="";
+
+ requests.forEach((r,i)=>{
+  let li=document.createElement("li");
+
+  let img=document.createElement("img");
+  img.src=r.img;
+  img.width=80;
+
+  let btn=document.createElement("button");
+  btn.innerText="Approve";
+
+  btn.onclick=()=>{
+   approved.push(r.name);
+   requests.splice(i,1);
+   localStorage.setItem("ok",JSON.stringify(approved));
+   localStorage.setItem("req",JSON.stringify(requests));
+   load();
+  };
+
+  li.innerText=r.name;
+  li.appendChild(img);
+  li.appendChild(btn);
+  list.appendChild(li);
+ });
+}
+
+/* ENTRY */
+function enter(){
+ let name=document.getElementById("name").value;
+
+ if(!approved.includes(name)) return alert("Not approved");
 
  users.push({name,number:selected});
  localStorage.setItem("users",JSON.stringify(users));
  location.reload();
 }
 
-// ===== WHEEL =====
+/* WHEEL */
 let wheel=document.getElementById("wheel");
 
 for(let i=1;i<=15;i++){
- let slice=document.createElement("div");
- slice.className="slice";
-
- let angle=360/15;
- slice.style.transform="rotate("+(i*angle)+"deg) skewY("+(90-angle)+"deg)";
- slice.style.background="hsl("+(i*24)+",70%,40%)";
-
- let text=document.createElement("span");
- text.innerText="₹"+i;
-
- slice.appendChild(text);
- wheel.appendChild(slice);
+ let s=document.createElement("div");
+ s.className="slice";
+ s.style.transform="rotate("+(i*24)+"deg) skewY(66deg)";
+ s.style.background="hsl("+(i*24)+",70%,40%)";
+ s.innerText="₹"+i;
+ wheel.appendChild(s);
 }
 
-// ===== SPIN =====
+/* SPIN */
 function spin(){
- document.getElementById("spinSound").play();
-
- let extra=Math.floor(Math.random()*360);
- finalDeg=3600+extra;
-
+ let deg=3600+Math.random()*360;
  wheel.style.transition="4s";
- wheel.style.transform="rotate("+finalDeg+"deg)";
+ wheel.style.transform="rotate("+deg+"deg)";
 
- setTimeout(getResult,4000);
+ setTimeout(()=>{
+  let num=Math.floor(Math.random()*15)+1;
+  let win=users.find(u=>u.number==num);
+
+  let res=win?win.name+" wins ("+num+")":"No Winner "+num;
+
+  document.getElementById("winner").innerText=res;
+
+  let li=document.createElement("li");
+  li.innerText=res;
+  document.getElementById("history").appendChild(li);
+
+ },4000);
 }
-
-// ===== RESULT =====
-function getResult(){
-
- let deg=finalDeg%360;
- let num=Math.floor((360-deg)/24)+1;
- if(num>15) num=1;
-
- let win=users.find(u=>u.number===num);
-
- document.querySelectorAll(".num").forEach(b=>b.classList.remove("win"));
- document.querySelectorAll(".num")[num-1].classList.add("win");
-
- let res=win ? "🏆 "+win.name+" (No:"+num+")" : "❌ No Winner ("+num+")";
-
- document.getElementById("winner").innerText=res;
- document.getElementById("winSound").play();
-
- // history
- let li=document.createElement("li");
- li.innerText="Winning No: "+num;
- document.getElementById("history").appendChild(li);
-
- fireworks();
-}
-
-// ===== FIREWORKS =====
-function fireworks(){
- let c=document.getElementById("fire");
- let ctx=c.getContext("2d");
- c.width=window.innerWidth;
- c.height=window.innerHeight;
-
- for(let i=0;i<100;i++){
-  ctx.fillStyle="hsl("+Math.random()*360+",100%,50%)";
-  ctx.fillRect(Math.random()*c.width,Math.random()*c.height,5,5);
- }
- setTimeout(()=>ctx.clearRect(0,0,c.width,c.height),1500);
-}
-
-// ===== TIMER =====
-let end=new Date().getTime()+60000;
-
-setInterval(()=>{
- let now=new Date().getTime();
- let d=end-now;
-
- document.getElementById("timer").innerText=Math.floor(d/1000)+"s";
-
- if(d<=10000 && d>0){
-  let t=document.getElementById("tickSound");
-  t.currentTime=0;
-  t.play();
- }
-
-},1000);
 
 </script>
 
 </body>
- </html>
+</html>

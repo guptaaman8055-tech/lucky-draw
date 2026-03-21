@@ -2,16 +2,56 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Ultra Telegram</title>
+<title>Lucky Draw Ultra Pro</title>
 
 <style>
-body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
-.box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
-button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
+body{
+font-family:Arial;
+color:white;
+text-align:center;
+background:#0f172a;
+overflow-x:hidden;
+}
+
+/* 💰 MONEY BACKGROUND */
+body::before{
+content:"💰 💸 💵 💰 💸 💵 💰 💸 💵";
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+font-size:40px;
+opacity:0.08;
+z-index:-1;
+animation:moveBg 20s linear infinite;
+}
+@keyframes moveBg{
+0%{transform:translateY(0);}
+100%{transform:translateY(-200px);}
+}
+
+.box{
+background:#1e293b;
+padding:15px;
+margin:12px;
+border-radius:10px;
+}
+
+button{
+padding:8px 12px;
+margin:5px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+.num{background:#334155;color:white;}
+.selected{background:#22c55e;}
 
 #wheel{
-width:260px;height:260px;border-radius:50%;
-border:8px solid white;margin:20px auto;
+width:260px;height:260px;
+border-radius:50%;
+border:8px solid white;
+margin:20px auto;
 position:relative;
 transition:transform 4s ease-out;
 }
@@ -19,7 +59,6 @@ transition:transform 4s ease-out;
 .slice{
 position:absolute;
 width:100%;height:100%;
-border-radius:50%;
 clip-path: polygon(50% 50%, 100% 0, 100% 100%);
 display:flex;
 flex-direction:column;
@@ -40,15 +79,47 @@ font-size:20px;font-weight:bold;
 
 <body>
 
-<h2>🎉 Lucky Draw Ultra System</h2>
+<h2>🎉 Lucky Draw Ultra Pro</h2>
 
 <div class="box">
-<h3>💰 Entry ₹50 | 🏆 Total Prize ₹50000</h3>
+<h3>🆔 Lucky Draw ID: LD2026</h3>
+<p>🪙 Coins: <span id="coin">50</span></p>
+</div>
+
+<!-- LOGIN -->
+<div class="box">
+<h3>🔐 Login</h3>
+<input id="uid" placeholder="User ID"><br><br>
+<input id="pass" type="password" placeholder="Password"><br><br>
+<button onclick="login()">Login</button>
+<p id="loginMsg"></p>
+</div>
+
+<!-- ADMIN -->
+<div class="box">
+<h3>🔐 Admin Panel</h3>
+<input id="adminPass" placeholder="Password" type="password">
+<button onclick="adminLogin()">Enter</button>
+<p id="adminMsg"></p>
 </div>
 
 <!-- TIMER -->
 <div class="box">
 <h2 id="timer"></h2>
+</div>
+
+<!-- NUMBER -->
+<div class="box">
+<h3>🎯 Select Number</h3>
+<div id="numbers"></div>
+<p id="selectedText"></p>
+</div>
+
+<!-- QR -->
+<div class="box">
+<h3>💳 Payment</h3>
+<img src="GooglePay_QR.png" width="180">
+<p>UPI: guptaaman8055-3@okaxis</p>
 </div>
 
 <!-- WHEEL -->
@@ -63,40 +134,97 @@ font-size:20px;font-weight:bold;
 <div class="box">
 <h2 id="winner">Result Locked</h2>
 <p id="winNumber"></p>
-<button id="tgBtn" style="display:none;background:#229ED9;color:white;">
-📲 Send to Telegram
-</button>
+</div>
+
+<!-- WITHDRAW -->
+<div class="box">
+<h3>💸 Withdrawal</h3>
+<input placeholder="UPI ID"><br><br>
+<input placeholder="Amount"><br><br>
+<button onclick="withdraw()">Withdraw</button>
+<p id="wmsg"></p>
+</div>
+
+<!-- SUPPORT -->
+<div class="box">
+<h3>📧 Customer Care</h3>
+<p>support@luckydraw.com</p>
+
+<a href="https://t.me/tiger7652" target="_blank">
+<button style="background:#229ED9;color:white;">📲 Telegram</button>
+</a>
+</div>
+
+<!-- TERMS -->
+<div class="box">
+<h3>📜 Terms & Conditions</h3>
+<p>
+Payment ke baad login ID password diya jayega.  
+Telegram par screenshot bhejna zaroori hai.  
+Result ID number ke basis par check hoga.  
+</p>
 </div>
 
 <script>
 
-/* Prize Map */
+/* DATA */
+let coins=50;
+let selected=null;
+
+/* LOGIN */
+function login(){
+ let id=uid.value;
+ let p=pass.value;
+
+ loginMsg.innerText=(id && p)?"✅ Login Success":"❌ Invalid";
+}
+
+/* ADMIN */
+function adminLogin(){
+ adminMsg.innerText=
+ (adminPass.value==="1234")?"✅ Admin Access":"❌ Wrong";
+}
+
+/* PRIZE */
 const prizeMap={
 1:2000,2:3000,3:2500,4:4000,5:1500,
 6:3500,7:5000,8:4500,9:3000,10:6000,
 11:2000,12:3500,13:2500,14:4000,15:5000
 };
 
-/* Wheel */
-let wheel=document.getElementById("wheel");
-
+/* NUMBERS */
 for(let i=1;i<=15;i++){
- let div=document.createElement("div");
- div.className="slice";
- div.style.transform="rotate("+(i*24)+"deg)";
- div.style.background="hsl("+(i*24)+",70%,60%)";
- div.innerHTML="₹"+prizeMap[i]+"<br>#"+i;
- wheel.appendChild(div);
+ let b=document.createElement("button");
+ b.innerText=i;
+ b.className="num";
+
+ b.onclick=()=>{
+  if(selected) return alert("Only 1 allowed");
+  selected=i;
+  b.classList.add("selected");
+  selectedText.innerText="Selected: "+i;
+ };
+
+ numbers.appendChild(b);
 }
 
-/* Timer */
-let end=new Date().getTime()+20000;
+/* WHEEL */
+for(let i=1;i<=15;i++){
+ let d=document.createElement("div");
+ d.className="slice";
+ d.style.transform="rotate("+(i*24)+"deg)";
+ d.style.background="hsl("+(i*24)+",70%,60%)";
+ d.innerHTML="₹"+prizeMap[i]+"<br>#"+i;
+ wheel.appendChild(d);
+}
+
+/* TIMER */
+let end=Date.now()+30000;
 
 let t=setInterval(()=>{
- let s=Math.floor((end-new Date().getTime())/1000);
+ let s=Math.floor((end-Date.now())/1000);
 
- document.getElementById("timer").innerText=
- s>0? "⏳ "+s+" sec":"🎯 DRAW START";
+ timer.innerText=s>0?"⏳ "+s+" sec":"🎯 DRAW START";
 
  if(s<=0){
   clearInterval(t);
@@ -104,37 +232,33 @@ let t=setInterval(()=>{
  }
 },1000);
 
-/* Spin */
+/* SPIN */
 function spin(){
 
- let num=Math.floor(Math.random()*15)+1;
- let deg=3600+(num*24);
+ if(coins<=0) return alert("No Coins");
+
+ coins-=10;
+ coin.innerText=coins;
+
+ let n=Math.floor(Math.random()*15)+1;
+ let deg=3600+(n*24);
 
  wheel.style.transform="rotate("+deg+"deg)";
 
- setTimeout(()=>showWinner(num),4000);
+ setTimeout(()=>showWinner(n),4000);
 }
 
-/* Winner */
-function showWinner(num){
+/* RESULT */
+function showWinner(n){
+ let amt=prizeMap[n];
 
- let amt=prizeMap[num];
+ winner.innerText="💰 ₹"+amt;
+ winNumber.innerText="🎯 Number: "+n;
+}
 
- document.getElementById("winner").innerText="💰 ₹"+amt;
- document.getElementById("winNumber").innerText="🎯 Number: "+num;
-
- // Telegram Button Active
- let msg=`🎉 Lucky Draw Result\n🎯 Number: ${num}\n💰 Amount: ₹${amt}`;
-
- let url="https://t.me/tiger7652?text="+encodeURIComponent(msg);
-
- let btn=document.getElementById("tgBtn");
- btn.style.display="inline-block";
-
- btn.onclick=()=>{
-  window.open(url,"_blank");
- };
-
+/* WITHDRAW */
+function withdraw(){
+ wmsg.innerText="✅ Request Sent";
 }
 
 </script>

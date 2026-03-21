@@ -1,112 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Ultimate</title>
-
-<style>
-body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
-.box{background:#1e293b;padding:15px;margin:15px;border-radius:10px;}
-button{padding:10px;margin:5px;border:none;border-radius:6px;cursor:pointer;}
-.num{background:#334155;color:white;}
-.selected{background:#22c55e;}
-.taken{background:red;}
-#wheel{
-width:260px;height:260px;border-radius:50%;
-border:8px solid white;margin:20px auto;
-display:flex;align-items:center;justify-content:center;
-font-size:22px;font-weight:bold;
-transition:transform 4s ease-out;
-background:conic-gradient(
-#f87171 0deg 24deg,#fb923c 24deg 48deg,#facc15 48deg 72deg,
-#4ade80 72deg 96deg,#38bdf8 96deg 120deg,#818cf8 120deg 144deg,
-#c084fc 144deg 168deg,#f472b6 168deg 192deg,#f87171 192deg 216deg,
-#fb923c 216deg 240deg,#facc15 240deg 264deg,#4ade80 264deg 288deg,
-#38bdf8 288deg 312deg,#818cf8 312deg 336deg,#c084fc 336deg 360deg
-);
-}
-.fire{font-size:30px;display:none;}
-</style>
-</head>
-
-<body>
-
-<h2>🎉 Lucky Draw Ultimate</h2>
-
-<div class="box">
-<h3>💰 Entry ₹50 | 🏆 Win ₹50000</h3>
-</div>
-
-<!-- TIMER -->
-<div class="box">
-<h3>⏳ Timer</h3>
-<h2 id="timer"></h2>
-</div>
-
-<!-- PAYMENT -->
-<div class="box">
-<h3>💳 Payment</h3>
-
-<img src="GooglePay_QR.png" width="200"><br>
-<p>UPI: guptaaman8055-3@okaxis</p>
-
-<input type="file" id="proof">
-<button onclick="upload()">Upload Screenshot</button>
-<p id="payStatus">❌ Not Paid</p>
-</div>
-
-<!-- USER -->
-<div class="box">
-<input id="name" placeholder="Enter Name">
-</div>
-
-<!-- NUMBERS -->
-<div class="box">
-<h3>Select Number</h3>
-<div id="numbers"></div>
-<p id="chosen"></p>
-</div>
-
-<!-- ENTRY -->
-<div class="box">
-<button onclick="request()">Submit Entry</button>
-</div>
-
-<!-- ADMIN -->
-<div class="box">
-<h3>🔐 Admin</h3>
-<input type="password" id="pass">
-<button onclick="login()">Login</button>
-
-<div id="admin" style="display:none;">
-<ul id="reqList"></ul>
-</div>
-</div>
-
-<!-- SPIN -->
-<div class="box">
-<h3>🎡 Spin</h3>
-<div id="wheel">SPIN</div>
-<button onclick="spin()">Spin</button>
-</div>
-
-<!-- RESULT -->
-<div class="box">
-<h2 id="winner">Result Locked</h2>
-<div class="fire" id="fire">🎆🎆🎆 WINNER 🎆🎆🎆</div>
-</div>
-
-<!-- HISTORY -->
-<div class="box">
-<h3>📊 Results</h3>
-<ul id="results"></ul>
-</div>
-
-<!-- SOUND -->
-<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
-
 <script>
 
 let selected=null;
@@ -114,6 +5,9 @@ let paid=false;
 let users=JSON.parse(localStorage.getItem("users"))||[];
 let requests=[];
 let drawOpen=false;
+let winningNumber=null;
+
+const PRIZE = 50000;
 
 /* Numbers */
 let div=document.getElementById("numbers");
@@ -186,44 +80,10 @@ function loadReq(){
  });
 }
 
-/* Spin */
-function spin(){
- if(!drawOpen) return alert("Wait timer");
-
- document.getElementById("spinSound").play();
-
- let num=Math.floor(Math.random()*15)+1;
- let deg=3600+(num*24);
-
- document.getElementById("wheel").style.transform="rotate("+deg+"deg)";
-
- setTimeout(()=>showWinner(num),4000);
-}
-
-/* Winner */
-function showWinner(num){
- let win=users.find(u=>u.number===num);
- let res;
-
- if(win){
-  res="🏆 "+win.name+" WON ₹"+num;
-  document.getElementById("fire").style.display="block";
-  document.getElementById("winSound").play();
- }else{
-  res="No Winner (₹"+num+")";
- }
-
- document.getElementById("winner").innerText=res;
-
- let li=document.createElement("li");
- li.innerText=res;
- document.getElementById("results").appendChild(li);
-}
-
-/* Timer */
+/* TIMER + AUTO DRAW */
 let end=new Date().getTime()+120000;
 
-setInterval(()=>{
+let timerInterval=setInterval(()=>{
  let now=new Date().getTime();
  let d=end-now;
 
@@ -233,12 +93,65 @@ setInterval(()=>{
  document.getElementById("tick").play();
 
  if(d<=0){
+  clearInterval(timerInterval);
   drawOpen=true;
   document.getElementById("timer").innerText="DRAW OPEN";
+
+  autoDraw(); // 🔥 AUTO RESULT
  }
 },1000);
 
-</script>
+/* AUTO DRAW */
+function autoDraw(){
+ winningNumber=Math.floor(Math.random()*15)+1;
+ spin(); // auto spin
+}
 
-</body>
-</html>
+/* SPIN */
+function spin(){
+ if(!drawOpen) return alert("Wait timer");
+
+ document.getElementById("spinSound").play();
+
+ let num=winningNumber || Math.floor(Math.random()*15)+1;
+ let deg=3600+(num*24);
+
+ document.getElementById("wheel").style.transform="rotate("+deg+"deg)";
+
+ setTimeout(()=>showWinner(num),4000);
+}
+
+/* WINNER */
+function showWinner(num){
+
+ let win=users.find(u=>u.number===num);
+ let res;
+
+ if(win){
+  res="🏆 Winner: "+win.name+" | Number: "+num+" | Prize: ₹"+PRIZE;
+  document.getElementById("fire").style.display="block";
+  document.getElementById("winSound").play();
+ }else{
+  res="❌ No Winner | Number: "+num+" | Prize: ₹"+PRIZE;
+ }
+
+ document.getElementById("winner").innerText=res;
+
+ let li=document.createElement("li");
+ li.innerText=res;
+ document.getElementById("results").appendChild(li);
+}
+
+/* SAVE RESULT HISTORY */
+window.onload=()=>{
+ let saved=localStorage.getItem("results");
+ if(saved){
+  document.getElementById("results").innerHTML=saved;
+ }
+};
+
+window.onbeforeunload=()=>{
+ localStorage.setItem("results",document.getElementById("results").innerHTML);
+};
+
+</script>

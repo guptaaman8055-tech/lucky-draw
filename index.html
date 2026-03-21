@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lucky Draw Ultra Final</title>
+<title>Lucky Draw Ultra Pro</title>
 
 <style>
 body{font-family:Arial;background:#0f172a;color:white;text-align:center;}
@@ -30,7 +30,6 @@ font-size:14px;font-weight:bold;color:white;
 
 .slice span{transform:rotate(90deg);}
 
-/* pointer */
 #pointer{
 width:0;height:0;
 border-left:10px solid transparent;
@@ -38,13 +37,19 @@ border-right:10px solid transparent;
 border-bottom:20px solid yellow;
 margin:auto;
 }
+
+canvas{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+pointer-events:none;
+}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Lucky Draw Ultra Final</h2>
-
+<h2>🎉 Lucky Draw Ultra Pro</h2>
 <div id="pointer"></div>
 
 <!-- AUDIO -->
@@ -59,6 +64,7 @@ margin:auto;
 
 <div class="box">
 <h3>💰 Entry ₹50 | 🏆 Win up to ₹50000</h3>
+<p id="earn">Earnings: ₹0</p>
 </div>
 
 <div class="box">
@@ -78,7 +84,6 @@ margin:auto;
 <div class="box">
 <h3>Select Number</h3>
 <div id="numbers"></div>
-<p id="chosen"></p>
 </div>
 
 <div class="box">
@@ -95,30 +100,40 @@ margin:auto;
 <h2 id="winner">Result Locked</h2>
 </div>
 
+<div class="box">
+<h3>📊 Result History</h3>
+<ul id="history"></ul>
+</div>
+
+<canvas id="fire"></canvas>
+
 <script>
 
+// ===== BASIC STATE =====
+let users=JSON.parse(localStorage.getItem("users"))||[];
 let selected=null;
 let paid=false;
-let users=JSON.parse(localStorage.getItem("users"))||[];
-let musicOn=false;
 let finalDeg=0;
 
-/* MUSIC FIX */
+// earnings
+document.getElementById("earn").innerText="Earnings: ₹"+(users.length*50);
+
+// ===== MUSIC =====
 function startMusic(){
  let bg=document.getElementById("bgMusic");
  bg.volume=0.3;
- bg.play().then(()=>musicOn=true).catch(()=>{});
+ bg.play().catch(()=>{});
 }
-document.addEventListener("click", startMusic,{once:true});
+document.addEventListener("click",startMusic,{once:true});
 
 function toggleMusic(){
  let bg=document.getElementById("bgMusic");
- if(musicOn){bg.pause();musicOn=false;}
- else{startMusic();}
+ if(bg.paused) bg.play(); else bg.pause();
 }
 
-/* NUMBERS */
+// ===== NUMBERS =====
 let div=document.getElementById("numbers");
+
 for(let i=1;i<=15;i++){
  let btn=document.createElement("button");
  btn.innerText=i;
@@ -129,23 +144,20 @@ for(let i=1;i<=15;i++){
  btn.onclick=()=>{
   if(selected) return alert("Only 1 number");
   if(users.find(u=>u.number===i)) return alert("Taken");
-
   selected=i;
   btn.classList.add("selected");
-  document.getElementById("chosen").innerText="Selected: "+i;
  };
 
  div.appendChild(btn);
 }
 
-/* PAYMENT */
+// ===== PAYMENT =====
 function pay(){
- startMusic();
  paid=true;
- document.getElementById("payStatus").innerText="✅ Paid";
+ document.getElementById("payStatus").innerText="✅ Paid (Demo)";
 }
 
-/* ENTRY */
+// ===== ENTRY =====
 function request(){
  let name=document.getElementById("name").value;
  if(!paid) return alert("Payment karo");
@@ -156,7 +168,7 @@ function request(){
  location.reload();
 }
 
-/* 🎡 WHEEL BUILD */
+// ===== WHEEL =====
 let wheel=document.getElementById("wheel");
 
 for(let i=1;i<=15;i++){
@@ -174,59 +186,66 @@ for(let i=1;i<=15;i++){
  wheel.appendChild(slice);
 }
 
-/* 🎡 REAL SPIN */
+// ===== SPIN =====
 function spin(){
-
  document.getElementById("spinSound").play();
 
  let extra=Math.floor(Math.random()*360);
  finalDeg=3600+extra;
 
- wheel.style.transition="transform 4s cubic-bezier(0.33,1,0.68,1)";
+ wheel.style.transition="4s";
  wheel.style.transform="rotate("+finalDeg+"deg)";
 
- setTimeout(()=>{
-   getResult();
- },4000);
+ setTimeout(getResult,4000);
 }
 
-/* 🎯 REAL RESULT FROM WHEEL */
+// ===== RESULT =====
 function getResult(){
 
- let deg=finalDeg % 360;
+ let deg=finalDeg%360;
+ let num=Math.floor((360-deg)/24)+1;
+ if(num>15) num=1;
 
- let segment=Math.floor((360-deg)/24)+1;
- if(segment>15) segment=1;
+ let win=users.find(u=>u.number===num);
 
- let win=users.find(u=>u.number===segment);
+ document.querySelectorAll(".num").forEach(b=>b.classList.remove("win"));
+ document.querySelectorAll(".num")[num-1].classList.add("win");
 
- document.querySelectorAll(".num").forEach(b=>{
-  b.classList.remove("win");
- });
-
- document.querySelectorAll(".num")[segment-1].classList.add("win");
-
- let res;
- if(win){
-  res="🏆 Winner: "+win.name+" (No: "+segment+")";
- } else {
-  res="❌ No Winner (No: "+segment+")";
- }
+ let res=win ? "🏆 "+win.name+" (No:"+num+")" : "❌ No Winner ("+num+")";
 
  document.getElementById("winner").innerText=res;
-
  document.getElementById("winSound").play();
+
+ // history
+ let li=document.createElement("li");
+ li.innerText="Winning No: "+num;
+ document.getElementById("history").appendChild(li);
+
+ fireworks();
 }
 
-/* TIMER */
+// ===== FIREWORKS =====
+function fireworks(){
+ let c=document.getElementById("fire");
+ let ctx=c.getContext("2d");
+ c.width=window.innerWidth;
+ c.height=window.innerHeight;
+
+ for(let i=0;i<100;i++){
+  ctx.fillStyle="hsl("+Math.random()*360+",100%,50%)";
+  ctx.fillRect(Math.random()*c.width,Math.random()*c.height,5,5);
+ }
+ setTimeout(()=>ctx.clearRect(0,0,c.width,c.height),1500);
+}
+
+// ===== TIMER =====
 let end=new Date().getTime()+60000;
 
 setInterval(()=>{
  let now=new Date().getTime();
  let d=end-now;
 
- let s=Math.floor(d/1000);
- document.getElementById("timer").innerText=s+"s";
+ document.getElementById("timer").innerText=Math.floor(d/1000)+"s";
 
  if(d<=10000 && d>0){
   let t=document.getElementById("tickSound");
@@ -239,4 +258,4 @@ setInterval(()=>{
 </script>
 
 </body>
-</html>
+ </html>

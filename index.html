@@ -40,6 +40,24 @@ font-weight:bold;
 }
 
 .fire{font-size:30px;display:none;}
+
+@keyframes pop {
+from{transform:scale(1);}
+to{transform:scale(1.2);}
+}
+
+/* FULL SCREEN RESULT */
+#resultPopup{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.9);
+display:none;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+z-index:999;
+}
 </style>
 </head>
 
@@ -109,25 +127,18 @@ font-weight:bold;
 <!-- SUPPORT -->
 <div class="box">
 <h3>💬 Customer Support</h3>
-
-<p>
-📧 <a href="mailto:support@luckydraw.com" style="color:#22c55e;">
-support@luckydraw.com
-</a>
-</p>
-
-<p>
-📲 <a href="https://t.me/tiger7652" target="_blank" style="color:#38bdf8;">
-Join Telegram Support
-</a>
-</p>
+<p>📧 support@luckydraw.com</p>
 
 <a href="https://t.me/tiger7652" target="_blank">
-<button style="background:#229ED9;color:white;">
-📲 Open Telegram
-</button>
+<button style="background:#229ED9;color:white;">📲 Telegram</button>
 </a>
+</div>
 
+<!-- RESULT POPUP -->
+<div id="resultPopup">
+<h1>🎉 WIN 🎉</h1>
+<h2 id="bigAmount" style="font-size:60px;color:#22c55e;animation:pop 1s infinite alternate;">₹0</h2>
+<button onclick="closePopup()" style="padding:12px 20px;background:#22c55e;color:white;border:none;border-radius:8px;">Close</button>
 </div>
 
 <audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
@@ -143,7 +154,7 @@ let requests=[];
 let drawOpen=false;
 let winningNumber=null;
 
-const prizeMap = {
+const prizeMap={
 1:2000,2:3000,3:2500,4:4000,5:1500,
 6:3500,7:5000,8:4500,9:3000,10:6000,
 11:2000,12:3500,13:2500,14:4000,15:5000
@@ -276,18 +287,8 @@ function spin(){
 function showWinner(num){
 
  let amount=prizeMap[num];
- let win=users.find(u=>u.number===num);
 
- let res;
-
- if(win){
-  res="🏆 "+win.name+" WON ₹"+amount+" | Number: "+num;
-  document.getElementById("fire").style.display="block";
-  document.getElementById("winSound").play();
- }else{
-  res="❌ No Winner | Number: "+num+" | ₹"+amount;
- }
-
+ let res="💰 ₹"+amount;
  document.getElementById("winner").innerText=res;
 
  let li=document.createElement("li");
@@ -295,6 +296,17 @@ function showWinner(num){
  document.getElementById("results").appendChild(li);
 
  localStorage.setItem("results",document.getElementById("results").innerHTML);
+
+ document.getElementById("fire").style.display="block";
+ document.getElementById("winSound").play();
+
+ document.getElementById("resultPopup").style.display="flex";
+ document.getElementById("bigAmount").innerText="₹"+amount;
+}
+
+/* Close popup */
+function closePopup(){
+ document.getElementById("resultPopup").style.display="none";
 }
 
 /* Load */
@@ -307,4 +319,4 @@ window.onload=()=>{
 </script>
 
 </body>
- </html>
+                              </html>

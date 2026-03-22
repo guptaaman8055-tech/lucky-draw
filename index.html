@@ -12,6 +12,7 @@ color:white;
 text-align:center;
 }
 
+/* BOX */
 .box{
 background:#0f172a;
 padding:15px;
@@ -19,6 +20,7 @@ margin:10px;
 border-radius:10px;
 }
 
+/* INPUT */
 input,button{
 padding:10px;
 margin:5px;
@@ -32,6 +34,7 @@ color:white;
 cursor:pointer;
 }
 
+/* NUMBER GRID */
 .num{
 display:inline-block;
 padding:12px;
@@ -41,21 +44,24 @@ border-radius:6px;
 cursor:pointer;
 }
 
+/* SELECT */
 .active{
 background:#22c55e;
 }
 
+/* LIGHTNING */
 .light{
 background:yellow;
 color:black;
-box-shadow:0 0 15px yellow;
+box-shadow:0 0 20px yellow;
 }
 
+/* SHAKE */
 @keyframes shake{
 0%{transform:translate(0)}
-25%{transform:translate(5px)}
-50%{transform:translate(-5px)}
-75%{transform:translate(5px)}
+25%{transform:translate(6px)}
+50%{transform:translate(-6px)}
+75%{transform:translate(6px)}
 100%{transform:translate(0)}
 }
 
@@ -63,6 +69,7 @@ box-shadow:0 0 15px yellow;
 animation:shake 0.5s;
 }
 
+/* POPUP */
 #popup{
 display:none;
 position:fixed;
@@ -71,6 +78,7 @@ width:100%;height:100%;
 background:rgba(0,0,0,0.9);
 align-items:center;
 justify-content:center;
+flex-direction:column;
 }
 
 .flash{
@@ -81,6 +89,14 @@ animation:flash 1s infinite;
 0%{color:#22c55e;}
 50%{color:#facc15;}
 100%{color:#22c55e;}
+}
+
+/* TICKET */
+.ticket{
+background:linear-gradient(45deg,#22c55e,#16a34a);
+padding:15px;
+border-radius:10px;
+margin-top:10px;
 }
 
 </style>
@@ -115,6 +131,14 @@ animation:flash 1s infinite;
 <p id="payStatus">Status: Pending</p>
 </div>
 
+<!-- TICKET -->
+<div class="box">
+<h3>🎟 Your Ticket</h3>
+<div class="ticket">
+Ticket ID: <span id="ticketID">---</span>
+</div>
+</div>
+
 <!-- NUMBERS -->
 <div class="box">
 <h3>🎯 Select Number (0–15)</h3>
@@ -132,35 +156,6 @@ animation:flash 1s infinite;
 <h2 id="result">Result Locked</h2>
 </div>
 
-<!-- WITHDRAW + ADMIN -->
-<div class="box">
-<h3>💸 Withdrawal / Admin</h3>
-<input placeholder="Enter UPI ID"><br>
-<button onclick="withdraw()">Withdraw</button>
-</div>
-
-<!-- SUPPORT -->
-<div class="box">
-📧 support@luckydraw.com <br><br>
-
-<a href="https://t.me/tiger7652">
-<button style="background:#229ED9">Telegram</button>
-</a>
-
-<a href="https://wa.me/919999999999">
-<button style="background:#25D366">WhatsApp</button>
-</a>
-</div>
-
-<!-- TERMS -->
-<div class="box">
-📜 Terms & Conditions <br><br>
-Payment ke baad aapko login ID milega.  
-Aap apni ID se login karke draw access kar sakte hain.  
-Result ID number ke basis par hota hai.  
-Payment screenshot Telegram par bhejna zaroori hai.  
-</div>
-
 <!-- POPUP -->
 <div id="popup">
 <h1 id="winText"></h1>
@@ -175,6 +170,7 @@ Payment screenshot Telegram par bhejna zaroori hai.
 let logged=false;
 let selected=null;
 
+/* PRIZE */
 const prize={
 0:0,1:2000,2:3000,3:2500,4:4000,
 5:1500,6:3500,7:5000,8:4500,
@@ -208,6 +204,11 @@ let p=pass.value;
 
 if(u && m && p){
 logged=true;
+
+/* GENERATE TICKET */
+let tid="TKT-"+Math.floor(Math.random()*999999);
+document.getElementById("ticketID").innerText=tid;
+
 alert("Login Success");
 }else{
 alert("Fill all fields");
@@ -223,16 +224,16 @@ function upload(){
 document.getElementById("payStatus").innerText="Status: Uploaded ✅";
 }
 
-/* TIMER + LIGHTNING */
+/* START TIMER */
 function start(){
 
 if(!logged) return alert("Login First");
 if(selected===null) return alert("Select Number");
 
 let count=10;
-let t=setInterval(()=>{
-timer.innerText=count;
 
+let t=setInterval(()=>{
+timer.innerText="⏳ "+count;
 tick.play();
 
 count--;
@@ -251,6 +252,7 @@ document.body.classList.add("shake");
 thunder.play();
 
 let nums=document.querySelectorAll(".num");
+let finalNum=Math.floor(Math.random()*16);
 
 let i=0;
 
@@ -262,11 +264,13 @@ nums[rand].classList.add("light");
 
 i++;
 
-if(i>15){
+if(i>20){
 clearInterval(run);
+nums.forEach(n=>n.classList.remove("light"));
 
-let winNum=rand;
-show(winNum);
+nums[finalNum].classList.add("light");
+
+show(finalNum);
 }
 },100);
 }
@@ -287,12 +291,7 @@ winText.className="flash";
 setTimeout(()=>popup.style.display="none",3000);
 }
 
-/* WITHDRAW */
-function withdraw(){
-alert("Withdrawal Request Sent");
-}
-
 </script>
 
 </body>
-</html>
+  </html>

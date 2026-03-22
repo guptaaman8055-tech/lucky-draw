@@ -1,183 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ultra Lightning Lucky Draw</title>
-
-<style>
-body{
-font-family:Arial;
-background:#020617;
-color:white;
-text-align:center;
-}
-
-/* MONEY BACKGROUND */
-body::before{
-content:"💰 💸 💵 💰 💸 💵";
-position:fixed;
-font-size:40px;
-opacity:0.05;
-top:0;left:0;width:100%;height:100%;
-pointer-events:none;
-}
-
-.box{
-background:#0f172a;
-padding:15px;
-margin:10px;
-border-radius:10px;
-}
-
-input,button{
-padding:10px;
-margin:5px;
-border:none;
-border-radius:6px;
-}
-
-button{
-background:#22c55e;
-color:white;
-cursor:pointer;
-}
-
-.num{
-display:inline-block;
-padding:12px;
-margin:4px;
-background:#1e293b;
-border-radius:6px;
-cursor:pointer;
-}
-
-.active{background:#22c55e;}
-.light{
-background:yellow;
-color:black;
-box-shadow:0 0 20px yellow;
-}
-
-.shake{animation:shake 0.5s;}
-@keyframes shake{
-0%{transform:translate(0)}
-25%{transform:translate(6px)}
-50%{transform:translate(-6px)}
-75%{transform:translate(6px)}
-100%{transform:translate(0)}
-}
-
-#popup{
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.9);
-align-items:center;
-justify-content:center;
-}
-
-.flash{
-animation:flash 1s infinite;
-font-size:40px;
-}
-@keyframes flash{
-0%{color:#22c55e;}
-50%{color:#facc15;}
-100%{color:#22c55e;}
-}
-</style>
-</head>
-
-<body>
-
-<h2>🎉 Ultra Lightning Lucky Draw</h2>
-
-<div class="box">
-💰 Prize ₹50000 <br>
-🎟 Entry ₹50 <br>
-🆔 Draw ID: ULTRA-2026
-</div>
-
-<!-- LOGIN -->
-<div class="box">
-<h3>🔐 Login</h3>
-<input id="uid" placeholder="User ID"><br>
-<input id="mobile" placeholder="Mobile Number"><br>
-<input id="pass" type="password" placeholder="Password"><br>
-<button onclick="login()">Login</button>
-<p id="loginStatus"></p>
-</div>
-
-<!-- PAYMENT -->
-<div class="box">
-<h3>💳 Payment</h3>
-<img src="GooglePay_QR.png" width="150"><br>
-<button onclick="pay()">Pay ₹50</button><br>
-<input type="file"><br>
-<button onclick="upload()">Upload</button>
-<p id="payStatus">Status: Pending</p>
-</div>
-
-<!-- NUMBERS -->
-<div class="box">
-<h3>🎯 Select Number (0–15)</h3>
-<div id="nums"></div>
-</div>
-
-<!-- TIMER -->
-<div class="box">
-<h2 id="timer">Ready</h2>
-<button onclick="start()">Start Draw</button>
-</div>
-
-<!-- RESULT -->
-<div class="box">
-<h2 id="result">Result Locked</h2>
-<p id="ticket"></p>
-</div>
-
-<!-- ADMIN + WITHDRAW -->
-<div class="box">
-<h3>💸 Admin / Withdrawal</h3>
-<input placeholder="UPI ID"><br>
-<button onclick="withdraw()">Withdraw</button>
-</div>
-
-<!-- SUPPORT -->
-<div class="box">
-📧 support@luckydraw.com <br><br>
-
-<a href="https://t.me/tiger7652">
-<button style="background:#229ED9">Telegram</button>
-</a>
-
-<a href="https://wa.me/919999999999">
-<button style="background:#25D366">WhatsApp</button>
-</a>
-</div>
-
-<!-- TERMS -->
-<div class="box">
-📜 Terms & Conditions <br><br>
-Payment ke baad aapko login ID milega.<br>
-Telegram par screenshot bhejna zaroori hai.<br>
-Result ID number ke basis par hota hai.<br>
-</div>
-
-<!-- POPUP -->
-<div id="popup">
-<div class="flash" id="winText"></div>
-</div>
-
-<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-<audio id="thunder" src="https://actions.google.com/sounds/v1/weather/thunder_crack.ogg"></audio>
-<audio id="win" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
-
 <script>
 
 let logged=false;
 let selected=null;
+let timerRunning=false;
 
 /* PRIZE */
 const prize={
@@ -224,22 +49,37 @@ function upload(){
 payStatus.innerText="Status: Paid ✅";
 }
 
-/* START TIMER */
+/* ✅ FIXED TIMER */
 function start(){
+
+if(timerRunning) return; // duplicate run रोकने के लिए
 if(!logged) return alert("Login First");
 if(selected===null) return alert("Select Number");
 
+timerRunning=true;
+
 let count=10;
+let timerEl=document.getElementById("timer");
+
+timerEl.innerText="⏳ "+count;
 
 let t=setInterval(()=>{
-timer.innerText="⏳ "+count;
-tick.play();
-count--;
 
-if(count<0){
+document.getElementById("tick").currentTime=0;
+document.getElementById("tick").play();
+
+count--;
+timerEl.innerText="⏳ "+count;
+
+if(count<=0){
 clearInterval(t);
+timerEl.innerText="⚡ Starting...";
+setTimeout(()=>{
 lightning();
+timerRunning=false;
+},500);
 }
+
 },1000);
 }
 
@@ -247,13 +87,14 @@ lightning();
 function lightning(){
 
 document.body.classList.add("shake");
-thunder.play();
+document.getElementById("thunder").play();
 
 let nums=document.querySelectorAll(".num");
 let i=0;
-let winNum;
+let winNum=0;
 
 let run=setInterval(()=>{
+
 nums.forEach(n=>n.classList.remove("light"));
 
 winNum=Math.floor(Math.random()*16);
@@ -261,11 +102,13 @@ nums[winNum].classList.add("light");
 
 i++;
 
-if(i>20){
+if(i>25){
 clearInterval(run);
+document.body.classList.remove("shake");
 show(winNum);
 }
-},120);
+
+},100);
 }
 
 /* RESULT */
@@ -275,11 +118,11 @@ let amt=prize[n];
 
 result.innerText="🎯 Number: "+n+" | 💰 ₹"+amt;
 
-/* TICKET ID */
+/* Ticket ID */
 let ticketId="TKT"+Math.floor(Math.random()*999999);
 ticket.innerText="🎫 Ticket ID: "+ticketId;
 
-win.play();
+document.getElementById("win").play();
 
 /* POPUP */
 popup.style.display="flex";
@@ -294,6 +137,3 @@ alert("Withdrawal Requested");
 }
 
 </script>
-
-</body>
-  </html>

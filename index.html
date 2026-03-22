@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>⚡ Ultra Lightning Lucky Draw</title>
+<title>Ultra Lightning Lucky Draw</title>
 
 <style>
 body{
@@ -10,132 +10,121 @@ font-family:Arial;
 background:#020617;
 color:white;
 text-align:center;
-overflow-x:hidden;
 }
 
-/* MONEY BACKGROUND */
-body::before{
-content:"💰 💸 💵 💰 💸";
-position:fixed;
-font-size:40px;
-opacity:0.05;
-width:100%;
-top:30%;
-left:0;
-}
-
-/* BOX */
 .box{
 background:#0f172a;
 padding:15px;
-margin:15px;
-border-radius:12px;
+margin:10px;
+border-radius:10px;
 }
 
-/* BUTTON */
-button{
+input,button{
 padding:10px;
 margin:5px;
 border:none;
 border-radius:6px;
+}
+
+button{
+background:#22c55e;
+color:white;
 cursor:pointer;
 }
 
-/* NUMBERS */
 .num{
-background:#1e293b;
-color:white;
-padding:10px;
 display:inline-block;
+padding:12px;
 margin:4px;
+background:#1e293b;
 border-radius:6px;
-width:40px;
+cursor:pointer;
 }
 
-/* LIGHTNING EFFECT */
 .active{
+background:#22c55e;
+}
+
+.light{
 background:yellow;
 color:black;
-box-shadow:0 0 20px yellow;
+box-shadow:0 0 15px yellow;
 }
 
-/* SHAKE */
-.shake{
-animation:shake 0.3s infinite;
-}
 @keyframes shake{
-0%{transform:translate(2px,2px);}
-50%{transform:translate(-2px,-2px);}
-100%{transform:translate(2px,-2px);}
+0%{transform:translate(0)}
+25%{transform:translate(5px)}
+50%{transform:translate(-5px)}
+75%{transform:translate(5px)}
+100%{transform:translate(0)}
 }
 
-/* POPUP */
+.shake{
+animation:shake 0.5s;
+}
+
 #popup{
 display:none;
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.8);
-justify-content:center;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.9);
 align-items:center;
+justify-content:center;
 }
 
 .flash{
-font-size:40px;
 animation:flash 1s infinite;
 }
+
 @keyframes flash{
 0%{color:#22c55e;}
 50%{color:#facc15;}
 100%{color:#22c55e;}
 }
+
 </style>
 </head>
 
 <body>
 
-<h2>⚡ Ultra Lightning Lucky Draw</h2>
+<h2>🎉 Ultra Lightning Lucky Draw</h2>
 
 <div class="box">
-<h3>🏆 Prize ₹50000 | 🎟 Entry ₹50</h3>
-<p>🆔 Lucky Draw ID: LD-2026</p>
+💰 Prize Pool ₹50000 <br>
+🎟 Entry ₹50 <br>
+🆔 Draw ID: ULTRA-2026
 </div>
 
 <!-- LOGIN -->
 <div class="box">
 <h3>🔐 Login</h3>
-<input id="user" placeholder="User ID"><br><br>
-<input id="pass" type="password" placeholder="Password"><br><br>
+<input id="uid" placeholder="User ID"><br>
+<input id="mobile" placeholder="Mobile Number"><br>
+<input id="pass" type="password" placeholder="Password"><br>
 <button onclick="login()">Login</button>
-<p id="loginStatus"></p>
 </div>
 
 <!-- PAYMENT -->
 <div class="box">
 <h3>💳 Payment</h3>
-<img src="GooglePay_QR.png" width="200"><br>
-<button>Pay ₹50</button><br><br>
+<img src="GooglePay_QR.png" width="180"><br>
+<button onclick="pay()">Pay ₹50</button><br>
 <input type="file">
-<button>Upload</button>
-<p>✔ After payment send screenshot to Telegram</p>
+<button onclick="upload()">Upload</button>
+<p id="payStatus">Status: Pending</p>
 </div>
 
 <!-- NUMBERS -->
 <div class="box">
 <h3>🎯 Select Number (0–15)</h3>
-<div id="numbers"></div>
+<div id="nums"></div>
 </div>
 
 <!-- TIMER -->
 <div class="box">
-<h2 id="timer">10</h2>
-</div>
-
-<!-- DRAW -->
-<div class="box">
-<button onclick="startDraw()">⚡ Start Draw</button>
+<h2 id="timer">Press Start</h2>
+<button onclick="start()">Start Draw</button>
 </div>
 
 <!-- RESULT -->
@@ -143,165 +132,167 @@ animation:flash 1s infinite;
 <h2 id="result">Result Locked</h2>
 </div>
 
-<!-- ADMIN + WITHDRAW -->
+<!-- WITHDRAW + ADMIN -->
 <div class="box">
-<h3>🔐 Admin & Withdrawal</h3>
-<input placeholder="Enter UPI ID"><br><br>
-<button>Withdraw</button>
+<h3>💸 Withdrawal / Admin</h3>
+<input placeholder="Enter UPI ID"><br>
+<button onclick="withdraw()">Withdraw</button>
 </div>
 
 <!-- SUPPORT -->
 <div class="box">
-<p>📧 support@luckydraw.com</p>
+📧 support@luckydraw.com <br><br>
 
-<a href="https://t.me/tiger7652" target="_blank">
-<button style="background:#229ED9;color:white;">Telegram</button>
+<a href="https://t.me/tiger7652">
+<button style="background:#229ED9">Telegram</button>
 </a>
 
-<button style="background:green;">WhatsApp</button>
+<a href="https://wa.me/919999999999">
+<button style="background:#25D366">WhatsApp</button>
+</a>
 </div>
 
 <!-- TERMS -->
 <div class="box">
-<h3>📜 Terms</h3>
-<p>
-Payment ke baad aapko login ID & password diya jayega.<br>
-Telegram par screenshot bhejna zaroori hai.<br>
-ID ke through result check hoga.
-</p>
+📜 Terms & Conditions <br><br>
+Payment ke baad aapko login ID milega.  
+Aap apni ID se login karke draw access kar sakte hain.  
+Result ID number ke basis par hota hai.  
+Payment screenshot Telegram par bhejna zaroori hai.  
 </div>
 
 <!-- POPUP -->
 <div id="popup">
-<div>
-<h1 id="winText" class="flash"></h1>
-<button onclick="closePopup()">Close</button>
-</div>
+<h1 id="winText"></h1>
 </div>
 
-<audio id="sound" src="https://actions.google.com/sounds/v1/impacts/thunder_crack.ogg"></audio>
+<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="thunder" src="https://actions.google.com/sounds/v1/weather/thunder_crack.ogg"></audio>
+<audio id="win" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
 
-/* LOGIN FIX (NO ERROR) */
-let loggedIn=false;
+let logged=false;
+let selected=null;
 
-function login(){
- let u=document.getElementById("user").value;
- let p=document.getElementById("pass").value;
-
- if(u && p){
-  loggedIn=true;
-  document.getElementById("loginStatus").innerText="✅ Login Success";
- }else{
-  document.getElementById("loginStatus").innerText="❌ Enter details";
- }
-}
-
-/* NUMBERS 0–15 */
-let numDiv=document.getElementById("numbers");
-for(let i=0;i<=15;i++){
- let d=document.createElement("div");
- d.className="num";
- d.innerText=i;
- numDiv.appendChild(d);
-}
-
-/* PRIZE MAP */
 const prize={
-0:1000,1:2000,2:3000,3:2500,4:4000,
-5:1500,6:3500,7:5000,8:4500,9:3000,
-10:6000,11:2000,12:3500,13:2500,14:4000,15:5000
+0:0,1:2000,2:3000,3:2500,4:4000,
+5:1500,6:3500,7:5000,8:4500,
+9:3000,10:6000,11:2000,
+12:3500,13:2500,14:4000,15:5000
 };
 
-/* DRAW */
-function startDraw(){
+/* CREATE NUMBERS */
+let box=document.getElementById("nums");
+for(let i=0;i<=15;i++){
+let d=document.createElement("div");
+d.innerText=i;
+d.className="num";
 
- if(!loggedIn){
-  alert("Login First");
-  return;
- }
+d.onclick=()=>{
+if(!logged) return alert("Login First");
 
- let count=10;
- let timer=document.getElementById("timer");
+document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
+d.classList.add("active");
+selected=i;
+};
 
- let interval=setInterval(()=>{
-
-  timer.innerText=count;
-  count--;
-
-  if(count<0){
-   clearInterval(interval);
-   lightningEffect();
-  }
-
- },1000);
+box.appendChild(d);
 }
 
-/* LIGHTNING */
-function lightningEffect(){
+/* LOGIN */
+function login(){
+let u=uid.value;
+let m=mobile.value;
+let p=pass.value;
 
- document.body.classList.add("shake");
- document.getElementById("sound").play();
-
- let boxes=document.querySelectorAll(".num");
-
- let i=0;
-
- let run=setInterval(()=>{
-
-  boxes.forEach(b=>b.classList.remove("active"));
-
-  boxes[i%boxes.length].classList.add("active");
-
-  i++;
-
- },100);
-
- setTimeout(()=>{
-  clearInterval(run);
-  document.body.classList.remove("shake");
-
-  let win=Math.floor(Math.random()*16);
-
-  boxes.forEach(b=>b.classList.remove("active"));
-  boxes[win].classList.add("active");
-
-  showResult(win);
-
- },3000);
+if(u && m && p){
+logged=true;
+alert("Login Success");
+}else{
+alert("Fill all fields");
+}
 }
 
-/* RESULT (ONLY NUMBER + AMOUNT) */
-function showResult(num){
-
- let amt=prize[num];
-
- document.getElementById("result").innerText=
- "🎯 Number: "+num+" | 💰 ₹"+amt;
-
- showPopup(amt);
+/* PAYMENT */
+function pay(){
+alert("Pay ₹50 and upload screenshot");
 }
 
-/* POPUP */
-function showPopup(amount){
- let p=document.getElementById("popup");
- let t=document.getElementById("winText");
-
- t.innerText="💥 BIG WIN ₹"+amount;
-
- p.style.display="flex";
-
- if(navigator.vibrate){
-  navigator.vibrate([200,100,200]);
- }
+function upload(){
+document.getElementById("payStatus").innerText="Status: Uploaded ✅";
 }
 
-function closePopup(){
- document.getElementById("popup").style.display="none";
+/* TIMER + LIGHTNING */
+function start(){
+
+if(!logged) return alert("Login First");
+if(selected===null) return alert("Select Number");
+
+let count=10;
+let t=setInterval(()=>{
+timer.innerText=count;
+
+tick.play();
+
+count--;
+
+if(count<0){
+clearInterval(t);
+lightning();
+}
+},1000);
+}
+
+/* LIGHTNING EFFECT */
+function lightning(){
+
+document.body.classList.add("shake");
+thunder.play();
+
+let nums=document.querySelectorAll(".num");
+
+let i=0;
+
+let run=setInterval(()=>{
+nums.forEach(n=>n.classList.remove("light"));
+
+let rand=Math.floor(Math.random()*16);
+nums[rand].classList.add("light");
+
+i++;
+
+if(i>15){
+clearInterval(run);
+
+let winNum=rand;
+show(winNum);
+}
+},100);
+}
+
+/* RESULT */
+function show(n){
+
+let amt=prize[n];
+
+result.innerText="🎯 Number: "+n+" | 💰 ₹"+amt;
+
+win.play();
+
+popup.style.display="flex";
+winText.innerText="💥 BIG WIN ₹"+amt;
+winText.className="flash";
+
+setTimeout(()=>popup.style.display="none",3000);
+}
+
+/* WITHDRAW */
+function withdraw(){
+alert("Withdrawal Request Sent");
 }
 
 </script>
 
 </body>
- </html>
+</html>

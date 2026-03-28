@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ultra Lightning Lucky Draw</title>
+<title>Ultra Lucky Draw</title>
 
 <style>
 body{
@@ -12,7 +12,6 @@ color:white;
 text-align:center;
 }
 
-/* BOX */
 .box{
 background:#0f172a;
 padding:15px;
@@ -20,18 +19,19 @@ margin:10px;
 border-radius:10px;
 }
 
-/* BUTTON */
-button{
+input,button{
 padding:10px;
 margin:5px;
 border:none;
 border-radius:6px;
+}
+
+button{
 background:#22c55e;
 color:white;
 cursor:pointer;
 }
 
-/* NUMBERS */
 .num{
 display:inline-block;
 padding:12px;
@@ -40,14 +40,10 @@ background:#1e293b;
 border-radius:6px;
 cursor:pointer;
 }
-.active{background:#22c55e;}
-.light{
-background:yellow;
-color:black;
-box-shadow:0 0 20px yellow;
-}
 
-/* SHAKE */
+.active{background:#22c55e;}
+.light{background:yellow;color:black;box-shadow:0 0 15px yellow;}
+
 @keyframes shake{
 0%{transform:translate(0)}
 25%{transform:translate(5px)}
@@ -57,7 +53,6 @@ box-shadow:0 0 20px yellow;
 }
 .shake{animation:shake 0.5s;}
 
-/* POPUP */
 #popup{
 display:none;
 position:fixed;
@@ -71,30 +66,29 @@ justify-content:center;
 .flash{
 animation:flash 1s infinite;
 }
+
 @keyframes flash{
 0%{color:#22c55e;}
 50%{color:#facc15;}
 100%{color:#22c55e;}
 }
-
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Ultra Lightning Lucky Draw</h2>
+<h2>🎉 Ultra Lucky Draw</h2>
 
 <div class="box">
 💰 Prize ₹50000 <br>
 🎟 Entry ₹50 <br>
-🆔 Draw ID: ULTRA-2026
+🆔 Draw ID: ULTRA-001
 </div>
 
 <!-- LOGIN -->
 <div class="box">
 <h3>🔐 Login</h3>
 <input id="uid" placeholder="User ID"><br>
-<input id="mobile" placeholder="Mobile Number"><br>
 <input id="pass" type="password" placeholder="Password"><br>
 <button onclick="login()">Login</button>
 </div>
@@ -103,14 +97,11 @@ animation:flash 1s infinite;
 <div class="box">
 <h3>💳 Payment</h3>
 
-<!-- ✅ YOUR QR CODE -->
-<img src="qr.png" width="200"><br>
+<!-- ✅ FIXED QR CODE (तुम्हारा वाला) -->
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=Q345233165@ybl&pn=Payment&am=50" width="200">
 
-<p>UPI: Q345233165@ybl</p>
-
-<button onclick="pay()">Pay ₹50</button><br>
-<input type="file">
-<button onclick="upload()">Upload</button>
+<br><br>
+<button onclick="pay()">Pay ₹50</button>
 <p id="payStatus">Status: Pending</p>
 </div>
 
@@ -122,34 +113,13 @@ animation:flash 1s infinite;
 
 <!-- TIMER -->
 <div class="box">
-<h2 id="timer">10</h2>
+<h2 id="timer">Press Start</h2>
 <button onclick="start()">Start Draw</button>
 </div>
 
 <!-- RESULT -->
 <div class="box">
 <h2 id="result">Result Locked</h2>
-</div>
-
-<!-- SUPPORT -->
-<div class="box">
-📧 support@luckydraw.com <br><br>
-
-<a href="https://t.me/tiger7652">
-<button style="background:#229ED9">Telegram</button>
-</a>
-
-<a href="https://wa.me/919999999999">
-<button style="background:#25D366">WhatsApp</button>
-</a>
-</div>
-
-<!-- TERMS -->
-<div class="box">
-📜 Terms & Conditions <br><br>
-Payment ke baad login ID diya jayega.  
-Result ID number ke basis par check hoga.  
-Screenshot Telegram par bhejna zaroori hai.  
 </div>
 
 <!-- POPUP -->
@@ -166,7 +136,6 @@ Screenshot Telegram par bhejna zaroori hai.
 let logged=false;
 let selected=null;
 
-/* PRIZE */
 const prize={
 0:0,1:2000,2:3000,3:2500,4:4000,
 5:1500,6:3500,7:5000,8:4500,
@@ -174,7 +143,7 @@ const prize={
 12:3500,13:2500,14:4000,15:5000
 };
 
-/* NUMBERS CREATE */
+/* CREATE NUMBERS */
 let box=document.getElementById("nums");
 for(let i=0;i<=15;i++){
 let d=document.createElement("div");
@@ -182,7 +151,7 @@ d.innerText=i;
 d.className="num";
 
 d.onclick=()=>{
-if(!logged) return alert("Login First");
+if(!logged){alert("Login First"); return;}
 
 document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
 d.classList.add("active");
@@ -194,50 +163,53 @@ box.appendChild(d);
 
 /* LOGIN */
 function login(){
-if(uid.value && mobile.value && pass.value){
+let u=document.getElementById("uid").value;
+let p=document.getElementById("pass").value;
+
+if(u && p){
 logged=true;
-alert("Login Success");
+alert("Login Success ✅");
 }else{
-alert("Fill all fields");
+alert("Fill all fields ❌");
 }
 }
 
 /* PAYMENT */
 function pay(){
-alert("Pay ₹50");
+document.getElementById("payStatus").innerText="Status: Paid ✅";
 }
 
-function upload(){
-document.getElementById("payStatus").innerText="Status: Uploaded ✅";
-}
-
-/* START DRAW */
+/* START TIMER */
 function start(){
 
-if(!logged) return alert("Login First");
-if(selected===null) return alert("Select Number");
+if(!logged){alert("Login First"); return;}
+if(selected===null){alert("Select Number"); return;}
 
 let count=10;
 
-let t=setInterval(()=>{
-timer.innerText=count;
-tick.play();
+let interval=setInterval(()=>{
+document.getElementById("timer").innerText="⏳ "+count;
+document.getElementById("tick").play();
+
 count--;
 
 if(count<0){
-clearInterval(t);
+clearInterval(interval);
 lightning();
 }
+
 },1000);
 }
 
-/* LIGHTNING */
+/* LIGHTNING EFFECT */
 function lightning(){
 
 document.body.classList.add("shake");
-thunder.play();
+document.getElementById("thunder").play();
 
 let nums=document.querySelectorAll(".num");
+let i=0;
+let finalNum=Math.floor(Math.random()*16);
 
 let run=setInterval(()=>{
 nums.forEach(n=>n.classList.remove("light"));
@@ -245,15 +217,16 @@ nums.forEach(n=>n.classList.remove("light"));
 let rand=Math.floor(Math.random()*16);
 nums[rand].classList.add("light");
 
-},100);
+i++;
 
-setTimeout(()=>{
+if(i>20){
 clearInterval(run);
+nums.forEach(n=>n.classList.remove("light"));
+nums[finalNum].classList.add("light");
+show(finalNum);
+}
 
-let winNum=Math.floor(Math.random()*16);
-show(winNum);
-
-},2000);
+},100);
 }
 
 /* RESULT */
@@ -261,13 +234,18 @@ function show(n){
 
 let amt=prize[n];
 
-result.innerText="🎯 Number: "+n+" | 💰 ₹"+amt;
+document.getElementById("result").innerText=
+"🎯 Number: "+n+" | 💰 ₹"+amt;
 
-win.play();
+document.getElementById("win").play();
+
+let popup=document.getElementById("popup");
+let txt=document.getElementById("winText");
+
+txt.innerText="💥 BIG WIN ₹"+amt;
+txt.className="flash";
 
 popup.style.display="flex";
-winText.innerText="💥 BIG WIN ₹"+amt;
-winText.className="flash";
 
 setTimeout(()=>popup.style.display="none",3000);
 }
@@ -275,4 +253,4 @@ setTimeout(()=>popup.style.display="none",3000);
 </script>
 
 </body>
-  </html>
+</html>

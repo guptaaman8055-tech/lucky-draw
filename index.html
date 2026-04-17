@@ -2,119 +2,63 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ultra Lucky Draw</title>
+<title>Admin Lucky Draw</title>
 
 <style>
-body{
-font-family:Arial;
-background:#020617;
-color:white;
-text-align:center;
-}
+body{font-family:Arial;background:#020617;color:white;text-align:center;}
 
-.box{
-background:#0f172a;
-padding:15px;
-margin:10px;
-border-radius:10px;
-}
+.box{background:#0f172a;padding:15px;margin:10px;border-radius:10px;}
 
 input,button{
-padding:10px;
-margin:5px;
-border:none;
-border-radius:6px;
+padding:10px;margin:5px;border:none;border-radius:6px;
 }
 
-button{
-background:#22c55e;
-color:white;
-cursor:pointer;
-}
+button{background:#22c55e;color:white;cursor:pointer;}
 
 .num{
 display:inline-block;
-padding:12px;
-margin:4px;
-background:#1e293b;
-border-radius:6px;
-cursor:pointer;
+padding:10px;margin:3px;
+background:#1e293b;border-radius:5px;
 }
 
 .active{background:#22c55e;}
-.light{background:yellow;color:black;box-shadow:0 0 15px yellow;}
+.light{background:yellow;color:black;}
 
-@keyframes shake{
-0%{transform:translate(0)}
-25%{transform:translate(5px)}
-50%{transform:translate(-5px)}
-75%{transform:translate(5px)}
-100%{transform:translate(0)}
-}
-.shake{animation:shake 0.5s;}
-
-#popup{
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.9);
-align-items:center;
-justify-content:center;
-}
-
-.flash{
-animation:flash 1s infinite;
-}
-
-@keyframes flash{
-0%{color:#22c55e;}
-50%{color:#facc15;}
-100%{color:#22c55e;}
-}
+#adminPanel{display:none;background:#111827;}
 </style>
 </head>
 
 <body>
 
-<h2>🎉 Ultra Lucky Draw</h2>
+<h2>🎉 Lucky Draw System</h2>
 
 <div class="box">
-💰 Prize ₹50000 <br>
-🎟 Entry ₹50 <br>
-🆔 Draw ID: ULTRA-001
+💰 Prize Pool ₹50000 <br>
+🎟 Entry ₹50
 </div>
 
-<!-- LOGIN -->
-<div class="box">
-<h3>🔐 Login</h3>
-<input id="uid" placeholder="User ID"><br>
-<input id="pass" type="password" placeholder="Password"><br>
-<button onclick="login()">Login</button>
-</div>
-
-<!-- PAYMENT -->
+<!-- USER PAYMENT -->
 <div class="box">
 <h3>💳 Payment</h3>
 
-<!-- ✅ FIXED QR CODE (तुम्हारा वाला) -->
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=Q345233165@ybl&pn=Payment&am=50" width="200">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=Q345233165@ybl&am=50" width="200">
 
-<br><br>
-<button onclick="pay()">Pay ₹50</button>
-<p id="payStatus">Status: Pending</p>
+<br>
+<input id="utr" placeholder="Enter UTR Number">
+<button onclick="submitUTR()">Submit UTR</button>
+
+<p id="payStatus">Status: Not Paid</p>
 </div>
 
 <!-- NUMBERS -->
 <div class="box">
-<h3>🎯 Select Number (0–15)</h3>
+<h3>🎯 Numbers (0–15)</h3>
 <div id="nums"></div>
 </div>
 
 <!-- TIMER -->
 <div class="box">
-<h2 id="timer">Press Start</h2>
-<button onclick="start()">Start Draw</button>
+<h2 id="timer">Waiting for Admin...</h2>
 </div>
 
 <!-- RESULT -->
@@ -122,19 +66,31 @@ animation:flash 1s infinite;
 <h2 id="result">Result Locked</h2>
 </div>
 
-<!-- POPUP -->
-<div id="popup">
-<h1 id="winText"></h1>
+<!-- ADMIN LOGIN -->
+<div class="box">
+<h3>🔐 Admin Access</h3>
+<input id="adminPass" placeholder="Enter Admin Password">
+<button onclick="adminLogin()">Login</button>
 </div>
 
-<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-<audio id="thunder" src="https://actions.google.com/sounds/v1/weather/thunder_crack.ogg"></audio>
-<audio id="win" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="box">
+<h3>⚙ Admin Panel</h3>
+
+<button onclick="startDraw()">▶ Start Draw</button>
+
+<p>Total Users: <span id="users">0</span></p>
+<p>Total Collection: ₹<span id="collection">0</span></p>
+<p>Winning Amount: ₹<span id="winAmt">0</span></p>
+<p>Profit / Loss: ₹<span id="profit">0</span></p>
+
+</div>
 
 <script>
 
-let logged=false;
-let selected=null;
+let paidUsers=0;
+let collection=0;
+let admin=false;
 
 const prize={
 0:0,1:2000,2:3000,3:2500,4:4000,
@@ -149,69 +105,69 @@ for(let i=0;i<=15;i++){
 let d=document.createElement("div");
 d.innerText=i;
 d.className="num";
-
-d.onclick=()=>{
-if(!logged){alert("Login First"); return;}
-
-document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
-d.classList.add("active");
-selected=i;
-};
-
 box.appendChild(d);
 }
 
-/* LOGIN */
-function login(){
-let u=document.getElementById("uid").value;
-let p=document.getElementById("pass").value;
+/* UTR SUBMIT */
+function submitUTR(){
+let utr=document.getElementById("utr").value;
 
-if(u && p){
-logged=true;
-alert("Login Success ✅");
+if(utr.length<5){
+alert("Invalid UTR ❌");
+return;
+}
+
+paidUsers++;
+collection+=50;
+
+document.getElementById("payStatus").innerText="Paid ✅";
+updateAdmin();
+}
+
+/* ADMIN LOGIN */
+function adminLogin(){
+let pass=document.getElementById("adminPass").value;
+
+if(pass==="12345"){  // change password
+admin=true;
+document.getElementById("adminPanel").style.display="block";
+alert("Admin Login Success");
 }else{
-alert("Fill all fields ❌");
+alert("Wrong Password");
 }
 }
 
-/* PAYMENT */
-function pay(){
-document.getElementById("payStatus").innerText="Status: Paid ✅";
+/* START DRAW (ADMIN ONLY) */
+function startDraw(){
+
+if(!admin){
+alert("Only Admin can start");
+return;
 }
-
-/* START TIMER */
-function start(){
-
-if(!logged){alert("Login First"); return;}
-if(selected===null){alert("Select Number"); return;}
 
 let count=10;
 
-let interval=setInterval(()=>{
+let t=setInterval(()=>{
 document.getElementById("timer").innerText="⏳ "+count;
-document.getElementById("tick").play();
 
 count--;
 
 if(count<0){
-clearInterval(interval);
-lightning();
+clearInterval(t);
+runDraw();
 }
-
 },1000);
 }
 
-/* LIGHTNING EFFECT */
-function lightning(){
-
-document.body.classList.add("shake");
-document.getElementById("thunder").play();
+/* DRAW */
+function runDraw(){
 
 let nums=document.querySelectorAll(".num");
 let i=0;
 let finalNum=Math.floor(Math.random()*16);
 
 let run=setInterval(()=>{
+
 nums.forEach(n=>n.classList.remove("light"));
 
 let rand=Math.floor(Math.random()*16);
@@ -223,31 +179,32 @@ if(i>20){
 clearInterval(run);
 nums.forEach(n=>n.classList.remove("light"));
 nums[finalNum].classList.add("light");
-show(finalNum);
+
+showResult(finalNum);
 }
 
 },100);
 }
 
 /* RESULT */
-function show(n){
+function showResult(n){
 
 let amt=prize[n];
 
 document.getElementById("result").innerText=
 "🎯 Number: "+n+" | 💰 ₹"+amt;
 
-document.getElementById("win").play();
+document.getElementById("winAmt").innerText=amt;
 
-let popup=document.getElementById("popup");
-let txt=document.getElementById("winText");
+let profit=collection-amt;
+document.getElementById("profit").innerText=profit;
 
-txt.innerText="💥 BIG WIN ₹"+amt;
-txt.className="flash";
+}
 
-popup.style.display="flex";
-
-setTimeout(()=>popup.style.display="none",3000);
+/* ADMIN UPDATE */
+function updateAdmin(){
+document.getElementById("users").innerText=paidUsers;
+document.getElementById("collection").innerText=collection;
 }
 
 </script>

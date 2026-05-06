@@ -2,46 +2,77 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lightning Lucky Draw</title>
+<title>Casino 3D Wheel</title>
 
 <style>
 body{
-background:#020617;
+margin:0;
+background:#000;
 color:white;
 font-family:Arial;
 text-align:center;
+overflow:hidden;
 }
 
-.box{
-background:#0f172a;
-padding:15px;
-margin:10px;
-border-radius:10px;
+h2{
+text-shadow:0 0 20px gold;
 }
 
+#canvas{
+width:100%;
+height:65vh;
+}
+
+/* BUTTON */
 button{
-padding:10px;
-margin:5px;
+padding:15px 30px;
+background:gold;
 border:none;
-border-radius:6px;
-background:#22c55e;
-color:white;
+border-radius:10px;
+font-size:18px;
+box-shadow:0 0 20px gold;
 }
 
-.num{
-display:inline-block;
-padding:12px;
-margin:4px;
-background:#1e293b;
-border-radius:6px;
-cursor:pointer;
+/* POINTER */
+#pointer{
+position:absolute;
+top:60px;
+left:50%;
+transform:translateX(-50%);
+font-size:30px;
 }
 
-.active{background:#22c55e;}
-.light{
-background:yellow;
-color:black;
-box-shadow:0 0 15px yellow;
+/* RESULT */
+#result{
+margin-top:10px;
+font-size:22px;
+}
+
+/* POPUP */
+#popup{
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.9);
+align-items:center;
+justify-content:center;
+}
+
+.bigwin{
+font-size:45px;
+animation:flash 1s infinite;
+}
+
+@keyframes flash{
+0%{color:gold;}
+50%{color:red;}
+100%{color:gold;}
+}
+
+/* SHAKE */
+.shake{
+animation:shake 0.4s;
 }
 
 @keyframes shake{
@@ -51,198 +82,119 @@ box-shadow:0 0 15px yellow;
 75%{transform:translate(5px)}
 100%{transform:translate(0)}
 }
-.shake{animation:shake 0.4s;}
 
-#popup{
-display:none;
-position:fixed;
-top:0;
-width:100%;
-height:100%;
-background:black;
-justify-content:center;
-align-items:center;
-font-size:30px;
-color:yellow;
-}
 </style>
 </head>
 
 <body>
 
-<h2>⚡ Lightning Lucky Draw</h2>
+<h2>🎰 CASINO 3D WHEEL (DEMO)</h2>
 
-<div class="box">
-💰 Prize ₹50000 <br>
-🎟 Entry ₹50 <br>
-🆔 Draw ID: LD2026
+<div id="pointer">▼</div>
+
+<canvas id="canvas"></canvas>
+
+<button onclick="spin()">SPIN</button>
+
+<div id="result">Waiting...</div>
+
+<div id="popup">
+<div class="bigwin" id="winText"></div>
 </div>
 
-<!-- LOGIN -->
-<div class="box">
-<input id="mobile" placeholder="Mobile"><br>
-<input id="pass" placeholder="Password"><br>
-<button onclick="login()">Login</button>
-</div>
-
-<!-- PAYMENT -->
-<div class="box">
-<h3>💳 Payment</h3>
-
-<img src="YOUR_QR_IMAGE_LINK_HERE" width="200"><br>
-
-<input id="utr" placeholder="Enter UTR"><br>
-<button onclick="pay()">Submit Payment</button>
-
-<p id="status">Status: Pending</p>
-</div>
-
-<!-- NUMBERS -->
-<div class="box">
-<h3>Select Number (0–15)</h3>
-<div id="nums"></div>
-</div>
-
-<!-- ADMIN -->
-<div class="box">
-<h3>🎮 Admin Control</h3>
-<button onclick="start()">Start Draw</button>
-</div>
-
-<!-- TIMER -->
-<div class="box">
-<h2 id="timer">Ready</h2>
-</div>
-
-<!-- RESULT -->
-<div class="box">
-<h2 id="result">Waiting...</h2>
-<p id="ticket"></p>
-</div>
-
-<div id="popup">💥 BIG WIN 💥</div>
-
-<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-<audio id="thunder" src="https://actions.google.com/sounds/v1/weather/thunder_crack.ogg"></audio>
-<audio id="win" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
 <script>
 
-let logged=false;
-let paid=false;
-let selected=null;
+/* THREE JS */
+let scene=new THREE.Scene();
+let camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
+let renderer=new THREE.WebGLRenderer({canvas:document.getElementById("canvas"),alpha:true});
 
-const prize={
-0:0,1:2000,2:3000,3:2500,4:4000,
-5:1500,6:3500,7:5000,8:4500,
-9:3000,10:6000,11:2000,
-12:3500,13:2500,14:4000,15:5000
-};
+renderer.setSize(window.innerWidth,window.innerHeight*0.65);
 
-/* CREATE NUMBERS */
-for(let i=0;i<=15;i++){
-let d=document.createElement("div");
-d.innerText=i;
-d.className="num";
+camera.position.z=6;
 
-d.onclick=()=>{
-if(!logged) return alert("Login First");
-if(!paid) return alert("Pay First");
+/* LIGHTS */
+let light=new THREE.PointLight(0xffffff,1);
+light.position.set(5,5,5);
+scene.add(light);
 
-document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
-d.classList.add("active");
-selected=i;
-};
+/* WHEEL */
+let geometry=new THREE.CylinderGeometry(3,3,0.5,32);
+let material=new THREE.MeshStandardMaterial({
+color:0x222222,
+metalness:0.8,
+roughness:0.2
+});
 
-nums.appendChild(d);
+let wheel=new THREE.Mesh(geometry,material);
+scene.add(wheel);
+
+/* COLORS */
+let colors=[0xff0000,0x00ff00,0xffff00,0x00ffff,0xff00ff];
+
+/* SEGMENTS VISUAL */
+for(let i=0;i<15;i++){
+let geo=new THREE.BoxGeometry(0.3,0.5,3);
+let mat=new THREE.MeshBasicMaterial({color:colors[i%5]});
+
+let part=new THREE.Mesh(geo,mat);
+
+part.position.set(Math.sin(i*0.4)*3,0,Math.cos(i*0.4)*3);
+part.rotation.y=i*0.4;
+
+wheel.add(part);
 }
 
-/* LOGIN */
-function login(){
-if(mobile.value && pass.value){
-logged=true;
-alert("Login Success");
-}else{
-alert("Fill all fields");
+/* ANIMATE */
+function animate(){
+requestAnimationFrame(animate);
+renderer.render(scene,camera);
 }
-}
+animate();
 
-/* PAYMENT */
-function pay(){
-let u=utr.value;
-if(u.length<5) return alert("Enter valid UTR");
-
-paid=true;
-status.innerText="Payment Success ✅";
-}
-
-/* START DRAW (ADMIN ONLY STYLE) */
-function start(){
-
-if(!logged || !paid || selected==null){
-alert("Complete all steps");
-return;
-}
-
-let count=10;
-
-let t=setInterval(()=>{
-timer.innerText="⏳ "+count;
-tick.play();
-count--;
-
-if(count<0){
-clearInterval(t);
-lightning();
-}
-},1000);
-
-}
-
-/* LIGHTNING EFFECT */
-function lightning(){
+/* SPIN */
+function spin(){
 
 document.body.classList.add("shake");
-thunder.play();
 
-let all=document.querySelectorAll(".num");
+let speed=0.3;
+let total=0;
 
-let i=0;
+let target=Math.floor(Math.random()*15);
 
-let run=setInterval(()=>{
-all.forEach(n=>n.classList.remove("light"));
+let spinAnim=setInterval(()=>{
 
-let r=Math.floor(Math.random()*16);
-all[r].classList.add("light");
+wheel.rotation.y+=speed;
+total+=speed;
+speed*=0.98;
 
-i++;
-
-if(i>20){
-clearInterval(run);
-resultShow(r);
+if(speed<0.01){
+clearInterval(spinAnim);
+showResult(target);
 }
-},100);
 
+},30);
 }
 
 /* RESULT */
-function resultShow(n){
+function showResult(num){
 
-let amt=prize[n];
+document.body.classList.remove("shake");
 
-result.innerText="🎯 Number: "+n+" | ₹"+amt;
+document.getElementById("result").innerText="🎯 Number: "+num;
 
-let ticketId="TICKET-"+Math.floor(Math.random()*999999);
-ticket.innerText="🎟 "+ticketId;
+let popup=document.getElementById("popup");
+let text=document.getElementById("winText");
 
-win.play();
+text.innerText="💥 BIG WIN: "+num;
 
 popup.style.display="flex";
 
 setTimeout(()=>{
 popup.style.display="none";
 },3000);
-
 }
 
 </script>

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lightning VIP</title>
+<title>VIP Lightning</title>
 
 <style>
 body{
@@ -11,21 +11,6 @@ background:#0b0f1a;
 font-family:sans-serif;
 color:#fff;
 text-align:center;
-}
-
-/* TIMER RING */
-.ring{
-width:80px;
-height:80px;
-border-radius:50%;
-border:6px solid #333;
-border-top:6px solid gold;
-margin:10px auto;
-animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-100%{transform:rotate(360deg);}
 }
 
 /* GRID */
@@ -38,23 +23,24 @@ padding:10px;
 
 .num{
 padding:18px;
-background:#111;
 border-radius:8px;
 font-size:18px;
 transition:0.2s;
-border:1px solid gold;
 }
 
+/* COLORS */
+.red{background:#b91c1c;}
+.black{background:#111;}
+.green{background:#15803d;}
+
 .light{
-background:gold;
-color:black;
 transform:scale(1.2);
 box-shadow:0 0 20px gold;
 }
 
 /* RESULT */
 #result{
-font-size:24px;
+font-size:22px;
 margin:10px;
 }
 
@@ -70,7 +56,7 @@ justify-content:center;
 }
 
 .win{
-font-size:40px;
+font-size:35px;
 animation:flash 1s infinite;
 }
 
@@ -80,13 +66,11 @@ animation:flash 1s infinite;
 100%{color:gold;}
 }
 </style>
-
 </head>
+
 <body>
 
-<h2>⚡ VIP Lightning</h2>
-
-<div class="ring" id="ring"></div>
+<h2>🎰 VIP Lightning Demo</h2>
 
 <div class="grid" id="grid"></div>
 
@@ -98,29 +82,40 @@ animation:flash 1s infinite;
 
 <script>
 
+/* MULTIPLIERS */
+let multipliers={};
+
 /* CREATE NUMBERS */
 let grid=document.getElementById("grid");
+
 for(let i=1;i<=20;i++){
+
 let d=document.createElement("div");
 d.className="num";
-d.innerText=i;
+
+/* COLOR SET */
+if(i%3==0) d.classList.add("green");
+else if(i%2==0) d.classList.add("red");
+else d.classList.add("black");
+
+/* MULTIPLIER */
+let multi=Math.floor(Math.random()*20)+1;
+multipliers[i]=multi;
+
+d.innerHTML=i+"<br>"+multi+"x";
+
 grid.appendChild(d);
 }
 
-/* MAIN LOOP */
+/* START */
 function start(){
-
-setTimeout(()=>{
-run();
-},3000);
-
+setTimeout(run,2000);
 }
 
-/* LIGHTNING RUN */
+/* RUN */
 function run(){
 
 let nums=document.querySelectorAll(".num");
-
 let i=0;
 let speed=40;
 
@@ -133,13 +128,13 @@ nums[index].classList.add("light");
 
 i++;
 
-/* slow effect */
+/* slow */
 if(i>40) speed+=5;
 
 if(i>80){
 clearInterval(loop);
 
-let winNum=Math.floor(Math.random()*20);
+let winNum=Math.floor(Math.random()*20)+1;
 show(winNum);
 }
 
@@ -149,12 +144,15 @@ show(winNum);
 /* RESULT */
 function show(n){
 
-document.getElementById("result").innerText="🎯 "+n;
+let multi=multipliers[n];
+
+document.getElementById("result").innerText=
+"🎯 "+n+" | ⚡ "+multi+"x";
 
 let popup=document.getElementById("popup");
 let win=document.getElementById("win");
 
-win.innerText="💥 "+n;
+win.innerText="💥 "+n+" → "+multi+"x";
 
 popup.style.display="flex";
 
@@ -164,7 +162,7 @@ start();
 },2500);
 }
 
-/* START LOOP */
+/* AUTO START */
 start();
 
 </script>

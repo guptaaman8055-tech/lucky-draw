@@ -2,123 +2,104 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lightning Game</title>
+<title>Lightning VIP</title>
 
 <style>
 body{
 margin:0;
-font-family:Arial;
 background:#0b0f1a;
+font-family:sans-serif;
 color:#fff;
 text-align:center;
 }
 
-/* HEADER */
-.top{
-display:flex;
-justify-content:space-between;
-padding:10px;
-}
-
-.deposit{
-background:#22c55e;
-padding:8px 15px;
-border-radius:10px;
-}
-
-/* TIMER */
-.timerBox{
-position:fixed;
-top:60px;
-right:10px;
-background:#111;
-width:60px;
-height:60px;
+/* TIMER RING */
+.ring{
+width:80px;
+height:80px;
 border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:22px;
-box-shadow:0 0 15px gold;
+border:6px solid #333;
+border-top:6px solid gold;
+margin:10px auto;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg);}
 }
 
 /* GRID */
 .grid{
 display:grid;
 grid-template-columns:repeat(5,1fr);
-gap:5px;
-padding:15px;
-}
-
-.num{
-padding:20px;
-background:#111;
-border:1px solid gold;
-border-radius:6px;
-font-size:18px;
-}
-
-.active{
-background:gold;
-color:black;
-}
-
-/* BOTTOM */
-.bottom{
-position:fixed;
-bottom:0;
-width:100%;
-background:#000;
+gap:8px;
 padding:10px;
 }
 
-.chip{
-display:inline-block;
-padding:8px 12px;
-border-radius:50%;
-background:#222;
-margin:5px;
+.num{
+padding:18px;
+background:#111;
+border-radius:8px;
+font-size:18px;
+transition:0.2s;
+border:1px solid gold;
 }
 
-/* RESULT FLASH */
+.light{
+background:gold;
+color:black;
+transform:scale(1.2);
+box-shadow:0 0 20px gold;
+}
+
+/* RESULT */
+#result{
+font-size:24px;
+margin:10px;
+}
+
+/* POPUP */
+#popup{
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.9);
+align-items:center;
+justify-content:center;
+}
+
 .win{
+font-size:40px;
 animation:flash 1s infinite;
 }
 
 @keyframes flash{
-0%{background:gold;}
-50%{background:red;}
-100%{background:gold;}
+0%{color:gold;}
+50%{color:red;}
+100%{color:gold;}
 }
-
 </style>
-</head>
 
+</head>
 <body>
 
-<div class="top">
-<div>💰 Balance ₹0</div>
-<div class="deposit">Deposit</div>
-</div>
+<h2>⚡ VIP Lightning</h2>
 
-<h3>⚡ PLACE YOUR BETS</h3>
-
-<div class="timerBox" id="timer">10</div>
+<div class="ring" id="ring"></div>
 
 <div class="grid" id="grid"></div>
 
-<div class="bottom">
-<span class="chip">10</span>
-<span class="chip">50</span>
-<span class="chip">100</span>
-<span class="chip">500</span>
+<div id="result">---</div>
+
+<div id="popup">
+<div class="win" id="win"></div>
 </div>
 
 <script>
 
 /* CREATE NUMBERS */
 let grid=document.getElementById("grid");
-
 for(let i=1;i<=20;i++){
 let d=document.createElement("div");
 d.className="num";
@@ -126,67 +107,65 @@ d.innerText=i;
 grid.appendChild(d);
 }
 
-/* TIMER LOOP SYSTEM */
-let time=10;
+/* MAIN LOOP */
+function start(){
 
-function startRound(){
-
-let t=setInterval(()=>{
-
-document.getElementById("timer").innerText=time;
-
-time--;
-
-if(time<0){
-clearInterval(t);
-runResult();
-}
-
-},1000);
+setTimeout(()=>{
+run();
+},3000);
 
 }
 
-/* RESULT ANIMATION */
-function runResult(){
+/* LIGHTNING RUN */
+function run(){
 
 let nums=document.querySelectorAll(".num");
 
 let i=0;
+let speed=40;
 
-let run=setInterval(()=>{
+let loop=setInterval(()=>{
 
-nums.forEach(n=>n.classList.remove("active"));
+nums.forEach(n=>n.classList.remove("light"));
 
-let r=Math.floor(Math.random()*20);
-
-nums[r].classList.add("active");
+let index=i%20;
+nums[index].classList.add("light");
 
 i++;
 
-if(i>20){
-clearInterval(run);
+/* slow effect */
+if(i>40) speed+=5;
 
-nums[r].classList.add("win");
+if(i>80){
+clearInterval(loop);
+
+let winNum=Math.floor(Math.random()*20);
+show(winNum);
+}
+
+},speed);
+}
+
+/* RESULT */
+function show(n){
+
+document.getElementById("result").innerText="🎯 "+n;
+
+let popup=document.getElementById("popup");
+let win=document.getElementById("win");
+
+win.innerText="💥 "+n;
+
+popup.style.display="flex";
 
 setTimeout(()=>{
-nums[r].classList.remove("win");
-nextRound();
-},2000);
-
+popup.style.display="none";
+start();
+},2500);
 }
 
-},100);
-
-}
-
-/* NEXT ROUND */
-function nextRound(){
-time=10;
-startRound();
-}
-
-/* START */
-startRound();
+/* START LOOP */
+start();
 
 </script>
 

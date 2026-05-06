@@ -2,189 +2,166 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VIP Wheel Pro</title>
-
+<title>Pro Wheel</title>
 <style>
-body{
-margin:0;
-background:#000;
-color:#fff;
-font-family:sans-serif;
-text-align:center;
-}
-
-/* WHEEL */
-#wheel{
-width:260px;
-height:260px;
-border-radius:50%;
-margin:30px auto;
-border:8px solid gold;
-box-shadow:0 0 25px gold;
-position:relative;
-transition:transform 4s cubic-bezier(.17,.67,.83,.67);
-}
-
-/* SLICES */
-.slice{
-position:absolute;
-width:100%;
-height:100%;
-clip-path: polygon(50% 50%, 100% 0, 100% 100%);
-border-radius:50%;
-display:flex;
-justify-content:flex-end;
-padding-right:10px;
-font-size:12px;
-font-weight:bold;
-}
-
-/* POINTER */
-#pointer{
-font-size:30px;
-}
-
-/* BUTTON */
-button{
-padding:12px 25px;
-background:gold;
-border:none;
-border-radius:10px;
-font-size:18px;
-}
-
-/* RESULT */
-#result{
-margin-top:10px;
-font-size:20px;
-}
-
-/* HISTORY */
-#history{
-margin-top:15px;
-background:#111;
-padding:10px;
-border-radius:10px;
-}
-
-/* POPUP */
+body{margin:0;background:#000;color:#fff;text-align:center;font-family:sans-serif;}
+canvas{margin-top:20px;}
+button{padding:12px 25px;background:gold;border:none;border-radius:10px;font-size:18px;}
+#pointer{font-size:28px;}
+#result{margin-top:10px;font-size:20px;}
+#history{margin-top:10px;color:#aaa;}
 #popup{
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.9);
-align-items:center;
-justify-content:center;
+display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+background:rgba(0,0,0,0.9);align-items:center;justify-content:center;
 }
-
-.win{
-font-size:35px;
-animation:flash 1s infinite;
-}
-
+#win{font-size:40px;animation:flash 1s infinite;}
 @keyframes flash{
-0%{color:gold;}
-50%{color:red;}
-100%{color:gold;}
+0%{color:gold;}50%{color:red;}100%{color:gold;}
 }
 </style>
 </head>
 
 <body>
 
-<h2>🎡 VIP Spin Wheel</h2>
+<h2>🎰 PRO CASINO WHEEL</h2>
 <div id="pointer">▼</div>
 
-<div id="wheel"></div>
+<canvas id="wheel" width="300" height="300"></canvas>
 
+<br>
 <button onclick="spin()">SPIN</button>
 
 <div id="result">---</div>
+<div id="history">History: </div>
 
-<div id="history">📊 History: </div>
+<div id="popup"><div id="win"></div></div>
 
-<div id="popup">
-<div class="win" id="win"></div>
-</div>
-
-<!-- SOUND -->
 <audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
 <audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
 
-/* CREATE WHEEL */
-let wheel=document.getElementById("wheel");
+const canvas=document.getElementById("wheel");
+const ctx=canvas.getContext("2d");
 
-for(let i=0;i<16;i++){
-let div=document.createElement("div");
-div.className="slice";
-div.style.transform="rotate("+(i*22.5)+"deg)";
-div.style.background="hsl("+(i*22.5)+",70%,50%)";
-div.innerHTML=i;
-wheel.appendChild(div);
-}
+const segments=16;
+const angle=2*Math.PI/segments;
 
-/* HISTORY ARRAY */
+let rotation=0;
 let history=[];
 
-/* SPIN */
-function spin(){
+/* DRAW WHEEL */
+function draw(){
 
-document.getElementById("spinSound").play();
+ctx.clearRect(0,0,300,300);
 
-/* VIBRATION */
-if(navigator.vibrate){
-navigator.vibrate([200,100,200]);
+for(let i=0;i<segments;i++){
+
+let start=i*angle+rotation;
+let end=start+angle;
+
+ctx.beginPath();
+ctx.moveTo(150,150);
+ctx.arc(150,150,140,start,end);
+ctx.fillStyle=i%3==0?"green":i%2==0?"red":"black";
+ctx.fill();
+
+ctx.save();
+ctx.translate(150,150);
+ctx.rotate(start+angle/2);
+ctx.fillStyle="#fff";
+ctx.fillText(i+1,100,5);
+ctx.restore();
 }
 
-/* RANDOM */
-let num=Math.floor(Math.random()*16);
+/* CENTER */
+ctx.beginPath();
+ctx.arc(150,150,30,0,2*Math.PI);
+ctx.fillStyle="gold";
+ctx.fill();
 
-/* ROTATE */
-let deg=3600+(num*22.5);
-wheel.style.transform="rotate("+deg+"deg)";
+}
 
-/* RESULT */
-setTimeout(()=>{
-show(num);
-},4000);
+/* ANIMATION LOOP */
+function animate(){
+draw();
+requestAnimationFrame(animate);
+}
+animate();
+
+/* SPIN */
+let spinning=false;
+
+function spin(){
+
+if(spinning) return;
+spinning=true;
+
+document.getElementById("spinSound").play();
+if(navigator.vibrate) navigator.vibrate(200);
+
+/* TARGET */
+let target=Math.floor(Math.random()*segments);
+
+/* CALCULATE FINAL ANGLE */
+let final=(Math.PI*2*5)+(segments-target)*angle;
+
+let start=rotation;
+let duration=3000;
+let startTime=null;
+
+function easeOut(t){
+return 1-Math.pow(1-t,3);
+}
+
+function anim(time){
+
+if(!startTime) startTime=time;
+let progress=(time-startTime)/duration;
+
+if(progress<1){
+
+rotation=start+(final-start)*easeOut(progress);
+requestAnimationFrame(anim);
+
+}else{
+
+rotation=final%(Math.PI*2);
+spinning=false;
+show(target);
+
+}
+}
+
+requestAnimationFrame(anim);
 }
 
 /* RESULT */
 function show(n){
 
-document.getElementById("result").innerText="🎯 "+n;
+document.getElementById("result").innerText="🎯 "+(n+1);
 
-/* SOUND */
 document.getElementById("winSound").play();
+if(navigator.vibrate) navigator.vibrate(300);
 
-/* VIBRATE */
-if(navigator.vibrate){
-navigator.vibrate(300);
-}
-
-/* HISTORY UPDATE */
-history.unshift(n);
-if(history.length>5) history.pop();
+/* HISTORY */
+history.unshift(n+1);
+if(history.length>6) history.pop();
 
 document.getElementById("history").innerText=
-"📊 History: "+history.join(" | ");
+"History: "+history.join(" | ");
 
 /* POPUP */
-let popup=document.getElementById("popup");
-let win=document.getElementById("win");
+let p=document.getElementById("popup");
+let w=document.getElementById("win");
 
-win.innerText="💥 "+n;
-popup.style.display="flex";
+w.innerText="💥 "+(n+1);
+p.style.display="flex";
 
-setTimeout(()=>{
-popup.style.display="none";
-},2500);
+setTimeout(()=>p.style.display="none",2000);
+
 }
 
 </script>
-
 </body>
 </html>

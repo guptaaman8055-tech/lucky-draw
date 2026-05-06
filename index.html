@@ -2,190 +2,191 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VIP 3D Spin Wheel</title>
+<title>Lightning Game</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:radial-gradient(circle,#020617,#000);
-color:white;
+background:#0b0f1a;
+color:#fff;
 text-align:center;
 }
 
-/* TITLE */
-h2{
-text-shadow:0 0 15px #22c55e;
+/* HEADER */
+.top{
+display:flex;
+justify-content:space-between;
+padding:10px;
 }
 
-/* WHEEL */
-#wheel{
-width:280px;
-height:280px;
-margin:40px auto;
-border-radius:50%;
-position:relative;
-border:8px solid #22c55e;
-box-shadow:0 0 40px #22c55e;
-transition:transform 4s cubic-bezier(.17,.67,.83,.67);
+.deposit{
+background:#22c55e;
+padding:8px 15px;
+border-radius:10px;
 }
 
-/* SLICES */
-.slice{
-position:absolute;
-width:100%;
-height:100%;
-clip-path: polygon(50% 50%, 100% 0, 100% 100%);
+/* TIMER */
+.timerBox{
+position:fixed;
+top:60px;
+right:10px;
+background:#111;
+width:60px;
+height:60px;
 border-radius:50%;
 display:flex;
-justify-content:flex-end;
-padding-right:10px;
-font-size:12px;
-font-weight:bold;
-}
-
-/* POINTER */
-#pointer{
-font-size:30px;
-margin-top:10px;
-}
-
-/* BUTTON */
-button{
-padding:12px 25px;
-background:#22c55e;
-border:none;
-border-radius:10px;
-color:white;
-font-size:18px;
-box-shadow:0 0 20px #22c55e;
-}
-
-/* RESULT */
-#result{
-font-size:22px;
-margin-top:10px;
-}
-
-/* POPUP */
-#popup{
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.9);
 align-items:center;
 justify-content:center;
+font-size:22px;
+box-shadow:0 0 15px gold;
 }
 
-.bigwin{
-font-size:40px;
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:5px;
+padding:15px;
+}
+
+.num{
+padding:20px;
+background:#111;
+border:1px solid gold;
+border-radius:6px;
+font-size:18px;
+}
+
+.active{
+background:gold;
+color:black;
+}
+
+/* BOTTOM */
+.bottom{
+position:fixed;
+bottom:0;
+width:100%;
+background:#000;
+padding:10px;
+}
+
+.chip{
+display:inline-block;
+padding:8px 12px;
+border-radius:50%;
+background:#222;
+margin:5px;
+}
+
+/* RESULT FLASH */
+.win{
 animation:flash 1s infinite;
 }
 
 @keyframes flash{
-0%{color:#22c55e;}
-50%{color:#facc15;}
-100%{color:#22c55e;}
+0%{background:gold;}
+50%{background:red;}
+100%{background:gold;}
 }
-
-/* SHAKE */
-@keyframes shake{
-0%{transform:translate(0)}
-25%{transform:translate(5px)}
-50%{transform:translate(-5px)}
-75%{transform:translate(5px)}
-100%{transform:translate(0)}
-}
-.shake{animation:shake 0.4s;}
 
 </style>
 </head>
 
 <body>
 
-<h2>🎡 VIP 3D Spin Wheel</h2>
-
-<div id="pointer">▼</div>
-
-<div id="wheel"></div>
-
-<button onclick="spin()">SPIN</button>
-
-<div id="result">Result Locked</div>
-
-<div id="popup">
-<div class="bigwin" id="winText"></div>
+<div class="top">
+<div>💰 Balance ₹0</div>
+<div class="deposit">Deposit</div>
 </div>
 
-<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+<h3>⚡ PLACE YOUR BETS</h3>
+
+<div class="timerBox" id="timer">10</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="bottom">
+<span class="chip">10</span>
+<span class="chip">50</span>
+<span class="chip">100</span>
+<span class="chip">500</span>
+</div>
 
 <script>
 
-/* PRIZE */
-const prize={
-0:0,1:2000,2:3000,3:2500,4:4000,
-5:1500,6:3500,7:5000,8:4500,
-9:3000,10:6000,11:2000,
-12:3500,13:2500,14:4000,15:5000
-};
+/* CREATE NUMBERS */
+let grid=document.getElementById("grid");
 
-/* CREATE WHEEL */
-let wheel=document.getElementById("wheel");
-
-for(let i=0;i<16;i++){
-let div=document.createElement("div");
-div.className="slice";
-div.style.transform="rotate("+(i*22.5)+"deg)";
-div.style.background="hsl("+(i*22.5)+",70%,50%)";
-div.innerHTML=" "+i;
-wheel.appendChild(div);
+for(let i=1;i<=20;i++){
+let d=document.createElement("div");
+d.className="num";
+d.innerText=i;
+grid.appendChild(d);
 }
 
-/* SPIN */
-function spin(){
+/* TIMER LOOP SYSTEM */
+let time=10;
 
-document.body.classList.add("shake");
-document.getElementById("spinSound").play();
+function startRound(){
 
-/* RANDOM */
-let num=Math.floor(Math.random()*16);
+let t=setInterval(()=>{
 
-/* ROTATION */
-let deg=3600+(num*22.5);
+document.getElementById("timer").innerText=time;
 
-wheel.style.transform="rotate("+deg+"deg)";
+time--;
 
-/* RESULT */
-setTimeout(()=>{
-show(num);
-},4000);
+if(time<0){
+clearInterval(t);
+runResult();
 }
 
-/* SHOW RESULT */
-function show(n){
+},1000);
 
-document.body.classList.remove("shake");
+}
 
-let amt=prize[n];
+/* RESULT ANIMATION */
+function runResult(){
 
-document.getElementById("result").innerText=
-"🎯 "+n+" | 💰 ₹"+amt;
+let nums=document.querySelectorAll(".num");
 
-document.getElementById("winSound").play();
+let i=0;
 
-let popup=document.getElementById("popup");
-let text=document.getElementById("winText");
+let run=setInterval(()=>{
 
-text.innerText="💥 BIG WIN ₹"+amt;
+nums.forEach(n=>n.classList.remove("active"));
 
-popup.style.display="flex";
+let r=Math.floor(Math.random()*20);
+
+nums[r].classList.add("active");
+
+i++;
+
+if(i>20){
+clearInterval(run);
+
+nums[r].classList.add("win");
 
 setTimeout(()=>{
-popup.style.display="none";
-},3000);
+nums[r].classList.remove("win");
+nextRound();
+},2000);
+
 }
+
+},100);
+
+}
+
+/* NEXT ROUND */
+function nextRound(){
+time=10;
+startRound();
+}
+
+/* START */
+startRound();
 
 </script>
 

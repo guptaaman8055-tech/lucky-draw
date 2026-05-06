@@ -2,148 +2,126 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>⚡ Ultra Lightning Game</title>
+<title>VIP 3D Spin Wheel</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(135deg,#020617,#0f172a);
+background:radial-gradient(circle,#020617,#000);
 color:white;
 text-align:center;
 }
 
-/* GLASS BOX */
-.box{
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(10px);
-padding:15px;
-margin:10px;
-border-radius:15px;
-box-shadow:0 0 20px rgba(0,0,0,0.5);
+/* TITLE */
+h2{
+text-shadow:0 0 15px #22c55e;
 }
 
-/* NUMBERS GRID */
-.num{
-display:inline-block;
-width:45px;
-height:45px;
-line-height:45px;
-margin:5px;
-border-radius:10px;
-background:#1e293b;
-cursor:pointer;
-transition:0.2s;
+/* WHEEL */
+#wheel{
+width:280px;
+height:280px;
+margin:40px auto;
+border-radius:50%;
+position:relative;
+border:8px solid #22c55e;
+box-shadow:0 0 40px #22c55e;
+transition:transform 4s cubic-bezier(.17,.67,.83,.67);
 }
 
-.num:hover{transform:scale(1.1);}
-
-.active{
-background:#22c55e;
+/* SLICES */
+.slice{
+position:absolute;
+width:100%;
+height:100%;
+clip-path: polygon(50% 50%, 100% 0, 100% 100%);
+border-radius:50%;
+display:flex;
+justify-content:flex-end;
+padding-right:10px;
+font-size:12px;
+font-weight:bold;
 }
 
-.light{
-background:yellow;
-color:black;
-box-shadow:0 0 20px yellow;
+/* POINTER */
+#pointer{
+font-size:30px;
+margin-top:10px;
 }
 
 /* BUTTON */
 button{
-padding:10px 20px;
-border:none;
-border-radius:8px;
+padding:12px 25px;
 background:#22c55e;
+border:none;
+border-radius:10px;
 color:white;
-cursor:pointer;
+font-size:18px;
+box-shadow:0 0 20px #22c55e;
 }
 
-/* COUNTDOWN CIRCLE */
-.circle{
-width:80px;
-height:80px;
-border-radius:50%;
-border:5px solid #22c55e;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:24px;
-margin:auto;
+/* RESULT */
+#result{
+font-size:22px;
+margin-top:10px;
 }
-
-/* SHAKE */
-@keyframes shake{
-0%{transform:translate(0)}
-25%{transform:translate(6px)}
-50%{transform:translate(-6px)}
-75%{transform:translate(6px)}
-100%{transform:translate(0)}
-}
-.shake{animation:shake 0.4s;}
 
 /* POPUP */
 #popup{
 display:none;
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+top:0;left:0;
+width:100%;height:100%;
 background:rgba(0,0,0,0.9);
 align-items:center;
 justify-content:center;
 }
 
-.win{
-font-size:35px;
-animation:glow 1s infinite;
+.bigwin{
+font-size:40px;
+animation:flash 1s infinite;
 }
 
-@keyframes glow{
+@keyframes flash{
 0%{color:#22c55e;}
 50%{color:#facc15;}
 100%{color:#22c55e;}
 }
+
+/* SHAKE */
+@keyframes shake{
+0%{transform:translate(0)}
+25%{transform:translate(5px)}
+50%{transform:translate(-5px)}
+75%{transform:translate(5px)}
+100%{transform:translate(0)}
+}
+.shake{animation:shake 0.4s;}
+
 </style>
 </head>
 
 <body>
 
-<h2>⚡ Ultra Lightning Game</h2>
+<h2>🎡 VIP 3D Spin Wheel</h2>
 
-<div class="box">
-🎯 Select Number (0–15)
-<div id="nums"></div>
-</div>
+<div id="pointer">▼</div>
 
-<div class="box">
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=UPI-DEMO">
-<br><br>
-<button>Pay ₹50</button>
-</div>
+<div id="wheel"></div>
 
-<div class="box">
-<div class="circle" id="timer">10</div>
-<br>
-<button onclick="start()">Start Game</button>
-</div>
+<button onclick="spin()">SPIN</button>
 
-<div class="box">
-<h2 id="result">Result Locked</h2>
-<p id="ticket"></p>
-</div>
+<div id="result">Result Locked</div>
 
 <div id="popup">
-<div class="win" id="winText"></div>
+<div class="bigwin" id="winText"></div>
 </div>
 
-<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-<audio id="thunder" src="https://actions.google.com/sounds/v1/weather/thunder_crack.ogg"></audio>
-<audio id="win" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
-
-let selected=null;
 
 /* PRIZE */
 const prize={
@@ -153,91 +131,60 @@ const prize={
 12:3500,13:2500,14:4000,15:5000
 };
 
-/* NUMBERS */
-let box=document.getElementById("nums");
+/* CREATE WHEEL */
+let wheel=document.getElementById("wheel");
 
-for(let i=0;i<=15;i++){
-let d=document.createElement("div");
-d.innerText=i;
-d.className="num";
-
-d.onclick=()=>{
-document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
-d.classList.add("active");
-selected=i;
-};
-
-box.appendChild(d);
+for(let i=0;i<16;i++){
+let div=document.createElement("div");
+div.className="slice";
+div.style.transform="rotate("+(i*22.5)+"deg)";
+div.style.background="hsl("+(i*22.5)+",70%,50%)";
+div.innerHTML=" "+i;
+wheel.appendChild(div);
 }
 
-/* START */
-function start(){
-
-if(selected===null){
-alert("Select number first");
-return;
-}
-
-let count=10;
-
-let t=setInterval(()=>{
-timer.innerText=count;
-tick.play();
-count--;
-
-if(count<0){
-clearInterval(t);
-lightning();
-}
-
-},1000);
-}
-
-/* LIGHTNING WAVE */
-function lightning(){
+/* SPIN */
+function spin(){
 
 document.body.classList.add("shake");
-thunder.play();
+document.getElementById("spinSound").play();
 
-let nums=document.querySelectorAll(".num");
+/* RANDOM */
+let num=Math.floor(Math.random()*16);
 
-let i=0;
+/* ROTATION */
+let deg=3600+(num*22.5);
 
-let run=setInterval(()=>{
-
-nums.forEach(n=>n.classList.remove("light"));
-
-nums[i%16].classList.add("light");
-
-i++;
-
-if(i>40){
-clearInterval(run);
-
-let winNum=Math.floor(Math.random()*16);
-show(winNum);
-}
-
-},80);
-}
+wheel.style.transform="rotate("+deg+"deg)";
 
 /* RESULT */
+setTimeout(()=>{
+show(num);
+},4000);
+}
+
+/* SHOW RESULT */
 function show(n){
 
 document.body.classList.remove("shake");
 
 let amt=prize[n];
-let ticketId="UL-"+Math.floor(Math.random()*999999);
 
-result.innerText="🎯 "+n+" | 💰 ₹"+amt;
-ticket.innerText="🎟 "+ticketId;
+document.getElementById("result").innerText=
+"🎯 "+n+" | 💰 ₹"+amt;
 
-win.play();
+document.getElementById("winSound").play();
+
+let popup=document.getElementById("popup");
+let text=document.getElementById("winText");
+
+text.innerText="💥 BIG WIN ₹"+amt;
 
 popup.style.display="flex";
-winText.innerText="💥 BIG WIN ₹"+amt;
 
-setTimeout(()=>popup.style.display="none",3000);
+setTimeout(()=>{
+popup.style.display="none";
+},3000);
 }
 
 </script>

@@ -2,166 +2,253 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pro Wheel</title>
+<title>VIP Lightning Game</title>
+
 <style>
-body{margin:0;background:#000;color:#fff;text-align:center;font-family:sans-serif;}
-canvas{margin-top:20px;}
-button{padding:12px 25px;background:gold;border:none;border-radius:10px;font-size:18px;}
-#pointer{font-size:28px;}
-#result{margin-top:10px;font-size:20px;}
-#history{margin-top:10px;color:#aaa;}
-#popup{
-display:none;position:fixed;top:0;left:0;width:100%;height:100%;
-background:rgba(0,0,0,0.9);align-items:center;justify-content:center;
+body{
+margin:0;
+background:#0b0f1a;
+font-family:sans-serif;
+color:#fff;
+text-align:center;
 }
-#win{font-size:40px;animation:flash 1s infinite;}
+
+/* TOP */
+.top{
+display:flex;
+justify-content:space-between;
+padding:10px;
+}
+
+.balance{color:#22c55e;}
+
+/* TIMER */
+.timer{
+width:70px;
+height:70px;
+border-radius:50%;
+border:6px solid #333;
+border-top:6px solid gold;
+margin:auto;
+font-size:20px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:6px;
+padding:10px;
+}
+
+.num{
+padding:16px;
+border-radius:8px;
+font-size:16px;
+cursor:pointer;
+}
+
+.red{background:#b91c1c;}
+.black{background:#111;}
+.green{background:#15803d;}
+
+.active{
+outline:2px solid yellow;
+}
+
+.light{
+transform:scale(1.2);
+box-shadow:0 0 20px gold;
+}
+
+/* RESULT */
+#result{
+font-size:22px;
+margin:10px;
+}
+
+/* POPUP */
+#popup{
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.9);
+align-items:center;
+justify-content:center;
+}
+
+.win{
+font-size:35px;
+animation:flash 1s infinite;
+}
+
 @keyframes flash{
-0%{color:gold;}50%{color:red;}100%{color:gold;}
+0%{color:gold;}
+50%{color:red;}
+100%{color:gold;}
 }
 </style>
-</head>
 
+</head>
 <body>
 
-<h2>🎰 PRO CASINO WHEEL</h2>
-<div id="pointer">▼</div>
+<div class="top">
+<div class="balance" id="bal">💰 ₹1000</div>
+</div>
 
-<canvas id="wheel" width="300" height="300"></canvas>
+<h3>⚡ DEMO GAME</h3>
 
-<br>
-<button onclick="spin()">SPIN</button>
+<div class="timer" id="timer">10</div>
 
-<div id="result">---</div>
-<div id="history">History: </div>
+<div class="grid" id="grid"></div>
 
-<div id="popup"><div id="win"></div></div>
+<div id="result">Select Number</div>
 
-<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+<div id="popup">
+<div class="win" id="win"></div>
+</div>
 
 <script>
 
-const canvas=document.getElementById("wheel");
-const ctx=canvas.getContext("2d");
+/* DATA */
+let multipliers=[
+1,2,5,10,3,
+2,8,4,6,12,
+2,3,15,5,20,
+1,7,9,2,11
+];
 
-const segments=16;
-const angle=2*Math.PI/segments;
+let balance=1000;
+let bet=50;
+let selected=null;
+let locked=false;
 
-let rotation=0;
-let history=[];
+/* CREATE GRID */
+let grid=document.getElementById("grid");
 
-/* DRAW WHEEL */
-function draw(){
+for(let i=1;i<=20;i++){
 
-ctx.clearRect(0,0,300,300);
+let d=document.createElement("div");
+d.className="num";
 
-for(let i=0;i<segments;i++){
+/* COLOR */
+if(i%3==0) d.classList.add("green");
+else if(i%2==0) d.classList.add("red");
+else d.classList.add("black");
 
-let start=i*angle+rotation;
-let end=start+angle;
+/* TEXT */
+d.innerHTML=i+"<br>"+multipliers[i-1]+"x";
 
-ctx.beginPath();
-ctx.moveTo(150,150);
-ctx.arc(150,150,140,start,end);
-ctx.fillStyle=i%3==0?"green":i%2==0?"red":"black";
-ctx.fill();
+/* CLICK */
+d.onclick=()=>{
+if(locked) return;
 
-ctx.save();
-ctx.translate(150,150);
-ctx.rotate(start+angle/2);
-ctx.fillStyle="#fff";
-ctx.fillText(i+1,100,5);
-ctx.restore();
+document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
+d.classList.add("active");
+selected=i;
+};
+
+grid.appendChild(d);
 }
 
-/* CENTER */
-ctx.beginPath();
-ctx.arc(150,150,30,0,2*Math.PI);
-ctx.fillStyle="gold";
-ctx.fill();
+/* TIMER */
+let time=10;
 
+function startTimer(){
+
+locked=false;
+
+let t=setInterval(()=>{
+
+timer.innerText=time;
+time--;
+
+if(time<0){
+clearInterval(t);
+run();
 }
 
-/* ANIMATION LOOP */
-function animate(){
-draw();
-requestAnimationFrame(animate);
-}
-animate();
-
-/* SPIN */
-let spinning=false;
-
-function spin(){
-
-if(spinning) return;
-spinning=true;
-
-document.getElementById("spinSound").play();
-if(navigator.vibrate) navigator.vibrate(200);
-
-/* TARGET */
-let target=Math.floor(Math.random()*segments);
-
-/* CALCULATE FINAL ANGLE */
-let final=(Math.PI*2*5)+(segments-target)*angle;
-
-let start=rotation;
-let duration=3000;
-let startTime=null;
-
-function easeOut(t){
-return 1-Math.pow(1-t,3);
+},1000);
 }
 
-function anim(time){
+/* RUN */
+function run(){
 
-if(!startTime) startTime=time;
-let progress=(time-startTime)/duration;
+locked=true;
 
-if(progress<1){
+let nums=document.querySelectorAll(".num");
+let i=0;
+let speed=40;
 
-rotation=start+(final-start)*easeOut(progress);
-requestAnimationFrame(anim);
+let loop=setInterval(()=>{
 
-}else{
+nums.forEach(n=>n.classList.remove("light"));
 
-rotation=final%(Math.PI*2);
-spinning=false;
-show(target);
+let index=i%20;
+nums[index].classList.add("light");
 
+i++;
+
+if(i>40) speed+=5;
+
+if(i>80){
+clearInterval(loop);
+
+let winNum=Math.floor(Math.random()*20)+1;
+show(winNum);
 }
-}
 
-requestAnimationFrame(anim);
+},speed);
 }
 
 /* RESULT */
 function show(n){
 
-document.getElementById("result").innerText="🎯 "+(n+1);
+let multi=multipliers[n-1];
+let resultText="";
 
-document.getElementById("winSound").play();
-if(navigator.vibrate) navigator.vibrate(300);
-
-/* HISTORY */
-history.unshift(n+1);
-if(history.length>6) history.pop();
-
-document.getElementById("history").innerText=
-"History: "+history.join(" | ");
-
-/* POPUP */
-let p=document.getElementById("popup");
-let w=document.getElementById("win");
-
-w.innerText="💥 "+(n+1);
-p.style.display="flex";
-
-setTimeout(()=>p.style.display="none",2000);
-
+/* WIN/LOSS */
+if(selected===n){
+let winAmt=bet*multi;
+balance+=winAmt;
+resultText="🎯 WIN ₹"+winAmt;
+}else{
+balance-=bet;
+resultText="❌ LOSS ₹"+bet;
 }
 
+bal.innerText="💰 ₹"+balance;
+result.innerText=resultText;
+
+/* POPUP */
+let popup=document.getElementById("popup");
+let win=document.getElementById("win");
+
+win.innerText=resultText;
+popup.style.display="flex";
+
+setTimeout(()=>{
+popup.style.display="none";
+next();
+},2000);
+}
+
+/* NEXT ROUND */
+function next(){
+time=10;
+selected=null;
+document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
+startTimer();
+}
+
+/* START */
+startTimer();
+
 </script>
+
 </body>
 </html>

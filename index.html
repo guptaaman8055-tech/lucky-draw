@@ -2,46 +2,69 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VIP Lightning</title>
+<title>VIP Wheel Pro</title>
 
 <style>
 body{
 margin:0;
-background:#0b0f1a;
-font-family:sans-serif;
+background:#000;
 color:#fff;
+font-family:sans-serif;
 text-align:center;
 }
 
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:8px;
-padding:10px;
+/* WHEEL */
+#wheel{
+width:260px;
+height:260px;
+border-radius:50%;
+margin:30px auto;
+border:8px solid gold;
+box-shadow:0 0 25px gold;
+position:relative;
+transition:transform 4s cubic-bezier(.17,.67,.83,.67);
 }
 
-.num{
-padding:18px;
-border-radius:8px;
+/* SLICES */
+.slice{
+position:absolute;
+width:100%;
+height:100%;
+clip-path: polygon(50% 50%, 100% 0, 100% 100%);
+border-radius:50%;
+display:flex;
+justify-content:flex-end;
+padding-right:10px;
+font-size:12px;
+font-weight:bold;
+}
+
+/* POINTER */
+#pointer{
+font-size:30px;
+}
+
+/* BUTTON */
+button{
+padding:12px 25px;
+background:gold;
+border:none;
+border-radius:10px;
 font-size:18px;
-transition:0.2s;
-}
-
-/* COLORS */
-.red{background:#b91c1c;}
-.black{background:#111;}
-.green{background:#15803d;}
-
-.light{
-transform:scale(1.2);
-box-shadow:0 0 20px gold;
 }
 
 /* RESULT */
 #result{
-font-size:22px;
-margin:10px;
+margin-top:10px;
+font-size:20px;
+}
+
+/* HISTORY */
+#history{
+margin-top:15px;
+background:#111;
+padding:10px;
+border-radius:10px;
 }
 
 /* POPUP */
@@ -70,100 +93,96 @@ animation:flash 1s infinite;
 
 <body>
 
-<h2>🎰 VIP Lightning Demo</h2>
+<h2>🎡 VIP Spin Wheel</h2>
+<div id="pointer">▼</div>
 
-<div class="grid" id="grid"></div>
+<div id="wheel"></div>
+
+<button onclick="spin()">SPIN</button>
 
 <div id="result">---</div>
+
+<div id="history">📊 History: </div>
 
 <div id="popup">
 <div class="win" id="win"></div>
 </div>
 
+<!-- SOUND -->
+<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+
 <script>
 
-/* MULTIPLIERS */
-let multipliers={};
+/* CREATE WHEEL */
+let wheel=document.getElementById("wheel");
 
-/* CREATE NUMBERS */
-let grid=document.getElementById("grid");
-
-for(let i=1;i<=20;i++){
-
-let d=document.createElement("div");
-d.className="num";
-
-/* COLOR SET */
-if(i%3==0) d.classList.add("green");
-else if(i%2==0) d.classList.add("red");
-else d.classList.add("black");
-
-/* MULTIPLIER */
-let multi=Math.floor(Math.random()*20)+1;
-multipliers[i]=multi;
-
-d.innerHTML=i+"<br>"+multi+"x";
-
-grid.appendChild(d);
+for(let i=0;i<16;i++){
+let div=document.createElement("div");
+div.className="slice";
+div.style.transform="rotate("+(i*22.5)+"deg)";
+div.style.background="hsl("+(i*22.5)+",70%,50%)";
+div.innerHTML=i;
+wheel.appendChild(div);
 }
 
-/* START */
-function start(){
-setTimeout(run,2000);
+/* HISTORY ARRAY */
+let history=[];
+
+/* SPIN */
+function spin(){
+
+document.getElementById("spinSound").play();
+
+/* VIBRATION */
+if(navigator.vibrate){
+navigator.vibrate([200,100,200]);
 }
 
-/* RUN */
-function run(){
+/* RANDOM */
+let num=Math.floor(Math.random()*16);
 
-let nums=document.querySelectorAll(".num");
-let i=0;
-let speed=40;
+/* ROTATE */
+let deg=3600+(num*22.5);
+wheel.style.transform="rotate("+deg+"deg)";
 
-let loop=setInterval(()=>{
-
-nums.forEach(n=>n.classList.remove("light"));
-
-let index=i%20;
-nums[index].classList.add("light");
-
-i++;
-
-/* slow */
-if(i>40) speed+=5;
-
-if(i>80){
-clearInterval(loop);
-
-let winNum=Math.floor(Math.random()*20)+1;
-show(winNum);
-}
-
-},speed);
+/* RESULT */
+setTimeout(()=>{
+show(num);
+},4000);
 }
 
 /* RESULT */
 function show(n){
 
-let multi=multipliers[n];
+document.getElementById("result").innerText="🎯 "+n;
 
-document.getElementById("result").innerText=
-"🎯 "+n+" | ⚡ "+multi+"x";
+/* SOUND */
+document.getElementById("winSound").play();
 
+/* VIBRATE */
+if(navigator.vibrate){
+navigator.vibrate(300);
+}
+
+/* HISTORY UPDATE */
+history.unshift(n);
+if(history.length>5) history.pop();
+
+document.getElementById("history").innerText=
+"📊 History: "+history.join(" | ");
+
+/* POPUP */
 let popup=document.getElementById("popup");
 let win=document.getElementById("win");
 
-win.innerText="💥 "+n+" → "+multi+"x";
-
+win.innerText="💥 "+n;
 popup.style.display="flex";
 
 setTimeout(()=>{
 popup.style.display="none";
-start();
 },2500);
 }
-
-/* AUTO START */
-start();
 
 </script>
 

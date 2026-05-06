@@ -6,55 +6,77 @@
 
 <style>
 body{
+margin:0;
 font-family:Arial;
-background:#020617;
+background:linear-gradient(135deg,#020617,#0f172a);
 color:white;
 text-align:center;
 }
 
+/* GLASS BOX */
 .box{
-background:#0f172a;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(10px);
 padding:15px;
 margin:10px;
-border-radius:10px;
+border-radius:15px;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
 }
 
-input,button{
-padding:10px;
+/* NUMBERS GRID */
+.num{
+display:inline-block;
+width:45px;
+height:45px;
+line-height:45px;
 margin:5px;
-border:none;
-border-radius:6px;
+border-radius:10px;
+background:#1e293b;
+cursor:pointer;
+transition:0.2s;
 }
 
+.num:hover{transform:scale(1.1);}
+
+.active{
+background:#22c55e;
+}
+
+.light{
+background:yellow;
+color:black;
+box-shadow:0 0 20px yellow;
+}
+
+/* BUTTON */
 button{
+padding:10px 20px;
+border:none;
+border-radius:8px;
 background:#22c55e;
 color:white;
 cursor:pointer;
 }
 
-.num{
-display:inline-block;
-padding:12px;
-margin:4px;
-background:#1e293b;
-border-radius:6px;
-cursor:pointer;
-}
-
-.active{background:#22c55e;}
-
-.light{
-background:yellow;
-color:black;
-box-shadow:0 0 15px yellow;
+/* COUNTDOWN CIRCLE */
+.circle{
+width:80px;
+height:80px;
+border-radius:50%;
+border:5px solid #22c55e;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+margin:auto;
 }
 
 /* SHAKE */
 @keyframes shake{
 0%{transform:translate(0)}
-25%{transform:translate(5px)}
-50%{transform:translate(-5px)}
-75%{transform:translate(5px)}
+25%{transform:translate(6px)}
+50%{transform:translate(-6px)}
+75%{transform:translate(6px)}
 100%{transform:translate(0)}
 }
 .shake{animation:shake 0.4s;}
@@ -63,19 +85,21 @@ box-shadow:0 0 15px yellow;
 #popup{
 display:none;
 position:fixed;
-top:0;left:0;
-width:100%;height:100%;
+top:0;
+left:0;
+width:100%;
+height:100%;
 background:rgba(0,0,0,0.9);
 align-items:center;
 justify-content:center;
 }
 
-.flash{
+.win{
 font-size:35px;
-animation:flash 1s infinite;
+animation:glow 1s infinite;
 }
 
-@keyframes flash{
+@keyframes glow{
 0%{color:#22c55e;}
 50%{color:#facc15;}
 100%{color:#22c55e;}
@@ -85,58 +109,40 @@ animation:flash 1s infinite;
 
 <body>
 
-<h2>⚡ Ultra Lightning Game (PRO DEMO)</h2>
+<h2>⚡ Ultra Lightning Game</h2>
 
-<!-- LOGIN -->
 <div class="box">
-<h3>🔐 Login</h3>
-<input id="user" placeholder="User Name"><br>
-<input id="mobile" placeholder="Mobile Number"><br>
-<button onclick="login()">Login</button>
-</div>
-
-<!-- PAYMENT -->
-<div class="box">
-<h3>💳 Payment (Demo)</h3>
-
-<!-- CHANGE QR HERE -->
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=YourUPI" width="180"><br>
-
-<button>Pay ₹50</button>
-<p id="status">Status: Pending</p>
-</div>
-
-<!-- NUMBERS -->
-<div class="box">
-<h3>🎯 Select Number (0–15)</h3>
+🎯 Select Number (0–15)
 <div id="nums"></div>
 </div>
 
-<!-- TIMER -->
 <div class="box">
-<h2 id="timer">Press Start</h2>
-<button onclick="start()">Start Draw</button>
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=UPI-DEMO">
+<br><br>
+<button>Pay ₹50</button>
 </div>
 
-<!-- RESULT -->
+<div class="box">
+<div class="circle" id="timer">10</div>
+<br>
+<button onclick="start()">Start Game</button>
+</div>
+
 <div class="box">
 <h2 id="result">Result Locked</h2>
 <p id="ticket"></p>
 </div>
 
-<!-- POPUP -->
 <div id="popup">
-<h1 id="winText"></h1>
+<div class="win" id="winText"></div>
 </div>
 
-<!-- SOUND -->
 <audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 <audio id="thunder" src="https://actions.google.com/sounds/v1/weather/thunder_crack.ogg"></audio>
 <audio id="win" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
 
-let logged=false;
 let selected=null;
 
 /* PRIZE */
@@ -149,14 +155,13 @@ const prize={
 
 /* NUMBERS */
 let box=document.getElementById("nums");
+
 for(let i=0;i<=15;i++){
 let d=document.createElement("div");
 d.innerText=i;
 d.className="num";
 
 d.onclick=()=>{
-if(!logged) return alert("Login First");
-
 document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
 d.classList.add("active");
 selected=i;
@@ -165,26 +170,18 @@ selected=i;
 box.appendChild(d);
 }
 
-/* LOGIN */
-function login(){
-if(user.value && mobile.value){
-logged=true;
-alert("Login Success");
-}else{
-alert("Fill details");
-}
-}
-
 /* START */
 function start(){
 
-if(!logged) return alert("Login First");
-if(selected===null) return alert("Select Number");
+if(selected===null){
+alert("Select number first");
+return;
+}
 
 let count=10;
 
 let t=setInterval(()=>{
-timer.innerText="⏳ "+count;
+timer.innerText=count;
 tick.play();
 count--;
 
@@ -196,26 +193,29 @@ lightning();
 },1000);
 }
 
-/* LIGHTNING */
+/* LIGHTNING WAVE */
 function lightning(){
 
 document.body.classList.add("shake");
 thunder.play();
 
 let nums=document.querySelectorAll(".num");
+
 let i=0;
 
 let run=setInterval(()=>{
+
 nums.forEach(n=>n.classList.remove("light"));
 
-let rand=Math.floor(Math.random()*16);
-nums[rand].classList.add("light");
+nums[i%16].classList.add("light");
 
 i++;
 
-if(i>25){
+if(i>40){
 clearInterval(run);
-show(rand);
+
+let winNum=Math.floor(Math.random()*16);
+show(winNum);
 }
 
 },80);
@@ -227,16 +227,15 @@ function show(n){
 document.body.classList.remove("shake");
 
 let amt=prize[n];
-let ticketId="TICKET-"+Math.floor(Math.random()*999999);
+let ticketId="UL-"+Math.floor(Math.random()*999999);
 
-result.innerText="🎯 Number: "+n+" | 💰 ₹"+amt;
+result.innerText="🎯 "+n+" | 💰 ₹"+amt;
 ticket.innerText="🎟 "+ticketId;
 
 win.play();
 
 popup.style.display="flex";
 winText.innerText="💥 BIG WIN ₹"+amt;
-winText.className="flash";
 
 setTimeout(()=>popup.style.display="none",3000);
 }

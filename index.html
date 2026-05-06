@@ -2,79 +2,43 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Casino 3D Wheel</title>
+<title>Lightning Demo Game</title>
 
 <style>
 body{
-margin:0;
-background:#000;
-color:white;
 font-family:Arial;
+background:#020617;
+color:white;
 text-align:center;
-overflow:hidden;
 }
 
-h2{
-text-shadow:0 0 20px gold;
-}
-
-#canvas{
-width:100%;
-height:65vh;
-}
-
-/* BUTTON */
-button{
-padding:15px 30px;
-background:gold;
-border:none;
+.box{
+background:#0f172a;
+padding:15px;
+margin:10px;
 border-radius:10px;
-font-size:18px;
-box-shadow:0 0 20px gold;
 }
 
-/* POINTER */
-#pointer{
-position:absolute;
-top:60px;
-left:50%;
-transform:translateX(-50%);
-font-size:30px;
+.num{
+display:inline-block;
+padding:12px;
+margin:4px;
+background:#1e293b;
+border-radius:6px;
+cursor:pointer;
 }
 
-/* RESULT */
-#result{
-margin-top:10px;
-font-size:22px;
+.active{
+background:#22c55e;
 }
 
-/* POPUP */
-#popup{
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.9);
-align-items:center;
-justify-content:center;
-}
-
-.bigwin{
-font-size:45px;
-animation:flash 1s infinite;
-}
-
-@keyframes flash{
-0%{color:gold;}
-50%{color:red;}
-100%{color:gold;}
+.light{
+background:yellow;
+color:black;
+box-shadow:0 0 15px yellow;
 }
 
 /* SHAKE */
-.shake{
-animation:shake 0.4s;
-}
-
 @keyframes shake{
 0%{transform:translate(0)}
 25%{transform:translate(5px)}
@@ -83,118 +47,166 @@ animation:shake 0.4s;
 100%{transform:translate(0)}
 }
 
+.shake{
+animation:shake 0.4s;
+}
+
+/* POPUP */
+#popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+align-items:center;
+justify-content:center;
+}
+
+.flash{
+font-size:35px;
+animation:flash 1s infinite;
+}
+
+@keyframes flash{
+0%{color:#22c55e;}
+50%{color:#facc15;}
+100%{color:#22c55e;}
+}
+
+button{
+padding:10px;
+margin:5px;
+border:none;
+border-radius:6px;
+background:#22c55e;
+color:white;
+}
 </style>
+
 </head>
 
 <body>
 
-<h2>🎰 CASINO 3D WHEEL (DEMO)</h2>
+<h2>⚡ Lightning Lucky Game (Demo)</h2>
 
-<div id="pointer">▼</div>
-
-<canvas id="canvas"></canvas>
-
-<button onclick="spin()">SPIN</button>
-
-<div id="result">Waiting...</div>
-
-<div id="popup">
-<div class="bigwin" id="winText"></div>
+<div class="box">
+🎯 Select Number (0–15)
+<div id="nums"></div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<div class="box">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=DemoQR" width="150"><br>
+<button>Pay ₹50 (Demo)</button>
+</div>
+
+<div class="box">
+<h2 id="timer">Press Start</h2>
+<button onclick="start()">Start</button>
+</div>
+
+<div class="box">
+<h2 id="result">Result Locked</h2>
+</div>
+
+<div id="popup">
+<h1 id="winText"></h1>
+</div>
+
+<audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="thunder" src="https://actions.google.com/sounds/v1/weather/thunder_crack.ogg"></audio>
+<audio id="win" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
 
-/* THREE JS */
-let scene=new THREE.Scene();
-let camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
-let renderer=new THREE.WebGLRenderer({canvas:document.getElementById("canvas"),alpha:true});
+let selected=null;
 
-renderer.setSize(window.innerWidth,window.innerHeight*0.65);
+/* NUMBERS */
+let box=document.getElementById("nums");
 
-camera.position.z=6;
+for(let i=0;i<=15;i++){
+let d=document.createElement("div");
+d.innerText=i;
+d.className="num";
 
-/* LIGHTS */
-let light=new THREE.PointLight(0xffffff,1);
-light.position.set(5,5,5);
-scene.add(light);
+d.onclick=()=>{
+document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
+d.classList.add("active");
+selected=i;
+};
 
-/* WHEEL */
-let geometry=new THREE.CylinderGeometry(3,3,0.5,32);
-let material=new THREE.MeshStandardMaterial({
-color:0x222222,
-metalness:0.8,
-roughness:0.2
-});
-
-let wheel=new THREE.Mesh(geometry,material);
-scene.add(wheel);
-
-/* COLORS */
-let colors=[0xff0000,0x00ff00,0xffff00,0x00ffff,0xff00ff];
-
-/* SEGMENTS VISUAL */
-for(let i=0;i<15;i++){
-let geo=new THREE.BoxGeometry(0.3,0.5,3);
-let mat=new THREE.MeshBasicMaterial({color:colors[i%5]});
-
-let part=new THREE.Mesh(geo,mat);
-
-part.position.set(Math.sin(i*0.4)*3,0,Math.cos(i*0.4)*3);
-part.rotation.y=i*0.4;
-
-wheel.add(part);
+box.appendChild(d);
 }
 
-/* ANIMATE */
-function animate(){
-requestAnimationFrame(animate);
-renderer.render(scene,camera);
-}
-animate();
+/* START */
+function start(){
 
-/* SPIN */
-function spin(){
+if(selected===null){
+alert("Select number first");
+return;
+}
+
+let count=10;
+
+let t=setInterval(()=>{
+timer.innerText="⏳ "+count;
+
+tick.play();
+
+count--;
+
+if(count<0){
+clearInterval(t);
+lightning();
+}
+
+},1000);
+}
+
+/* LIGHTNING EFFECT */
+function lightning(){
 
 document.body.classList.add("shake");
+thunder.play();
 
-let speed=0.3;
-let total=0;
+let nums=document.querySelectorAll(".num");
 
-let target=Math.floor(Math.random()*15);
+let i=0;
 
-let spinAnim=setInterval(()=>{
+let run=setInterval(()=>{
 
-wheel.rotation.y+=speed;
-total+=speed;
-speed*=0.98;
+nums.forEach(n=>n.classList.remove("light"));
 
-if(speed<0.01){
-clearInterval(spinAnim);
-showResult(target);
+let rand=Math.floor(Math.random()*16);
+nums[rand].classList.add("light");
+
+i++;
+
+if(i>20){
+clearInterval(run);
+
+let winNum=rand;
+show(winNum);
 }
 
-},30);
+},100);
 }
 
 /* RESULT */
-function showResult(num){
+function show(n){
 
 document.body.classList.remove("shake");
 
-document.getElementById("result").innerText="🎯 Number: "+num;
+result.innerText="🎯 Number: "+n;
 
-let popup=document.getElementById("popup");
-let text=document.getElementById("winText");
-
-text.innerText="💥 BIG WIN: "+num;
+win.play();
 
 popup.style.display="flex";
+winText.innerText="💥 BIG WIN: "+n;
+winText.className="flash";
 
-setTimeout(()=>{
-popup.style.display="none";
-},3000);
+setTimeout(()=>popup.style.display="none",3000);
 }
 
 </script>

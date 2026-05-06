@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lightning Demo Game</title>
+<title>⚡ Ultra Lightning Game</title>
 
 <style>
 body{
@@ -19,6 +19,19 @@ margin:10px;
 border-radius:10px;
 }
 
+input,button{
+padding:10px;
+margin:5px;
+border:none;
+border-radius:6px;
+}
+
+button{
+background:#22c55e;
+color:white;
+cursor:pointer;
+}
+
 .num{
 display:inline-block;
 padding:12px;
@@ -28,9 +41,7 @@ border-radius:6px;
 cursor:pointer;
 }
 
-.active{
-background:#22c55e;
-}
+.active{background:#22c55e;}
 
 .light{
 background:yellow;
@@ -46,19 +57,14 @@ box-shadow:0 0 15px yellow;
 75%{transform:translate(5px)}
 100%{transform:translate(0)}
 }
-
-.shake{
-animation:shake 0.4s;
-}
+.shake{animation:shake 0.4s;}
 
 /* POPUP */
 #popup{
 display:none;
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+top:0;left:0;
+width:100%;height:100%;
 background:rgba(0,0,0,0.9);
 align-items:center;
 justify-content:center;
@@ -74,63 +80,83 @@ animation:flash 1s infinite;
 50%{color:#facc15;}
 100%{color:#22c55e;}
 }
-
-button{
-padding:10px;
-margin:5px;
-border:none;
-border-radius:6px;
-background:#22c55e;
-color:white;
-}
 </style>
-
 </head>
 
 <body>
 
-<h2>⚡ Lightning Lucky Game (Demo)</h2>
+<h2>⚡ Ultra Lightning Game (PRO DEMO)</h2>
 
+<!-- LOGIN -->
 <div class="box">
-🎯 Select Number (0–15)
+<h3>🔐 Login</h3>
+<input id="user" placeholder="User Name"><br>
+<input id="mobile" placeholder="Mobile Number"><br>
+<button onclick="login()">Login</button>
+</div>
+
+<!-- PAYMENT -->
+<div class="box">
+<h3>💳 Payment (Demo)</h3>
+
+<!-- CHANGE QR HERE -->
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=YourUPI" width="180"><br>
+
+<button>Pay ₹50</button>
+<p id="status">Status: Pending</p>
+</div>
+
+<!-- NUMBERS -->
+<div class="box">
+<h3>🎯 Select Number (0–15)</h3>
 <div id="nums"></div>
 </div>
 
-<div class="box">
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=DemoQR" width="150"><br>
-<button>Pay ₹50 (Demo)</button>
-</div>
-
+<!-- TIMER -->
 <div class="box">
 <h2 id="timer">Press Start</h2>
-<button onclick="start()">Start</button>
+<button onclick="start()">Start Draw</button>
 </div>
 
+<!-- RESULT -->
 <div class="box">
 <h2 id="result">Result Locked</h2>
+<p id="ticket"></p>
 </div>
 
+<!-- POPUP -->
 <div id="popup">
 <h1 id="winText"></h1>
 </div>
 
+<!-- SOUND -->
 <audio id="tick" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 <audio id="thunder" src="https://actions.google.com/sounds/v1/weather/thunder_crack.ogg"></audio>
 <audio id="win" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
 
 <script>
 
+let logged=false;
 let selected=null;
+
+/* PRIZE */
+const prize={
+0:0,1:2000,2:3000,3:2500,4:4000,
+5:1500,6:3500,7:5000,8:4500,
+9:3000,10:6000,11:2000,
+12:3500,13:2500,14:4000,15:5000
+};
 
 /* NUMBERS */
 let box=document.getElementById("nums");
-
 for(let i=0;i<=15;i++){
 let d=document.createElement("div");
 d.innerText=i;
 d.className="num";
 
 d.onclick=()=>{
+if(!logged) return alert("Login First");
+
 document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
 d.classList.add("active");
 selected=i;
@@ -139,21 +165,27 @@ selected=i;
 box.appendChild(d);
 }
 
+/* LOGIN */
+function login(){
+if(user.value && mobile.value){
+logged=true;
+alert("Login Success");
+}else{
+alert("Fill details");
+}
+}
+
 /* START */
 function start(){
 
-if(selected===null){
-alert("Select number first");
-return;
-}
+if(!logged) return alert("Login First");
+if(selected===null) return alert("Select Number");
 
 let count=10;
 
 let t=setInterval(()=>{
 timer.innerText="⏳ "+count;
-
 tick.play();
-
 count--;
 
 if(count<0){
@@ -164,18 +196,16 @@ lightning();
 },1000);
 }
 
-/* LIGHTNING EFFECT */
+/* LIGHTNING */
 function lightning(){
 
 document.body.classList.add("shake");
 thunder.play();
 
 let nums=document.querySelectorAll(".num");
-
 let i=0;
 
 let run=setInterval(()=>{
-
 nums.forEach(n=>n.classList.remove("light"));
 
 let rand=Math.floor(Math.random()*16);
@@ -183,14 +213,12 @@ nums[rand].classList.add("light");
 
 i++;
 
-if(i>20){
+if(i>25){
 clearInterval(run);
-
-let winNum=rand;
-show(winNum);
+show(rand);
 }
 
-},100);
+},80);
 }
 
 /* RESULT */
@@ -198,12 +226,16 @@ function show(n){
 
 document.body.classList.remove("shake");
 
-result.innerText="🎯 Number: "+n;
+let amt=prize[n];
+let ticketId="TICKET-"+Math.floor(Math.random()*999999);
+
+result.innerText="🎯 Number: "+n+" | 💰 ₹"+amt;
+ticket.innerText="🎟 "+ticketId;
 
 win.play();
 
 popup.style.display="flex";
-winText.innerText="💥 BIG WIN: "+n;
+winText.innerText="💥 BIG WIN ₹"+amt;
 winText.className="flash";
 
 setTimeout(()=>popup.style.display="none",3000);

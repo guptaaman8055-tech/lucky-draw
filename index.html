@@ -1,285 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>VIP Lightning PRO</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP Membership</title>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
 body{
-margin:0;
-background:#0b0f1a;
-font-family:sans-serif;
+background:#0f172a;
 color:#fff;
-text-align:center;
+display:flex;
+justify-content:center;
+padding:20px;
 }
-
-/* TOP */
-.top{
+.container{
+width:100%;
+max-width:420px;
+}
+.card{
+background:#1e293b;
+border-radius:15px;
+padding:20px;
+margin-bottom:15px;
+box-shadow:0 0 20px rgba(255,215,0,.2);
+}
+h1,h2{
+text-align:center;
+margin-bottom:15px;
+color:#FFD700;
+}
+.balance{
+font-size:28px;
+text-align:center;
+color:#22c55e;
+margin:15px 0;
+}
+.plan{
 display:flex;
 justify-content:space-between;
+padding:12px;
+margin:8px 0;
+background:#334155;
+border-radius:10px;
+}
+button{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:10px;
+background:#FFD700;
+color:#000;
+font-weight:bold;
+font-size:16px;
+cursor:pointer;
+}
+button:hover{
+background:#ffc107;
+}
+.upi{
+background:#111827;
 padding:10px;
-}
-.balance{color:#22c55e;}
-
-/* TIMER */
-.timer{
-width:70px;height:70px;
-border-radius:50%;
-border:6px solid #333;
-border-top:6px solid gold;
-margin:auto;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:20px;
-}
-
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:6px;
-padding:10px;
-}
-.num{
-padding:14px;
 border-radius:8px;
-cursor:pointer;
-font-size:14px;
+text-align:center;
+word-break:break-all;
+margin-top:10px;
 }
-.red{background:#b91c1c;}
-.black{background:#111;}
-.green{background:#15803d;}
-
-.active{outline:2px solid yellow;}
-.light{
-transform:scale(1.2);
-box-shadow:0 0 20px gold;
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:8px;
+border:none;
+background:#334155;
+color:white;
 }
-
-/* COLOR BET */
-.colors{
-margin:10px;
-}
-.colorBtn{
-padding:8px 12px;
-margin:5px;
-border-radius:6px;
-display:inline-block;
-cursor:pointer;
-}
-.cRed{background:#b91c1c;}
-.cBlack{background:#111;}
-.cGreen{background:#15803d;}
-
-/* RESULT */
-#result{font-size:20px;margin:10px;}
-#history{color:#aaa;font-size:14px;}
-
-/* POPUP */
-#popup{
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.9);
-align-items:center;
-justify-content:center;
-}
-.win{
-font-size:30px;
-animation:flash 1s infinite;
-}
-@keyframes flash{
-0%{color:gold;}
-50%{color:red;}
-100%{color:gold;}
+.footer{
+text-align:center;
+color:#aaa;
+font-size:13px;
+margin-top:20px;
 }
 </style>
-
 </head>
+
 <body>
 
-<div class="top">
-<div class="balance" id="bal">💰 ₹1000</div>
+<div class="container">
+
+<div class="card">
+<h1>⭐ VIP MEMBERSHIP ⭐</h1>
+<div class="balance">Wallet: ₹0</div>
 </div>
 
-<h3>⚡ VIP PRO GAME</h3>
-
-<div class="timer" id="timer">10</div>
-
-<div class="colors">
-<span class="colorBtn cRed" onclick="selectColor('red')">RED</span>
-<span class="colorBtn cBlack" onclick="selectColor('black')">BLACK</span>
-<span class="colorBtn cGreen" onclick="selectColor('green')">GREEN</span>
+<div class="card">
+<h2>Login</h2>
+<input type="text" placeholder="Enter Name">
+<input type="text" placeholder="Referral Code (Optional)">
+<button>Login</button>
 </div>
 
-<div class="grid" id="grid"></div>
+<div class="card">
+<h2>VIP Plans</h2>
 
-<div id="result">Select Number or Color</div>
-<div id="history">History:</div>
+<div class="plan"><span>VIP 1</span><span>₹199</span></div>
+<div class="plan"><span>VIP 2</span><span>₹499</span></div>
+<div class="plan"><span>VIP 3</span><span>₹999</span></div>
+<div class="plan"><span>VIP 4</span><span>₹1999</span></div>
 
-<div id="popup">
-<div class="win" id="win"></div>
 </div>
 
-<audio id="spinSound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
-<audio id="winSound" src="https://actions.google.com/sounds/v1/crowds/cheer.ogg"></audio>
+<div class="card">
+<h2>Payment</h2>
+
+<p>UPI ID</p>
+
+<div class="upi" id="upi">
+guptaaman8055-2@oksbi
+</div>
+
+<button onclick="copyUPI()">Copy UPI</button>
+
+<p style="margin-top:15px;">
+After payment, contact support to verify your membership.
+</p>
+
+</div>
+
+<div class="card">
+<h2>Features</h2>
+
+<p>✅ VIP Membership</p>
+<p>✅ Referral Support</p>
+<p>✅ Wallet Records</p>
+<p>✅ Premium Interface</p>
+<p>✅ Mobile Friendly</p>
+
+</div>
+
+<div class="footer">
+© 2026 VIP Membership
+</div>
+
+</div>
 
 <script>
-
-/* DATA */
-let multipliers=[1,2,5,10,3,2,8,4,6,12,2,3,15,5,20,1,7,9,2,11];
-
-let balance=1000, bet=50;
-let selected=null, selectedColor=null;
-let locked=false;
-let history=[];
-
-/* GRID */
-let grid=document.getElementById("grid");
-
-for(let i=1;i<=20;i++){
-
-let d=document.createElement("div");
-d.className="num";
-
-let color = i%3==0?"green":i%2==0?"red":"black";
-d.classList.add(color);
-
-d.innerHTML=i+"<br>"+multipliers[i-1]+"x";
-
-d.onclick=()=>{
-if(locked) return;
-
-selected=i;
-selectedColor=null;
-
-document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
-d.classList.add("active");
-};
-
-grid.appendChild(d);
+function copyUPI(){
+navigator.clipboard.writeText("guptaaman8055-2@oksbi");
+alert("UPI Copied Successfully");
 }
-
-/* COLOR SELECT */
-function selectColor(c){
-if(locked) return;
-
-selectedColor=c;
-selected=null;
-
-document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
-}
-
-/* TIMER */
-let time=10;
-
-function startTimer(){
-
-locked=false;
-
-let t=setInterval(()=>{
-timer.innerText=time;
-time--;
-
-if(time<0){
-clearInterval(t);
-run();
-}
-},1000);
-}
-
-/* RUN */
-function run(){
-
-locked=true;
-
-document.getElementById("spinSound").play();
-if(navigator.vibrate) navigator.vibrate(200);
-
-let nums=document.querySelectorAll(".num");
-let i=0, speed=40;
-
-let loop=setInterval(()=>{
-
-nums.forEach(n=>n.classList.remove("light"));
-
-let index=i%20;
-nums[index].classList.add("light");
-
-i++;
-if(i>40) speed+=5;
-
-if(i>80){
-clearInterval(loop);
-let winNum=Math.floor(Math.random()*20)+1;
-show(winNum);
-}
-},speed);
-}
-
-/* RESULT */
-function show(n){
-
-let multi=multipliers[n-1];
-let color = n%3==0?"green":n%2==0?"red":"black";
-
-let text="";
-
-/* CHECK */
-if(selected===n){
-let winAmt=bet*multi;
-balance+=winAmt;
-text="🎯 NUMBER WIN ₹"+winAmt;
-
-}else if(selectedColor===color){
-let winAmt=bet*2;
-balance+=winAmt;
-text="🎨 COLOR WIN ₹"+winAmt;
-
-}else{
-balance-=bet;
-text="❌ LOSS ₹"+bet;
-}
-
-bal.innerText="💰 ₹"+balance;
-result.innerText=text;
-
-/* HISTORY */
-history.unshift(n);
-if(history.length>6) history.pop();
-document.getElementById("history").innerText="History: "+history.join(" | ");
-
-/* SOUND */
-document.getElementById("winSound").play();
-if(navigator.vibrate) navigator.vibrate(300);
-
-/* POPUP */
-let popup=document.getElementById("popup");
-let win=document.getElementById("win");
-
-win.innerText=text;
-popup.style.display="flex";
-
-setTimeout(()=>{
-popup.style.display="none";
-next();
-},2000);
-}
-
-/* NEXT */
-function next(){
-time=10;
-selected=null;
-selectedColor=null;
-document.querySelectorAll(".num").forEach(n=>n.classList.remove("active"));
-startTimer();
-}
-
-/* START */
-startTimer();
-
 </script>
+
 </body>
 </html>

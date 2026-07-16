@@ -3,153 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIP Membership</title>
-
+<title>Lucky Draw Demo</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
 body{
-background:#0f172a;
+margin:0;
+font-family:Arial,sans-serif;
+background:#111827;
 color:#fff;
 display:flex;
 justify-content:center;
-padding:20px;
-}
-.container{
-width:100%;
-max-width:420px;
+align-items:center;
+height:100vh;
 }
 .card{
-background:#1e293b;
+background:#1f2937;
+padding:25px;
 border-radius:15px;
-padding:20px;
-margin-bottom:15px;
-box-shadow:0 0 20px rgba(255,215,0,.2);
-}
-h1,h2{
 text-align:center;
-margin-bottom:15px;
-color:#FFD700;
+width:320px;
+box-shadow:0 0 20px rgba(255,215,0,.3);
 }
-.balance{
-font-size:28px;
-text-align:center;
-color:#22c55e;
-margin:15px 0;
-}
-.plan{
-display:flex;
-justify-content:space-between;
-padding:12px;
-margin:8px 0;
-background:#334155;
-border-radius:10px;
-}
+h2{color:gold;}
 button{
-width:100%;
-padding:12px;
-margin-top:10px;
+padding:12px 20px;
 border:none;
-border-radius:10px;
-background:#FFD700;
-color:#000;
+border-radius:8px;
+background:gold;
+font-size:18px;
 font-weight:bold;
-font-size:16px;
 cursor:pointer;
+margin-top:15px;
 }
-button:hover{
-background:#ffc107;
-}
-.upi{
-background:#111827;
-padding:10px;
-border-radius:8px;
-text-align:center;
-word-break:break-all;
-margin-top:10px;
-}
-input{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:8px;
-border:none;
-background:#334155;
-color:white;
-}
-.footer{
-text-align:center;
-color:#aaa;
-font-size:13px;
+#result{
 margin-top:20px;
+font-size:22px;
+font-weight:bold;
+}
+#history{
+margin-top:15px;
+color:#ccc;
+font-size:14px;
 }
 </style>
 </head>
-
 <body>
 
-<div class="container">
-
 <div class="card">
-<h1>⭐ VIP MEMBERSHIP ⭐</h1>
-<div class="balance">Wallet: ₹0</div>
-</div>
+<h2>🎯 Lucky Draw Demo</h2>
 
-<div class="card">
-<h2>Login</h2>
-<input type="text" placeholder="Enter Name">
-<input type="text" placeholder="Referral Code (Optional)">
-<button>Login</button>
-</div>
+<p>Click the button to generate a random number.</p>
 
-<div class="card">
-<h2>VIP Plans</h2>
+<button onclick="play()">PLAY</button>
 
-<div class="plan"><span>VIP 1</span><span>₹199</span></div>
-<div class="plan"><span>VIP 2</span><span>₹499</span></div>
-<div class="plan"><span>VIP 3</span><span>₹999</span></div>
-<div class="plan"><span>VIP 4</span><span>₹1999</span></div>
+<div id="result">Waiting...</div>
 
-</div>
-
-<div class="card">
-<h2>Payment</h2>
-
-<p>UPI ID</p>
-
-<div class="upi" id="upi">
-guptaaman8055-2@oksbi
-</div>
-
-<button onclick="copyUPI()">Copy UPI</button>
-
-<p style="margin-top:15px;">
-After payment, contact support to verify your membership.
-</p>
-
-</div>
-
-<div class="card">
-<h2>Features</h2>
-
-<p>✅ VIP Membership</p>
-<p>✅ Referral Support</p>
-<p>✅ Wallet Records</p>
-<p>✅ Premium Interface</p>
-<p>✅ Mobile Friendly</p>
-
-</div>
-
-<div class="footer">
-© 2026 VIP Membership
-</div>
+<div id="history">History:</div>
 
 </div>
 
 <script>
-function copyUPI(){
-navigator.clipboard.writeText("guptaaman8055-2@oksbi");
-alert("UPI Copied Successfully");
+
+let history=[];
+
+function play(){
+
+let num=Math.floor(Math.random()*20)+1;
+
+document.getElementById("result").innerHTML=
+"🎉 Lucky Number : <b>"+num+"</b>";
+
+history.unshift(num);
+
+if(history.length>10) history.pop();
+
+document.getElementById("history").innerHTML=
+"History : "+history.join(" | ");
+
 }
+
 </script>
 
 </body>

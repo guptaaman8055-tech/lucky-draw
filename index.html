@@ -2,185 +2,199 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lucky Rewards Hub</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lucky Spin Game</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
-}
-
+*{box-sizing:border-box}
 body{
-  background:#0b1020;
-  color:white;
-  min-height:100vh;
+margin:0;
+font-family:Arial,sans-serif;
+background:#080d19;
+color:white;
 }
-
-.container{
-  width:100%;
-  max-width:450px;
-  margin:auto;
-  padding:15px;
+.app{
+max-width:450px;
+margin:auto;
+padding:15px;
 }
-
 .header{
-  background:linear-gradient(135deg,#1e293b,#111827);
-  padding:20px;
-  border-radius:18px;
-  text-align:center;
-  box-shadow:0 0 20px rgba(255,215,0,.15);
+background:linear-gradient(135deg,#202a44,#111827);
+padding:18px;
+border-radius:18px;
+text-align:center;
 }
-
 .header h1{
-  color:#ffd700;
-  font-size:25px;
+margin:0;
+color:#ffd700;
 }
-
-.subtitle{
-  color:#aaa;
-  margin-top:7px;
-}
-
-.card{
-  background:#172033;
-  border-radius:16px;
-  padding:18px;
-  margin-top:15px;
-  box-shadow:0 5px 20px rgba(0,0,0,.3);
-}
-
-.card h2{
-  color:#ffd700;
-  margin-bottom:15px;
-}
-
 .wallet{
-  text-align:center;
+margin-top:15px;
+background:#162033;
+padding:15px;
+border-radius:15px;
+text-align:center;
 }
-
 .coins{
-  font-size:32px;
-  color:#22c55e;
-  font-weight:bold;
-  margin:10px 0;
+font-size:30px;
+color:#22c55e;
+font-weight:bold;
 }
-
-input{
-  width:100%;
-  padding:13px;
-  margin:6px 0;
-  border:none;
-  outline:none;
-  border-radius:10px;
-  background:#263449;
-  color:white;
+.card{
+background:#162033;
+padding:18px;
+border-radius:15px;
+margin-top:15px;
+text-align:center;
 }
-
+.wheel{
+width:230px;
+height:230px;
+margin:20px auto;
+border-radius:50%;
+border:8px solid #ffd700;
+background:conic-gradient(
+#ef4444 0deg 60deg,
+#22c55e 60deg 120deg,
+#3b82f6 120deg 180deg,
+#eab308 180deg 240deg,
+#a855f7 240deg 300deg,
+#f97316 300deg 360deg
+);
+display:flex;
+align-items:center;
+justify-content:center;
+transition:transform 4s cubic-bezier(.17,.67,.12,.99);
+box-shadow:0 0 30px rgba(255,215,0,.4);
+}
+.wheel span{
+background:#111827;
+width:70px;
+height:70px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+color:#ffd700;
+}
+.pointer{
+font-size:30px;
+color:#ffd700;
+}
 button{
-  width:100%;
-  padding:13px;
-  margin-top:8px;
-  border:none;
-  border-radius:10px;
-  background:#ffd700;
-  color:#111;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
+width:100%;
+padding:13px;
+margin-top:10px;
+border:0;
+border-radius:10px;
+background:#ffd700;
+color:#111;
+font-weight:bold;
+font-size:16px;
+cursor:pointer;
 }
-
-button:active{
-  transform:scale(.98);
+button:disabled{
+opacity:.5;
 }
-
-.game{
-  text-align:center;
-}
-
-.number{
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  margin:15px auto;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(135deg,#ffd700,#ff8c00);
-  color:#111;
-  font-size:35px;
-  font-weight:bold;
-  box-shadow:0 0 30px rgba(255,215,0,.3);
-}
-
 .result{
-  font-size:20px;
-  color:#22c55e;
-  min-height:28px;
+font-size:20px;
+color:#22c55e;
+margin-top:12px;
+min-height:25px;
 }
-
-.plan{
-  display:flex;
-  justify-content:space-between;
-  padding:12px;
-  margin:7px 0;
-  background:#263449;
-  border-radius:10px;
+.row{
+display:flex;
+justify-content:space-between;
+padding:12px;
+background:#263449;
+margin:7px 0;
+border-radius:9px;
 }
-
-.upi{
-  background:#0b1020;
-  padding:12px;
-  border-radius:10px;
-  text-align:center;
-  word-break:break-all;
-  color:#22c55e;
-  margin:10px 0;
-}
-
 .history{
-  color:#bbb;
-  line-height:1.8;
-  font-size:14px;
+text-align:left;
+color:#bbb;
+font-size:14px;
+line-height:1.8;
 }
-
-.badge{
-  display:inline-block;
-  background:#ffd700;
-  color:#111;
-  padding:6px 12px;
-  border-radius:20px;
-  font-weight:bold;
+input{
+width:100%;
+padding:12px;
+border:0;
+border-radius:9px;
+background:#263449;
+color:white;
+margin-top:8px;
 }
-
-.footer{
-  text-align:center;
-  color:#777;
-  padding:20px 0;
-  font-size:13px;
-}
-
 .small{
-  color:#aaa;
-  font-size:13px;
-  margin-top:8px;
+font-size:12px;
+color:#999;
+margin-top:10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
 <div class="header">
-<h1>⭐ LUCKY REWARDS HUB ⭐</h1>
-<p class="subtitle">Entertainment & Rewards Demo</p>
+<h1>🎮 LUCKY SPIN</h1>
+<p>Entertainment Demo Game</p>
 </div>
 
+<div class="wallet">
+<div>🪙 Demo Coins</div>
+<div class="coins" id="coins">1000</div>
+</div>
 
-<!-- PROFILE -->
+<div class="card">
+
+<div class="pointer">▼</div>
+
+<div class="wheel" id="wheel">
+<span>SPIN</span>
+</div>
+
+<button id="spinBtn" onclick="spin()">
+🎡 SPIN WHEEL
+</button>
+
+<div class="result" id="result">
+Ready to Play
+</div>
+
+<p class="small">
+Demo Coins have no real monetary value.
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>🎁 Daily Bonus</h2>
+
+<button onclick="dailyBonus()">
+Claim +100 Demo Coins
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>👑 VIP LEVEL</h2>
+
+<div class="row">
+<span>Current Level</span>
+<b id="vip">VIP 1</b>
+</div>
+
+<div class="row">
+<span>Total Coins</span>
+<b id="total">1000</b>
+</div>
+
+</div>
 
 <div class="card">
 
@@ -188,280 +202,143 @@ button:active{
 
 <input id="name" placeholder="Enter Your Name">
 
-<input id="referral" placeholder="Referral Code">
+<input id="ref" placeholder="Referral Code">
 
-<button onclick="saveProfile()">Save Profile</button>
-
-<p class="small" id="welcome"></p>
-
-</div>
-
-
-<!-- WALLET -->
-
-<div class="card wallet">
-
-<h2>🪙 Demo Wallet</h2>
-
-<div class="coins" id="coins">1000</div>
-
-<p>Demo Coins</p>
-
-<button onclick="dailyBonus()">🎁 Claim Daily Bonus +100</button>
-
-</div>
-
-
-<!-- GAME -->
-
-<div class="card game">
-
-<h2>🎯 Lucky Draw Demo</h2>
-
-<div class="number" id="number">?</div>
-
-<div class="result" id="result">
-Press Play
-</div>
-
-<button onclick="playGame()">
-🎮 PLAY DEMO
+<button onclick="saveProfile()">
+Save Profile
 </button>
 
-<p class="small">
-This game uses Demo Coins only.
-</p>
+<p id="welcome"></p>
 
 </div>
-
-
-<!-- VIP -->
 
 <div class="card">
 
-<h2>👑 VIP Membership</h2>
+<h2>📜 History</h2>
 
-<div class="plan">
-<span>VIP 1</span>
-<span>₹199</span>
-</div>
-
-<div class="plan">
-<span>VIP 2</span>
-<span>₹499</span>
-</div>
-
-<div class="plan">
-<span>VIP 3</span>
-<span>₹999</span>
-</div>
-
-<p class="small">
-VIP membership is for valid services and benefits only.
-</p>
-
-</div>
-
-
-<!-- UPI -->
-
-<div class="card">
-
-<h2>💳 Payment Information</h2>
-
-<p>UPI ID</p>
-
-<div class="upi" id="upi">
-guptaaman8055-2@oksbi
-</div>
-
-<button onclick="copyUPI()">
-📋 Copy UPI ID
-</button>
-
-<p class="small">
-Use this UPI only for valid membership or service payments.
-</p>
-
-</div>
-
-
-<!-- REFERRAL -->
-
-<div class="card">
-
-<h2>🤝 Referral</h2>
-
-<p>Your Referral Code:</p>
-
-<div class="upi" id="myReferral">
-LUCKY100
-</div>
-
-<button onclick="copyReferral()">
-Copy Referral Code
-</button>
-
-</div>
-
-
-<!-- HISTORY -->
-
-<div class="card">
-
-<h2>📜 Game History</h2>
-
-<div class="history" id="history">
-No history yet.
+<div id="history" class="history">
+No activity yet.
 </div>
 
 </div>
 
-
-<!-- ABOUT -->
-
-<div class="card">
-
-<h2>ℹ️ About</h2>
-
-<p>
-Welcome to Lucky Rewards Hub.
-This is an entertainment and demo rewards platform.
-All coins shown on this website are virtual Demo Coins
-and have no real monetary value.
-</p>
-
 </div>
-
-
-<div class="footer">
-© 2026 Lucky Rewards Hub<br>
-Demo Entertainment Platform
-</div>
-
-</div>
-
 
 <script>
 
 let coins =
-Number(localStorage.getItem("demoCoins")) || 1000;
+Number(localStorage.getItem("coins")) || 1000;
 
 let history =
-JSON.parse(localStorage.getItem("demoHistory")) || [];
+JSON.parse(localStorage.getItem("history")) || [];
 
-let savedName =
-localStorage.getItem("playerName") || "";
+let rotation = 0;
 
-let savedReferral =
-localStorage.getItem("playerReferral") || "";
-
-
-function updateUI(){
+function update(){
 
 document.getElementById("coins")
 .innerText = coins;
 
-if(savedName){
+document.getElementById("total")
+.innerText = coins;
 
-document.getElementById("name")
-.value = savedName;
+let level =
+Math.floor(coins/1000)+1;
 
-document.getElementById("welcome")
+document.getElementById("vip")
 .innerText =
-"Welcome, " + savedName + " 👋";
-
-}
-
-if(savedReferral){
-
-document.getElementById("referral")
-.value = savedReferral;
-
-}
+"VIP "+level;
 
 if(history.length){
 
 document.getElementById("history")
 .innerHTML =
-history.map((item,index)=>
-(index+1)+". "+item
-).join("<br>");
+history.join("<br>");
 
 }
 
 localStorage.setItem(
-"demoCoins",
+"coins",
 coins
 );
 
 localStorage.setItem(
-"demoHistory",
+"history",
 JSON.stringify(history)
 );
 
 }
 
+function spin(){
 
-function saveProfile(){
+let btn =
+document.getElementById("spinBtn");
 
-let name =
-document.getElementById("name").value;
+btn.disabled=true;
 
-let referral =
-document.getElementById("referral").value;
+let reward =
+Math.floor(Math.random()*201);
 
-if(!name){
+let number =
+Math.floor(Math.random()*20)+1;
 
-alert("Please enter your name");
+rotation +=
+1440 +
+Math.floor(Math.random()*360);
 
-return;
+document.getElementById("wheel")
+.style.transform =
+"rotate("+rotation+"deg)";
 
-}
+setTimeout(()=>{
 
-savedName = name;
+coins += reward;
 
-savedReferral = referral;
-
-localStorage.setItem(
-"playerName",
-name
-);
-
-localStorage.setItem(
-"playerReferral",
-referral
-);
-
-document.getElementById("welcome")
+document.getElementById("result")
 .innerText =
-"Welcome, " + name + " 👋";
+"🎉 Number "+number+
+" | +"+reward+
+" Demo Coins";
 
-alert("Profile Saved");
+history.unshift(
+"🎡 Spin: Number "+
+number+
+" → +"+
+reward+
+" Coins"
+);
+
+if(history.length>10)
+history.pop();
+
+update();
+
+btn.disabled=false;
+
+},4000);
 
 }
-
 
 function dailyBonus(){
 
 let today =
 new Date().toDateString();
 
-let lastBonus =
-localStorage.getItem("lastBonus");
+if(localStorage.getItem("bonus")
+===today){
 
-if(lastBonus === today){
-
-alert("Daily bonus already claimed!");
+alert(
+"Today's bonus already claimed!"
+);
 
 return;
 
 }
 
-coins += 100;
+coins +=100;
 
 localStorage.setItem(
-"lastBonus",
+"bonus",
 today
 );
 
@@ -469,78 +346,76 @@ history.unshift(
 "🎁 Daily Bonus +100 Coins"
 );
 
-alert("You received 100 Demo Coins!");
-
-updateUI();
-
-}
-
-
-function playGame(){
-
-let randomNumber =
-Math.floor(Math.random()*20)+1;
-
-let reward =
-Math.floor(Math.random()*201);
-
-document.getElementById("number")
-.innerText =
-randomNumber;
-
-document.getElementById("result")
-.innerText =
-"🎉 +"+reward+" Demo Coins";
-
-coins += reward;
-
-history.unshift(
-"🎯 Lucky Number: "+
-randomNumber+
-" | Reward: "+
-reward+
-" Coins"
-);
-
-if(history.length > 10){
-
-history =
-history.slice(0,10);
-
-}
-
-updateUI();
-
-}
-
-
-function copyUPI(){
-
-navigator.clipboard
-.writeText(
-"guptaaman8055-2@oksbi"
-);
+update();
 
 alert(
-"UPI ID Copied Successfully"
+"100 Demo Coins Added!"
 );
 
 }
 
+function saveProfile(){
 
-function copyReferral(){
+let name =
+document.getElementById("name")
+.value;
 
-navigator.clipboard
-.writeText("LUCKY100");
+let ref =
+document.getElementById("ref")
+.value;
+
+if(!name){
 
 alert(
-"Referral Code Copied"
+"Please enter your name"
 );
+
+return;
 
 }
 
+localStorage.setItem(
+"name",
+name
+);
 
-updateUI();
+localStorage.setItem(
+"ref",
+ref
+);
+
+document.getElementById("welcome")
+.innerText =
+"Welcome "+name+" 👋";
+
+}
+
+function loadProfile(){
+
+let name =
+localStorage.getItem("name");
+
+let ref =
+localStorage.getItem("ref");
+
+if(name){
+
+document.getElementById("name")
+.value=name;
+
+document.getElementById("ref")
+.value=ref||"";
+
+document.getElementById("welcome")
+.innerText =
+"Welcome "+name+" 👋";
+
+}
+
+}
+
+update();
+loadProfile();
 
 </script>
 

@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>Premium Ticket Gallery</title>
 
@@ -16,8 +16,9 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:#070b16;
-color:#fff;
+background:#060914;
+color:white;
+min-height:100vh;
 }
 
 .container{
@@ -29,11 +30,13 @@ padding:15px;
 /* HEADER */
 
 .header{
-background:linear-gradient(135deg,#111827,#312e81);
 padding:25px;
-border-radius:20px;
 text-align:center;
-box-shadow:0 0 30px rgba(124,58,237,.3);
+border-radius:20px;
+background:
+linear-gradient(135deg,#111827,#312e81);
+box-shadow:
+0 0 30px rgba(124,58,237,.4);
 }
 
 .header h1{
@@ -50,19 +53,19 @@ color:#cbd5e1;
 
 .timer-box{
 margin-top:15px;
-background:#172033;
 padding:15px;
-border-radius:15px;
 text-align:center;
+border-radius:15px;
+background:#151d30;
 }
 
 .timer-title{
-color:#aaa;
 font-size:13px;
+color:#9ca3af;
 }
 
 .timer{
-font-size:35px;
+font-size:38px;
 font-weight:bold;
 color:#ff4d4d;
 margin-top:5px;
@@ -72,10 +75,11 @@ margin-top:5px;
 
 .reward{
 margin-top:15px;
-background:linear-gradient(135deg,#14532d,#166534);
-padding:18px;
-border-radius:15px;
+padding:20px;
 text-align:center;
+border-radius:15px;
+background:
+linear-gradient(135deg,#14532d,#166534);
 }
 
 .reward h2{
@@ -85,21 +89,57 @@ color:#fde047;
 .reward-value{
 font-size:28px;
 font-weight:bold;
-margin-top:8px;
+margin:8px 0;
 }
 
 /* TELEGRAM */
 
 .telegram{
 display:block;
+margin-top:15px;
+padding:14px;
+text-align:center;
 text-decoration:none;
+border-radius:12px;
 background:#229ed9;
 color:white;
-padding:14px;
-border-radius:12px;
-text-align:center;
 font-weight:bold;
-margin-top:15px;
+}
+
+/* BUTTON */
+
+button{
+display:block;
+margin:20px auto;
+padding:14px 28px;
+border:none;
+border-radius:12px;
+background:#ffd700;
+color:#111;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:disabled{
+opacity:.5;
+}
+
+/* RESULT */
+
+.result{
+display:none;
+padding:20px;
+margin-top:20px;
+text-align:center;
+border-radius:15px;
+background:#172033;
+border:2px solid #ffd700;
+}
+
+.result h2{
+color:#ffd700;
+margin-bottom:10px;
 }
 
 /* TICKETS */
@@ -120,14 +160,15 @@ border-radius:16px;
 background:
 linear-gradient(135deg,#172554,#4c1d95);
 border:1px solid rgba(255,215,0,.5);
-box-shadow:0 8px 20px rgba(0,0,0,.35);
+box-shadow:
+0 8px 20px rgba(0,0,0,.35);
 transition:.3s;
 }
 
 .ticket:hover{
-transform:translateY(-6px);
+transform:translateY(-5px);
 box-shadow:
-0 0 25px rgba(255,215,0,.35);
+0 0 25px rgba(255,215,0,.4);
 }
 
 .ticket-top{
@@ -169,51 +210,81 @@ font-size:11px;
 color:#94a3b8;
 }
 
-.selected{
-outline:3px solid #22c55e;
-animation:pulse 1s infinite;
+/* RUNNING LIGHT */
+
+.ticket.running{
+animation:
+lightning .12s infinite alternate,
+glow .25s infinite alternate;
 }
 
-@keyframes pulse{
+@keyframes lightning{
+
+from{
+transform:scale(1);
+filter:brightness(1);
+}
+
+to{
+transform:scale(1.08);
+filter:brightness(2.2);
+}
+
+}
+
+@keyframes glow{
+
+from{
+box-shadow:
+0 0 10px gold;
+}
+
+to{
+box-shadow:
+0 0 35px white,
+0 0 70px gold;
+}
+
+}
+
+/* WINNER */
+
+.ticket.selected{
+outline:4px solid #22c55e;
+animation:
+winnerBoom .7s ease,
+winnerGlow 1s infinite alternate;
+}
+
+@keyframes winnerBoom{
+
+0%{
+transform:scale(.8);
+}
 
 50%{
-transform:scale(1.05);
+transform:scale(1.3);
+}
+
+100%{
+transform:scale(1);
+}
+
+}
+
+@keyframes winnerGlow{
+
+from{
 box-shadow:
-0 0 30px #22c55e;
+0 0 20px #22c55e;
 }
 
+to{
+box-shadow:
+0 0 60px #22c55e,
+0 0 90px gold;
 }
 
-/* BUTTON */
-
-button{
-display:block;
-margin:20px auto 0;
-padding:13px 25px;
-border:0;
-border-radius:10px;
-background:#ffd700;
-color:#111;
-font-weight:bold;
-font-size:16px;
-cursor:pointer;
-}
-
-/* RESULT */
-
-.result{
-display:none;
-margin-top:20px;
-padding:20px;
-border-radius:15px;
-text-align:center;
-background:#172033;
-border:1px solid #ffd700;
-}
-
-.result h2{
-color:#ffd700;
-margin-bottom:10px;
 }
 
 /* TERMS */
@@ -221,8 +292,8 @@ margin-bottom:10px;
 .terms{
 margin-top:25px;
 padding:20px;
-background:#111827;
 border-radius:15px;
+background:#111827;
 color:#9ca3af;
 font-size:12px;
 line-height:1.7;
@@ -236,14 +307,13 @@ margin-bottom:10px;
 /* FOOTER */
 
 .footer{
+padding:20px;
 text-align:center;
 color:#64748b;
 font-size:12px;
-padding:20px;
 }
 
 </style>
-
 </head>
 
 <body>
@@ -256,7 +326,7 @@ padding:20px;
 
 <h1>🎟️ PREMIUM TICKET GALLERY</h1>
 
-<p>Virtual Entertainment Experience</p>
+<p>Entertainment Experience</p>
 
 </div>
 
@@ -266,7 +336,7 @@ padding:20px;
 <div class="timer-box">
 
 <div class="timer-title">
-NEXT DEMO DRAW
+NEXT DRAW
 </div>
 
 <div class="timer" id="timer">
@@ -276,26 +346,27 @@ NEXT DEMO DRAW
 </div>
 
 
-<!-- VIRTUAL REWARD -->
+<!-- REWARD -->
 
 <div class="reward">
 
-<h2>🏆 VIRTUAL REWARD</h2>
+<h2>🏆 REWARD POINTS</h2>
 
 <div class="reward-value">
 500 - 25,000 Points
 </div>
 
 <p>
-Demo points only — no real monetary value
+Virtual Points
 </p>
 
 </div>
 
 
-<!-- TELEGRAM CONTACT -->
+<!-- TELEGRAM -->
 
-<a class="telegram"
+<a
+class="telegram"
 href="https://t.me/yourusername"
 target="_blank">
 
@@ -304,20 +375,24 @@ target="_blank">
 </a>
 
 
-<!-- DRAW BUTTON -->
+<!-- START -->
 
-<button onclick="selectWinner()">
+<button
+id="drawButton"
+onclick="selectWinner()">
 
-✨ Select Demo Ticket
+⚡ START DRAW
 
 </button>
 
 
 <!-- RESULT -->
 
-<div class="result" id="result">
+<div
+class="result"
+id="result">
 
-<h2>🎉 Selected Ticket</h2>
+<h2>🎉 WINNER SELECTED</h2>
 
 <p id="selectedTicket"></p>
 
@@ -326,7 +401,8 @@ target="_blank">
 
 <!-- TICKETS -->
 
-<div id="tickets"
+<div
+id="tickets"
 class="tickets">
 
 </div>
@@ -339,27 +415,27 @@ class="tickets">
 <h3>📜 Terms & Conditions</h3>
 
 <p>
-1. यह वेबसाइट केवल मनोरंजन और डेमो उद्देश्य के लिए बनाई गई है।
+1. यह वेबसाइट मनोरंजन के उद्देश्य से बनाई गई है।
 </p>
 
 <p>
-2. यहां दिखाए गए सभी टिकट वर्चुअल हैं और इनका कोई वास्तविक मौद्रिक मूल्य नहीं है।
+2. सभी टिकट और Points वर्चुअल हैं।
 </p>
 
 <p>
-3. सभी रिवॉर्ड केवल Demo Points हैं।
+3. Virtual Points का कोई वास्तविक मौद्रिक मूल्य नहीं है।
 </p>
 
 <p>
-4. किसी भी डेमो टिकट को वास्तविक पैसे में बदला नहीं जा सकता।
+4. किसी भी Virtual Points को नकद में बदला नहीं जा सकता।
 </p>
 
 <p>
-5. यह वेबसाइट किसी वास्तविक लॉटरी या जुआ सेवा का संचालन नहीं करती।
+5. यह सिस्टम वास्तविक लॉटरी या जुआ सेवा नहीं है।
 </p>
 
 <p>
-6. उपयोगकर्ता इस डेमो सिस्टम का उपयोग केवल मनोरंजन के लिए करें।
+6. उपयोगकर्ता इस वेबसाइट का उपयोग केवल मनोरंजन के लिए करें।
 </p>
 
 </div>
@@ -374,17 +450,38 @@ class="tickets">
 </div>
 
 
+<!-- SOUND -->
+
+<audio
+id="boomSound"
+preload="auto">
+
+<source
+src="https://actions.google.com/sounds/v1/impacts/crash.ogg"
+type="audio/ogg">
+
+</audio>
+
+
 <script>
 
 /* CREATE 100 TICKETS */
 
 const ticketsBox =
-document.getElementById("tickets");
+document.getElementById(
+"tickets"
+);
 
-for(let i=1;i<=100;i++){
+for(
+let i=1;
+i<=100;
+i++
+){
 
 let ticket =
-document.createElement("div");
+document.createElement(
+"div"
+);
 
 ticket.className="ticket";
 
@@ -392,14 +489,16 @@ ticket.id=
 "ticket-"+i;
 
 let number =
-String(i).padStart(3,"0");
+String(i).padStart(
+3,"0"
+);
 
-
-/* VIRTUAL REWARD */
+/* RANDOM VIRTUAL POINTS */
 
 let reward =
 Math.floor(
-Math.random()*(25000-500+1)
+Math.random()*
+(25000-500+1)
 )+500;
 
 
@@ -431,7 +530,7 @@ ticket.innerHTML=`
 <div class="ticket-price">
 
 🏆 ${reward.toLocaleString()}
-Virtual Points
+Points
 
 </div>
 
@@ -443,31 +542,43 @@ Virtual Points
 
 <div class="ticket-status">
 
-● VIRTUAL DEMO TICKET
+● ACTIVE TICKET
 
 </div>
 
 `;
 
 
-ticketsBox.appendChild(ticket);
+ticketsBox.appendChild(
+ticket
+);
 
 }
 
 
-/* SELECT DEMO WINNER */
+/* DRAW */
 
 function selectWinner(){
 
-document
-.querySelectorAll(".ticket")
-.forEach(t=>{
-
-t.classList.remove(
-"selected"
+const button =
+document.getElementById(
+"drawButton"
 );
 
-});
+button.disabled=true;
+
+document
+.querySelectorAll(
+".ticket"
+)
+.forEach(
+t=>{
+t.classList.remove(
+"selected",
+"running"
+);
+}
+);
 
 
 let winner =
@@ -476,34 +587,129 @@ Math.random()*100
 )+1;
 
 
-let ticket =
+let target =
 document.getElementById(
 "ticket-"+winner
 );
 
 
-ticket.classList.add(
+let current=0;
+
+let speed=45;
+
+
+/* RUNNING ANIMATION */
+
+let animation =
+setInterval(
+()=>{
+
+document
+.querySelectorAll(
+".ticket"
+)
+.forEach(
+t=>{
+t.classList.remove(
+"running"
+);
+}
+);
+
+
+current++;
+
+
+let index =
+(current-1)%100;
+
+
+let active =
+document.getElementById(
+"ticket-"+(index+1)
+);
+
+
+active.classList.add(
+"running"
+);
+
+
+/* SLOW DOWN */
+
+if(
+current>70
+){
+speed+=5;
+}
+
+
+if(
+current>=100
+){
+
+clearInterval(
+animation
+);
+
+
+document
+.querySelectorAll(
+".ticket"
+)
+.forEach(
+t=>{
+t.classList.remove(
+"running"
+);
+}
+);
+
+
+target.classList.add(
 "selected"
 );
 
 
+/* RESULT */
+
 document.getElementById(
 "selectedTicket"
-).innerText=
-
+)
+.innerText=
 "🎟️ Ticket #"+
 String(winner)
-.padStart(3,"0")+
+.padStart(
+3,"0"
+)+
 " Selected";
 
 
 document.getElementById(
 "result"
-).style.display=
+)
+.style.display=
 "block";
 
 
-ticket.scrollIntoView({
+/* SOUND */
+
+let sound =
+document.getElementById(
+"boomSound"
+);
+
+sound.currentTime=0;
+
+sound.play()
+.catch(
+()=>{}
+);
+
+
+/* SCROLL */
+
+target.scrollIntoView({
 
 behavior:"smooth",
 
@@ -511,10 +717,19 @@ block:"center"
 
 });
 
+
+button.disabled=false;
+
+}
+
+},
+speed
+);
+
 }
 
 
-/* COUNTDOWN */
+/* TIMER */
 
 let time=30;
 
@@ -523,18 +738,21 @@ function countdown(){
 
 document.getElementById(
 "timer"
-).innerText=time;
+)
+.innerText=
+time;
 
 
 time--;
 
 
-if(time<0){
+if(
+time<0
+){
 
 time=30;
 
 }
-
 
 }
 
@@ -547,5 +765,4 @@ countdown,
 </script>
 
 </body>
-
-  </html>
+</html>

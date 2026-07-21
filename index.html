@@ -2,17 +2,22 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Premium Ticket Gallery</title>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial,sans-serif;
+}
 
 body{
-margin:0;
-font-family:Arial,sans-serif;
 background:#070b16;
-color:white;
+color:#fff;
 }
 
 .container{
@@ -21,23 +26,83 @@ margin:auto;
 padding:15px;
 }
 
+/* HEADER */
+
 .header{
-text-align:center;
-padding:25px 15px;
-border-radius:20px;
 background:linear-gradient(135deg,#111827,#312e81);
+padding:25px;
+border-radius:20px;
+text-align:center;
 box-shadow:0 0 30px rgba(124,58,237,.3);
 }
 
 .header h1{
-margin:0;
-font-size:28px;
 color:#ffd700;
+font-size:28px;
+margin-bottom:8px;
 }
 
 .header p{
 color:#cbd5e1;
 }
+
+/* TIMER */
+
+.timer-box{
+margin-top:15px;
+background:#172033;
+padding:15px;
+border-radius:15px;
+text-align:center;
+}
+
+.timer-title{
+color:#aaa;
+font-size:13px;
+}
+
+.timer{
+font-size:35px;
+font-weight:bold;
+color:#ff4d4d;
+margin-top:5px;
+}
+
+/* REWARD */
+
+.reward{
+margin-top:15px;
+background:linear-gradient(135deg,#14532d,#166534);
+padding:18px;
+border-radius:15px;
+text-align:center;
+}
+
+.reward h2{
+color:#fde047;
+}
+
+.reward-value{
+font-size:28px;
+font-weight:bold;
+margin-top:8px;
+}
+
+/* TELEGRAM */
+
+.telegram{
+display:block;
+text-decoration:none;
+background:#229ed9;
+color:white;
+padding:14px;
+border-radius:12px;
+text-align:center;
+font-weight:bold;
+margin-top:15px;
+}
+
+/* TICKETS */
 
 .tickets{
 display:grid;
@@ -60,48 +125,37 @@ transition:.3s;
 }
 
 .ticket:hover{
-transform:translateY(-6px) scale(1.02);
+transform:translateY(-6px);
 box-shadow:
 0 0 25px rgba(255,215,0,.35);
-}
-
-.ticket:before{
-content:"";
-position:absolute;
-width:80px;
-height:80px;
-border-radius:50%;
-background:rgba(255,255,255,.06);
-right:-30px;
-top:-30px;
 }
 
 .ticket-top{
 display:flex;
 justify-content:space-between;
-font-size:12px;
+font-size:11px;
 color:#cbd5e1;
 }
 
 .ticket-icon{
-font-size:35px;
+font-size:38px;
 text-align:center;
 margin:12px 0;
 }
 
 .ticket-number{
 text-align:center;
-font-size:24px;
+font-size:25px;
 font-weight:bold;
 color:#ffd700;
 letter-spacing:2px;
 }
 
-.ticket-code{
+.ticket-price{
 text-align:center;
-font-size:11px;
-color:#94a3b8;
-margin-top:6px;
+margin-top:8px;
+font-size:14px;
+color:#86efac;
 }
 
 .ticket-line{
@@ -109,11 +163,28 @@ border-top:1px dashed #ffd700;
 margin:12px 0;
 }
 
-.status{
+.ticket-status{
 text-align:center;
-font-size:12px;
-color:#86efac;
+font-size:11px;
+color:#94a3b8;
 }
+
+.selected{
+outline:3px solid #22c55e;
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+
+50%{
+transform:scale(1.05);
+box-shadow:
+0 0 30px #22c55e;
+}
+
+}
+
+/* BUTTON */
 
 button{
 display:block;
@@ -128,21 +199,7 @@ font-size:16px;
 cursor:pointer;
 }
 
-button:hover{
-background:#facc15;
-}
-
-.selected{
-outline:3px solid #22c55e;
-animation:pulse 1s infinite;
-}
-
-@keyframes pulse{
-50%{
-transform:scale(1.04);
-box-shadow:0 0 30px #22c55e;
-}
-}
+/* RESULT */
 
 .result{
 display:none;
@@ -156,42 +213,109 @@ border:1px solid #ffd700;
 
 .result h2{
 color:#ffd700;
+margin-bottom:10px;
 }
 
-.note{
+/* TERMS */
+
+.terms{
+margin-top:25px;
+padding:20px;
+background:#111827;
+border-radius:15px;
+color:#9ca3af;
+font-size:12px;
+line-height:1.7;
+}
+
+.terms h3{
+color:#ffd700;
+margin-bottom:10px;
+}
+
+/* FOOTER */
+
+.footer{
 text-align:center;
 color:#64748b;
 font-size:12px;
-margin-top:20px;
+padding:20px;
 }
 
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
+<!-- HEADER -->
+
 <div class="header">
 
 <h1>🎟️ PREMIUM TICKET GALLERY</h1>
 
+<p>Virtual Entertainment Experience</p>
+
+</div>
+
+
+<!-- TIMER -->
+
+<div class="timer-box">
+
+<div class="timer-title">
+NEXT DEMO DRAW
+</div>
+
+<div class="timer" id="timer">
+30
+</div>
+
+</div>
+
+
+<!-- VIRTUAL REWARD -->
+
+<div class="reward">
+
+<h2>🏆 VIRTUAL REWARD</h2>
+
+<div class="reward-value">
+500 - 25,000 Points
+</div>
+
 <p>
-Explore 100 Virtual Tickets
+Demo points only — no real monetary value
 </p>
 
-<button onclick="selectRandomTicket()">
+</div>
+
+
+<!-- TELEGRAM CONTACT -->
+
+<a class="telegram"
+href="https://t.me/yourusername"
+target="_blank">
+
+📲 Contact Us on Telegram
+
+</a>
+
+
+<!-- DRAW BUTTON -->
+
+<button onclick="selectWinner()">
+
 ✨ Select Demo Ticket
+
 </button>
 
-</div>
 
-<div id="tickets"
-class="tickets">
-</div>
+<!-- RESULT -->
 
-<div id="result"
-class="result">
+<div class="result" id="result">
 
 <h2>🎉 Selected Ticket</h2>
 
@@ -199,17 +323,62 @@ class="result">
 
 </div>
 
-<p class="note">
-Virtual entertainment demo only.
-These tickets have no real monetary value.
+
+<!-- TICKETS -->
+
+<div id="tickets"
+class="tickets">
+
+</div>
+
+
+<!-- TERMS -->
+
+<div class="terms">
+
+<h3>📜 Terms & Conditions</h3>
+
+<p>
+1. यह वेबसाइट केवल मनोरंजन और डेमो उद्देश्य के लिए बनाई गई है।
 </p>
+
+<p>
+2. यहां दिखाए गए सभी टिकट वर्चुअल हैं और इनका कोई वास्तविक मौद्रिक मूल्य नहीं है।
+</p>
+
+<p>
+3. सभी रिवॉर्ड केवल Demo Points हैं।
+</p>
+
+<p>
+4. किसी भी डेमो टिकट को वास्तविक पैसे में बदला नहीं जा सकता।
+</p>
+
+<p>
+5. यह वेबसाइट किसी वास्तविक लॉटरी या जुआ सेवा का संचालन नहीं करती।
+</p>
+
+<p>
+6. उपयोगकर्ता इस डेमो सिस्टम का उपयोग केवल मनोरंजन के लिए करें।
+</p>
+
+</div>
+
+
+<div class="footer">
+
+© 2026 Premium Ticket Gallery
+
+</div>
 
 </div>
 
 
 <script>
 
-const box =
+/* CREATE 100 TICKETS */
+
+const ticketsBox =
 document.getElementById("tickets");
 
 for(let i=1;i<=100;i++){
@@ -225,86 +394,158 @@ ticket.id=
 let number =
 String(i).padStart(3,"0");
 
-let code =
-"LT-"+Math.random()
-.toString(36)
-.substring(2,8)
-.toUpperCase();
+
+/* VIRTUAL REWARD */
+
+let reward =
+Math.floor(
+Math.random()*(25000-500+1)
+)+500;
+
 
 ticket.innerHTML=`
 
 <div class="ticket-top">
+
 <span>PREMIUM</span>
+
 <span>2026</span>
+
 </div>
+
 
 <div class="ticket-icon">
+
 🎟️
+
 </div>
+
 
 <div class="ticket-number">
+
 #${number}
+
 </div>
 
-<div class="ticket-code">
-CODE: ${code}
+
+<div class="ticket-price">
+
+🏆 ${reward.toLocaleString()}
+Virtual Points
+
 </div>
 
-<div class="ticket-line"></div>
 
-<div class="status">
-● ACTIVE DEMO TICKET
+<div class="ticket-line">
+
+</div>
+
+
+<div class="ticket-status">
+
+● VIRTUAL DEMO TICKET
+
 </div>
 
 `;
 
-box.appendChild(ticket);
+
+ticketsBox.appendChild(ticket);
 
 }
 
 
-function selectRandomTicket(){
+/* SELECT DEMO WINNER */
+
+function selectWinner(){
 
 document
 .querySelectorAll(".ticket")
 .forEach(t=>{
-t.classList.remove("selected");
+
+t.classList.remove(
+"selected"
+);
+
 });
 
-let number =
+
+let winner =
 Math.floor(
 Math.random()*100
 )+1;
 
+
 let ticket =
 document.getElementById(
-"ticket-"+number
+"ticket-"+winner
 );
+
 
 ticket.classList.add(
 "selected"
 );
 
+
 document.getElementById(
 "selectedTicket"
 ).innerText=
+
 "🎟️ Ticket #"+
-String(number)
-.padStart(3,"0");
+String(winner)
+.padStart(3,"0")+
+" Selected";
+
 
 document.getElementById(
 "result"
 ).style.display=
 "block";
 
+
 ticket.scrollIntoView({
+
 behavior:"smooth",
+
 block:"center"
+
 });
 
 }
 
+
+/* COUNTDOWN */
+
+let time=30;
+
+
+function countdown(){
+
+document.getElementById(
+"timer"
+).innerText=time;
+
+
+time--;
+
+
+if(time<0){
+
+time=30;
+
+}
+
+
+}
+
+
+setInterval(
+countdown,
+1000
+);
+
 </script>
 
 </body>
-</html>
+
+  </html>

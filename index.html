@@ -27,6 +27,158 @@ margin:auto;
 padding:15px;
 }
 
+/* TELEGRAM JOIN BANNER */
+
+.telegram-banner{
+position:relative;
+overflow:hidden;
+display:flex;
+align-items:center;
+gap:15px;
+padding:16px;
+margin-bottom:15px;
+border-radius:16px;
+background:
+linear-gradient(135deg,#075e9c,#229ed9,#075e9c);
+border:2px solid #67e8f9;
+box-shadow:
+0 0 10px #229ed9,
+0 0 25px #229ed9,
+0 0 45px rgba(34,158,217,.6);
+animation:
+telegramGlow 1.2s infinite alternate;
+}
+
+.telegram-banner::before{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:60%;
+height:100%;
+background:
+linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,.8),
+transparent
+);
+transform:skewX(-25deg);
+animation:movingLight 2s infinite;
+}
+
+@keyframes movingLight{
+
+0%{
+left:-100%;
+}
+
+100%{
+left:150%;
+}
+
+}
+
+@keyframes telegramGlow{
+
+from{
+box-shadow:
+0 0 10px #229ed9,
+0 0 20px #229ed9;
+}
+
+to{
+box-shadow:
+0 0 20px #67e8f9,
+0 0 45px #229ed9,
+0 0 70px rgba(34,158,217,.8);
+}
+
+}
+
+.telegram-icon{
+position:relative;
+z-index:2;
+font-size:35px;
+animation:
+telegramShake .7s infinite alternate;
+}
+
+@keyframes telegramShake{
+
+from{
+transform:rotate(-10deg);
+}
+
+to{
+transform:rotate(10deg);
+}
+
+}
+
+.telegram-text{
+position:relative;
+z-index:2;
+flex:1;
+}
+
+.join-title{
+font-size:18px;
+font-weight:bold;
+color:white;
+animation:
+titleFlash 1s infinite alternate;
+}
+
+@keyframes titleFlash{
+
+from{
+text-shadow:0 0 5px white;
+}
+
+to{
+text-shadow:
+0 0 10px white,
+0 0 20px white;
+}
+
+}
+
+.join-subtitle{
+font-size:11px;
+color:#e0f2fe;
+margin-top:5px;
+}
+
+.join-button{
+position:relative;
+z-index:2;
+text-decoration:none;
+background:white;
+color:#075985;
+padding:10px 14px;
+border-radius:10px;
+font-weight:bold;
+font-size:13px;
+white-space:nowrap;
+animation:
+buttonPulse 1s infinite alternate;
+}
+
+@keyframes buttonPulse{
+
+from{
+transform:scale(1);
+}
+
+to{
+transform:scale(1.08);
+box-shadow:0 0 15px white;
+}
+
+}
+
+
 /* HEADER */
 
 .header{
@@ -48,6 +200,7 @@ margin-bottom:8px;
 .header p{
 color:#cbd5e1;
 }
+
 
 /* TIMER */
 
@@ -71,6 +224,7 @@ color:#ff4d4d;
 margin-top:5px;
 }
 
+
 /* REWARD */
 
 .reward{
@@ -92,7 +246,8 @@ font-weight:bold;
 margin:8px 0;
 }
 
-/* TELEGRAM */
+
+/* TELEGRAM BUTTON */
 
 .telegram{
 display:block;
@@ -105,6 +260,7 @@ background:#229ed9;
 color:white;
 font-weight:bold;
 }
+
 
 /* BUTTON */
 
@@ -125,6 +281,7 @@ button:disabled{
 opacity:.5;
 }
 
+
 /* RESULT */
 
 .result{
@@ -141,6 +298,7 @@ border:2px solid #ffd700;
 color:#ffd700;
 margin-bottom:10px;
 }
+
 
 /* TICKETS */
 
@@ -210,6 +368,7 @@ font-size:11px;
 color:#94a3b8;
 }
 
+
 /* RUNNING LIGHT */
 
 .ticket.running{
@@ -246,6 +405,7 @@ box-shadow:
 }
 
 }
+
 
 /* WINNER */
 
@@ -287,6 +447,7 @@ box-shadow:
 
 }
 
+
 /* TERMS */
 
 .terms{
@@ -304,6 +465,7 @@ color:#ffd700;
 margin-bottom:10px;
 }
 
+
 /* FOOTER */
 
 .footer{
@@ -313,20 +475,87 @@ color:#64748b;
 font-size:12px;
 }
 
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+.telegram-banner{
+gap:10px;
+padding:12px;
+}
+
+.telegram-icon{
+font-size:28px;
+}
+
+.join-title{
+font-size:14px;
+}
+
+.join-subtitle{
+font-size:9px;
+}
+
+.join-button{
+padding:9px 10px;
+font-size:11px;
+}
+
+}
+
 </style>
 </head>
+
 
 <body>
 
 <div class="container">
 
+
+<!-- TELEGRAM JOIN -->
+
+<div class="telegram-banner">
+
+<div class="telegram-icon">
+✈️
+</div>
+
+<div class="telegram-text">
+
+<div class="join-title">
+🔥 JOIN TELEGRAM NOW 🔥
+</div>
+
+<div class="join-subtitle">
+नवीनतम अपडेट और जानकारी के लिए जुड़ें
+</div>
+
+</div>
+
+<a
+href="https://t.me/yourusername"
+target="_blank"
+class="join-button">
+
+JOIN NOW
+
+</a>
+
+</div>
+
+
 <!-- HEADER -->
 
 <div class="header">
 
-<h1>🎟️ PREMIUM TICKET GALLERY</h1>
+<h1>
+🎟️ PREMIUM TICKET GALLERY
+</h1>
 
-<p>Entertainment Experience</p>
+<p>
+Entertainment Experience
+</p>
 
 </div>
 
@@ -350,7 +579,9 @@ NEXT DRAW
 
 <div class="reward">
 
-<h2>🏆 REWARD POINTS</h2>
+<h2>
+🏆 REWARD POINTS
+</h2>
 
 <div class="reward-value">
 500 - 25,000 Points
@@ -363,7 +594,7 @@ Virtual Points
 </div>
 
 
-<!-- TELEGRAM -->
+<!-- TELEGRAM CONTACT -->
 
 <a
 class="telegram"
@@ -392,9 +623,12 @@ onclick="selectWinner()">
 class="result"
 id="result">
 
-<h2>🎉 WINNER SELECTED</h2>
+<h2>
+🎉 WINNER SELECTED
+</h2>
 
-<p id="selectedTicket"></p>
+<p id="selectedTicket">
+</p>
 
 </div>
 
@@ -412,7 +646,9 @@ class="tickets">
 
 <div class="terms">
 
-<h3>📜 Terms & Conditions</h3>
+<h3>
+📜 Terms & Conditions
+</h3>
 
 <p>
 1. यह वेबसाइट मनोरंजन के उद्देश्य से बनाई गई है।
@@ -447,10 +683,11 @@ class="tickets">
 
 </div>
 
+
 </div>
 
 
-<!-- SOUND -->
+<!-- WINNER SOUND -->
 
 <audio
 id="boomSound"
@@ -465,12 +702,14 @@ type="audio/ogg">
 
 <script>
 
+
 /* CREATE 100 TICKETS */
 
 const ticketsBox =
 document.getElementById(
 "tickets"
 );
+
 
 for(
 let i=1;
@@ -488,10 +727,12 @@ ticket.className="ticket";
 ticket.id=
 "ticket-"+i;
 
+
 let number =
 String(i).padStart(
 3,"0"
 );
+
 
 /* RANDOM VIRTUAL POINTS */
 
@@ -506,9 +747,13 @@ ticket.innerHTML=`
 
 <div class="ticket-top">
 
-<span>PREMIUM</span>
+<span>
+PREMIUM
+</span>
 
-<span>2026</span>
+<span>
+2026
+</span>
 
 </div>
 
@@ -556,16 +801,19 @@ ticket
 }
 
 
-/* DRAW */
+/* DRAW FUNCTION */
 
 function selectWinner(){
+
 
 const button =
 document.getElementById(
 "drawButton"
 );
 
+
 button.disabled=true;
+
 
 document
 .querySelectorAll(
@@ -573,10 +821,12 @@ document
 )
 .forEach(
 t=>{
+
 t.classList.remove(
 "selected",
 "running"
 );
+
 }
 );
 
@@ -604,15 +854,18 @@ let animation =
 setInterval(
 ()=>{
 
+
 document
 .querySelectorAll(
 ".ticket"
 )
 .forEach(
 t=>{
+
 t.classList.remove(
 "running"
 );
+
 }
 );
 
@@ -640,13 +893,16 @@ active.classList.add(
 if(
 current>70
 ){
+
 speed+=5;
+
 }
 
 
 if(
 current>=100
 ){
+
 
 clearInterval(
 animation
@@ -659,9 +915,11 @@ document
 )
 .forEach(
 t=>{
+
 t.classList.remove(
 "running"
 );
+
 }
 );
 
@@ -677,6 +935,7 @@ document.getElementById(
 "selectedTicket"
 )
 .innerText=
+
 "🎟️ Ticket #"+
 String(winner)
 .padStart(
@@ -699,7 +958,9 @@ document.getElementById(
 "boomSound"
 );
 
+
 sound.currentTime=0;
+
 
 sound.play()
 .catch(
@@ -722,6 +983,7 @@ button.disabled=false;
 
 }
 
+
 },
 speed
 );
@@ -729,12 +991,13 @@ speed
 }
 
 
-/* TIMER */
+/* COUNTDOWN */
 
 let time=30;
 
 
 function countdown(){
+
 
 document.getElementById(
 "timer"
@@ -762,7 +1025,8 @@ countdown,
 1000
 );
 
+
 </script>
 
 </body>
-</html>
+  </html>

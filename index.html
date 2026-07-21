@@ -2,420 +2,176 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Lucky Spin Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucky Draw Demo</title>
 
 <style>
 *{box-sizing:border-box}
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#080d19;
-color:white;
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#0b1020;
+  color:#fff;
 }
-.app{
-max-width:450px;
-margin:auto;
-padding:15px;
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
 }
 .header{
-background:linear-gradient(135deg,#202a44,#111827);
-padding:18px;
-border-radius:18px;
-text-align:center;
+  text-align:center;
+  background:linear-gradient(135deg,#1e293b,#111827);
+  padding:25px;
+  border-radius:18px;
 }
 .header h1{
-margin:0;
-color:#ffd700;
-}
-.wallet{
-margin-top:15px;
-background:#162033;
-padding:15px;
-border-radius:15px;
-text-align:center;
-}
-.coins{
-font-size:30px;
-color:#22c55e;
-font-weight:bold;
-}
-.card{
-background:#162033;
-padding:18px;
-border-radius:15px;
-margin-top:15px;
-text-align:center;
-}
-.wheel{
-width:230px;
-height:230px;
-margin:20px auto;
-border-radius:50%;
-border:8px solid #ffd700;
-background:conic-gradient(
-#ef4444 0deg 60deg,
-#22c55e 60deg 120deg,
-#3b82f6 120deg 180deg,
-#eab308 180deg 240deg,
-#a855f7 240deg 300deg,
-#f97316 300deg 360deg
-);
-display:flex;
-align-items:center;
-justify-content:center;
-transition:transform 4s cubic-bezier(.17,.67,.12,.99);
-box-shadow:0 0 30px rgba(255,215,0,.4);
-}
-.wheel span{
-background:#111827;
-width:70px;
-height:70px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:bold;
-color:#ffd700;
-}
-.pointer{
-font-size:30px;
-color:#ffd700;
+  color:#ffd700;
+  margin:0 0 8px;
 }
 button{
-width:100%;
-padding:13px;
-margin-top:10px;
-border:0;
-border-radius:10px;
-background:#ffd700;
-color:#111;
-font-weight:bold;
-font-size:16px;
-cursor:pointer;
+  padding:14px 25px;
+  border:0;
+  border-radius:10px;
+  background:#ffd700;
+  color:#111;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:15px;
 }
-button:disabled{
-opacity:.5;
+.tickets{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:12px;
+  margin-top:20px;
 }
-.result{
-font-size:20px;
-color:#22c55e;
-margin-top:12px;
-min-height:25px;
+.ticket{
+  background:linear-gradient(135deg,#1e40af,#7c3aed);
+  border:2px dashed #ffd700;
+  border-radius:12px;
+  padding:15px;
+  text-align:center;
+  transition:.3s;
 }
-.row{
-display:flex;
-justify-content:space-between;
-padding:12px;
-background:#263449;
-margin:7px 0;
-border-radius:9px;
+.ticket:hover{
+  transform:translateY(-5px);
 }
-.history{
-text-align:left;
-color:#bbb;
-font-size:14px;
-line-height:1.8;
+.ticket .icon{
+  font-size:35px;
 }
-input{
-width:100%;
-padding:12px;
-border:0;
-border-radius:9px;
-background:#263449;
-color:white;
-margin-top:8px;
+.ticket .number{
+  font-size:22px;
+  font-weight:bold;
+  color:#ffd700;
+  margin-top:8px;
 }
-.small{
-font-size:12px;
-color:#999;
-margin-top:10px;
+.winner{
+  display:none;
+  margin-top:25px;
+  padding:25px;
+  text-align:center;
+  background:#172033;
+  border-radius:15px;
+  border:2px solid #ffd700;
+}
+.winner h2{
+  color:#ffd700;
+}
+.selected{
+  animation:blink 1s infinite;
+  border-color:#22c55e;
+}
+@keyframes blink{
+  50%{transform:scale(1.08)}
+}
+.note{
+  color:#aaa;
+  text-align:center;
+  margin-top:15px;
+  font-size:13px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="container">
 
 <div class="header">
-<h1>🎮 LUCKY SPIN</h1>
-<p>Entertainment Demo Game</p>
+  <h1>🎟️ LUCKY DRAW DEMO</h1>
+  <p>100 Virtual Tickets</p>
+  <button onclick="drawWinner()">🎁 Start Demo Draw</button>
 </div>
 
-<div class="wallet">
-<div>🪙 Demo Coins</div>
-<div class="coins" id="coins">1000</div>
+<div id="tickets" class="tickets"></div>
+
+<div id="winner" class="winner">
+  <h2>🏆 DEMO WINNER 🏆</h2>
+  <div id="winnerNumber"></div>
 </div>
 
-<div class="card">
-
-<div class="pointer">▼</div>
-
-<div class="wheel" id="wheel">
-<span>SPIN</span>
-</div>
-
-<button id="spinBtn" onclick="spin()">
-🎡 SPIN WHEEL
-</button>
-
-<div class="result" id="result">
-Ready to Play
-</div>
-
-<p class="small">
-Demo Coins have no real monetary value.
+<p class="note">
+यह केवल मनोरंजन और डेमो के लिए है। इन टिकटों का कोई वास्तविक मौद्रिक मूल्य नहीं है।
 </p>
-
-</div>
-
-<div class="card">
-
-<h2>🎁 Daily Bonus</h2>
-
-<button onclick="dailyBonus()">
-Claim +100 Demo Coins
-</button>
-
-</div>
-
-<div class="card">
-
-<h2>👑 VIP LEVEL</h2>
-
-<div class="row">
-<span>Current Level</span>
-<b id="vip">VIP 1</b>
-</div>
-
-<div class="row">
-<span>Total Coins</span>
-<b id="total">1000</b>
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>👤 Profile</h2>
-
-<input id="name" placeholder="Enter Your Name">
-
-<input id="ref" placeholder="Referral Code">
-
-<button onclick="saveProfile()">
-Save Profile
-</button>
-
-<p id="welcome"></p>
-
-</div>
-
-<div class="card">
-
-<h2>📜 History</h2>
-
-<div id="history" class="history">
-No activity yet.
-</div>
-
-</div>
 
 </div>
 
 <script>
 
-let coins =
-Number(localStorage.getItem("coins")) || 1000;
+const ticketsBox =
+document.getElementById("tickets");
 
-let history =
-JSON.parse(localStorage.getItem("history")) || [];
+for(let i=1;i<=100;i++){
 
-let rotation = 0;
+  const ticket =
+  document.createElement("div");
 
-function update(){
+  ticket.className="ticket";
 
-document.getElementById("coins")
-.innerText = coins;
+  ticket.id="ticket-"+i;
 
-document.getElementById("total")
-.innerText = coins;
+  ticket.innerHTML=`
+    <div class="icon">🎟️</div>
+    <div>LUCKY TICKET</div>
+    <div class="number">#${String(i).padStart(3,"0")}</div>
+  `;
 
-let level =
-Math.floor(coins/1000)+1;
-
-document.getElementById("vip")
-.innerText =
-"VIP "+level;
-
-if(history.length){
-
-document.getElementById("history")
-.innerHTML =
-history.join("<br>");
-
+  ticketsBox.appendChild(ticket);
 }
 
-localStorage.setItem(
-"coins",
-coins
-);
+function drawWinner(){
 
-localStorage.setItem(
-"history",
-JSON.stringify(history)
-);
+  document
+  .querySelectorAll(".ticket")
+  .forEach(t=>{
+    t.classList.remove("selected");
+  });
 
+  const winner =
+  Math.floor(Math.random()*100)+1;
+
+  const selected =
+  document.getElementById(
+    "ticket-"+winner
+  );
+
+  selected.classList.add("selected");
+
+  document.getElementById(
+    "winnerNumber"
+  ).innerHTML=
+  "🎟️ Ticket #"+
+  String(winner).padStart(3,"0");
+
+  document.getElementById(
+    "winner"
+  ).style.display="block";
+
+  selected.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+  });
 }
-
-function spin(){
-
-let btn =
-document.getElementById("spinBtn");
-
-btn.disabled=true;
-
-let reward =
-Math.floor(Math.random()*201);
-
-let number =
-Math.floor(Math.random()*20)+1;
-
-rotation +=
-1440 +
-Math.floor(Math.random()*360);
-
-document.getElementById("wheel")
-.style.transform =
-"rotate("+rotation+"deg)";
-
-setTimeout(()=>{
-
-coins += reward;
-
-document.getElementById("result")
-.innerText =
-"🎉 Number "+number+
-" | +"+reward+
-" Demo Coins";
-
-history.unshift(
-"🎡 Spin: Number "+
-number+
-" → +"+
-reward+
-" Coins"
-);
-
-if(history.length>10)
-history.pop();
-
-update();
-
-btn.disabled=false;
-
-},4000);
-
-}
-
-function dailyBonus(){
-
-let today =
-new Date().toDateString();
-
-if(localStorage.getItem("bonus")
-===today){
-
-alert(
-"Today's bonus already claimed!"
-);
-
-return;
-
-}
-
-coins +=100;
-
-localStorage.setItem(
-"bonus",
-today
-);
-
-history.unshift(
-"🎁 Daily Bonus +100 Coins"
-);
-
-update();
-
-alert(
-"100 Demo Coins Added!"
-);
-
-}
-
-function saveProfile(){
-
-let name =
-document.getElementById("name")
-.value;
-
-let ref =
-document.getElementById("ref")
-.value;
-
-if(!name){
-
-alert(
-"Please enter your name"
-);
-
-return;
-
-}
-
-localStorage.setItem(
-"name",
-name
-);
-
-localStorage.setItem(
-"ref",
-ref
-);
-
-document.getElementById("welcome")
-.innerText =
-"Welcome "+name+" 👋";
-
-}
-
-function loadProfile(){
-
-let name =
-localStorage.getItem("name");
-
-let ref =
-localStorage.getItem("ref");
-
-if(name){
-
-document.getElementById("name")
-.value=name;
-
-document.getElementById("ref")
-.value=ref||"";
-
-document.getElementById("welcome")
-.innerText =
-"Welcome "+name+" 👋";
-
-}
-
-}
-
-update();
-loadProfile();
 
 </script>
 

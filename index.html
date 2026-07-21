@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Premium Ticket Gallery</title>
+<title>VIP Premium Ticket Gallery</title>
 
 <style>
 
@@ -16,7 +16,8 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:#060914;
+background:
+radial-gradient(circle at top,#1e1b4b,#060914 55%);
 color:white;
 min-height:100vh;
 }
@@ -27,7 +28,7 @@ margin:auto;
 padding:15px;
 }
 
-/* TELEGRAM JOIN BANNER */
+/* TELEGRAM VIP BANNER */
 
 .telegram-banner{
 position:relative;
@@ -35,32 +36,29 @@ overflow:hidden;
 display:flex;
 align-items:center;
 gap:15px;
-padding:16px;
+padding:18px;
 margin-bottom:15px;
-border-radius:16px;
+border-radius:18px;
 background:
-linear-gradient(135deg,#075e9c,#229ed9,#075e9c);
+linear-gradient(135deg,#075985,#229ed9,#0c4a6e);
 border:2px solid #67e8f9;
 box-shadow:
-0 0 10px #229ed9,
-0 0 25px #229ed9,
-0 0 45px rgba(34,158,217,.6);
-animation:
-telegramGlow 1.2s infinite alternate;
+0 0 15px #229ed9,
+0 0 35px rgba(34,158,217,.8);
+animation:telegramGlow 1s infinite alternate;
 }
 
-.telegram-banner::before{
+.telegram-banner:before{
 content:"";
 position:absolute;
 top:0;
 left:-100%;
 width:60%;
 height:100%;
-background:
-linear-gradient(
+background:linear-gradient(
 90deg,
 transparent,
-rgba(255,255,255,.8),
+rgba(255,255,255,.9),
 transparent
 );
 transform:skewX(-25deg);
@@ -68,52 +66,32 @@ animation:movingLight 2s infinite;
 }
 
 @keyframes movingLight{
-
-0%{
-left:-100%;
-}
-
-100%{
-left:150%;
-}
-
+0%{left:-100%}
+100%{left:150%}
 }
 
 @keyframes telegramGlow{
-
 from{
 box-shadow:
-0 0 10px #229ed9,
-0 0 20px #229ed9;
+0 0 10px #229ed9;
 }
-
 to{
 box-shadow:
-0 0 20px #67e8f9,
-0 0 45px #229ed9,
-0 0 70px rgba(34,158,217,.8);
+0 0 25px #67e8f9,
+0 0 55px #229ed9;
 }
-
 }
 
 .telegram-icon{
 position:relative;
 z-index:2;
-font-size:35px;
-animation:
-telegramShake .7s infinite alternate;
+font-size:38px;
+animation:shake .6s infinite alternate;
 }
 
-@keyframes telegramShake{
-
-from{
-transform:rotate(-10deg);
-}
-
-to{
-transform:rotate(10deg);
-}
-
+@keyframes shake{
+from{transform:rotate(-10deg)}
+to{transform:rotate(10deg)}
 }
 
 .telegram-text{
@@ -125,29 +103,12 @@ flex:1;
 .join-title{
 font-size:18px;
 font-weight:bold;
-color:white;
-animation:
-titleFlash 1s infinite alternate;
-}
-
-@keyframes titleFlash{
-
-from{
-text-shadow:0 0 5px white;
-}
-
-to{
-text-shadow:
-0 0 10px white,
-0 0 20px white;
-}
-
 }
 
 .join-subtitle{
 font-size:11px;
-color:#e0f2fe;
 margin-top:5px;
+color:#e0f2fe;
 }
 
 .join-button{
@@ -156,60 +117,53 @@ z-index:2;
 text-decoration:none;
 background:white;
 color:#075985;
-padding:10px 14px;
+padding:11px 16px;
 border-radius:10px;
 font-weight:bold;
-font-size:13px;
-white-space:nowrap;
-animation:
-buttonPulse 1s infinite alternate;
+animation:pulse 1s infinite alternate;
 }
 
-@keyframes buttonPulse{
-
-from{
-transform:scale(1);
-}
-
+@keyframes pulse{
 to{
 transform:scale(1.08);
-box-shadow:0 0 15px white;
+box-shadow:0 0 20px white;
 }
-
 }
-
 
 /* HEADER */
 
 .header{
-padding:25px;
+padding:30px 20px;
 text-align:center;
-border-radius:20px;
+border-radius:22px;
 background:
-linear-gradient(135deg,#111827,#312e81);
+linear-gradient(135deg,#111827,#312e81,#581c87);
 box-shadow:
-0 0 30px rgba(124,58,237,.4);
+0 0 35px rgba(124,58,237,.5);
 }
 
 .header h1{
 color:#ffd700;
-font-size:28px;
-margin-bottom:8px;
+font-size:30px;
+text-shadow:
+0 0 10px gold,
+0 0 25px rgba(255,215,0,.5);
 }
 
 .header p{
 color:#cbd5e1;
+margin-top:8px;
 }
-
 
 /* TIMER */
 
 .timer-box{
 margin-top:15px;
-padding:15px;
+padding:18px;
 text-align:center;
-border-radius:15px;
+border-radius:18px;
 background:#151d30;
+border:1px solid #3730a3;
 }
 
 .timer-title{
@@ -218,22 +172,23 @@ color:#9ca3af;
 }
 
 .timer{
-font-size:38px;
+font-size:42px;
 font-weight:bold;
 color:#ff4d4d;
 margin-top:5px;
+text-shadow:0 0 15px red;
 }
-
 
 /* REWARD */
 
 .reward{
 margin-top:15px;
-padding:20px;
+padding:22px;
 text-align:center;
-border-radius:15px;
+border-radius:18px;
 background:
-linear-gradient(135deg,#14532d,#166534);
+linear-gradient(135deg,#14532d,#166534,#15803d);
+box-shadow:0 0 25px rgba(34,197,94,.25);
 }
 
 .reward h2{
@@ -244,61 +199,48 @@ color:#fde047;
 font-size:28px;
 font-weight:bold;
 margin:8px 0;
+color:#fff;
 }
 
-
-/* TELEGRAM BUTTON */
-
-.telegram{
-display:block;
-margin-top:15px;
-padding:14px;
-text-align:center;
-text-decoration:none;
-border-radius:12px;
-background:#229ed9;
-color:white;
-font-weight:bold;
-}
-
-
-/* BUTTON */
+/* START BUTTON */
 
 button{
 display:block;
 margin:20px auto;
-padding:14px 28px;
+padding:15px 30px;
 border:none;
 border-radius:12px;
-background:#ffd700;
+background:
+linear-gradient(135deg,#ffd700,#f59e0b);
 color:#111;
 font-size:17px;
 font-weight:bold;
 cursor:pointer;
+box-shadow:0 0 20px rgba(255,215,0,.4);
 }
 
 button:disabled{
 opacity:.5;
 }
 
-
 /* RESULT */
 
 .result{
 display:none;
-padding:20px;
+padding:22px;
 margin-top:20px;
 text-align:center;
-border-radius:15px;
-background:#172033;
+border-radius:18px;
+background:
+linear-gradient(135deg,#172033,#312e81);
 border:2px solid #ffd700;
+box-shadow:0 0 30px rgba(255,215,0,.4);
 }
 
 .result h2{
 color:#ffd700;
 margin-bottom:10px;
 }
-
 
 /* TICKETS */
 
@@ -313,41 +255,57 @@ margin-top:20px;
 .ticket{
 position:relative;
 overflow:hidden;
-padding:15px;
-border-radius:16px;
+padding:16px;
+border-radius:18px;
 background:
-linear-gradient(135deg,#172554,#4c1d95);
-border:1px solid rgba(255,215,0,.5);
+linear-gradient(135deg,#111827,#312e81,#4c1d95);
+border:1px solid rgba(255,215,0,.7);
 box-shadow:
-0 8px 20px rgba(0,0,0,.35);
+0 8px 25px rgba(0,0,0,.5),
+inset 0 0 20px rgba(255,215,0,.05);
 transition:.3s;
 }
 
+.ticket:before{
+content:"VIP";
+position:absolute;
+top:8px;
+right:-25px;
+background:#ffd700;
+color:#111;
+font-size:9px;
+font-weight:bold;
+padding:4px 25px;
+transform:rotate(35deg);
+}
+
 .ticket:hover{
-transform:translateY(-5px);
+transform:translateY(-6px);
 box-shadow:
-0 0 25px rgba(255,215,0,.4);
+0 0 30px rgba(255,215,0,.5);
 }
 
 .ticket-top{
 display:flex;
 justify-content:space-between;
-font-size:11px;
+font-size:10px;
 color:#cbd5e1;
 }
 
 .ticket-icon{
-font-size:38px;
+font-size:42px;
 text-align:center;
-margin:12px 0;
+margin:14px 0;
+filter:drop-shadow(0 0 8px gold);
 }
 
 .ticket-number{
 text-align:center;
-font-size:25px;
+font-size:26px;
 font-weight:bold;
 color:#ffd700;
-letter-spacing:2px;
+letter-spacing:3px;
+text-shadow:0 0 10px gold;
 }
 
 .ticket-price{
@@ -359,17 +317,16 @@ color:#86efac;
 
 .ticket-line{
 border-top:1px dashed #ffd700;
-margin:12px 0;
+margin:13px 0;
 }
 
 .ticket-status{
 text-align:center;
-font-size:11px;
+font-size:10px;
 color:#94a3b8;
 }
 
-
-/* RUNNING LIGHT */
+/* RUNNING */
 
 .ticket.running{
 animation:
@@ -378,34 +335,26 @@ glow .25s infinite alternate;
 }
 
 @keyframes lightning{
-
 from{
 transform:scale(1);
 filter:brightness(1);
 }
-
 to{
-transform:scale(1.08);
-filter:brightness(2.2);
+transform:scale(1.1);
+filter:brightness(2.5);
 }
-
 }
 
 @keyframes glow{
-
 from{
-box-shadow:
-0 0 10px gold;
+box-shadow:0 0 10px gold;
 }
-
 to{
 box-shadow:
-0 0 35px white,
-0 0 70px gold;
+0 0 40px white,
+0 0 80px gold;
 }
-
 }
-
 
 /* WINNER */
 
@@ -417,36 +366,21 @@ winnerGlow 1s infinite alternate;
 }
 
 @keyframes winnerBoom{
-
-0%{
-transform:scale(.8);
-}
-
-50%{
-transform:scale(1.3);
-}
-
-100%{
-transform:scale(1);
-}
-
+0%{transform:scale(.7)}
+50%{transform:scale(1.3)}
+100%{transform:scale(1)}
 }
 
 @keyframes winnerGlow{
-
 from{
-box-shadow:
-0 0 20px #22c55e;
+box-shadow:0 0 20px #22c55e;
 }
-
 to{
 box-shadow:
 0 0 60px #22c55e,
-0 0 90px gold;
+0 0 100px gold;
 }
-
 }
-
 
 /* TERMS */
 
@@ -465,9 +399,6 @@ color:#ffd700;
 margin-bottom:10px;
 }
 
-
-/* FOOTER */
-
 .footer{
 padding:20px;
 text-align:center;
@@ -475,14 +406,13 @@ color:#64748b;
 font-size:12px;
 }
 
-
 /* MOBILE */
 
 @media(max-width:500px){
 
 .telegram-banner{
 gap:10px;
-padding:12px;
+padding:13px;
 }
 
 .telegram-icon{
@@ -498,8 +428,12 @@ font-size:9px;
 }
 
 .join-button{
-padding:9px 10px;
+padding:9px 11px;
 font-size:11px;
+}
+
+.header h1{
+font-size:24px;
 }
 
 }
@@ -507,34 +441,30 @@ font-size:11px;
 </style>
 </head>
 
-
 <body>
 
 <div class="container">
 
-
-<!-- TELEGRAM JOIN -->
+<!-- TELEGRAM VIP BANNER -->
 
 <div class="telegram-banner">
 
-<div class="telegram-icon">
-✈️
-</div>
+<div class="telegram-icon">✈️</div>
 
 <div class="telegram-text">
 
 <div class="join-title">
-🔥 JOIN TELEGRAM NOW 🔥
+🔥 JOIN VIP TELEGRAM 🔥
 </div>
 
 <div class="join-subtitle">
-नवीनतम अपडेट और जानकारी के लिए जुड़ें
+Latest Updates & Entertainment
 </div>
 
 </div>
 
 <a
-href="https://t.me/yourusername"
+href="https://t.me/+tR2_XR-9ju05M2M9"
 target="_blank"
 class="join-button">
 
@@ -550,11 +480,11 @@ JOIN NOW
 <div class="header">
 
 <h1>
-🎟️ PREMIUM TICKET GALLERY
+🎟️ VIP PREMIUM TICKETS
 </h1>
 
 <p>
-Entertainment Experience
+Exclusive Virtual Entertainment Experience
 </p>
 
 </div>
@@ -565,7 +495,7 @@ Entertainment Experience
 <div class="timer-box">
 
 <div class="timer-title">
-NEXT DRAW
+NEXT RESULT
 </div>
 
 <div class="timer" id="timer">
@@ -580,7 +510,7 @@ NEXT DRAW
 <div class="reward">
 
 <h2>
-🏆 REWARD POINTS
+🏆 VIP REWARD POINTS
 </h2>
 
 <div class="reward-value">
@@ -588,31 +518,19 @@ NEXT DRAW
 </div>
 
 <p>
-Virtual Points
+Virtual Entertainment Points
 </p>
 
 </div>
-
-
-<!-- TELEGRAM CONTACT -->
-
-<a
-class="telegram"
-href="https://t.me/yourusername"
-target="_blank">
-
-📲 Contact Us on Telegram
-
-</a>
 
 
 <!-- START -->
 
 <button
 id="drawButton"
-onclick="selectWinner()">
+onclick="startDraw()">
 
-⚡ START DRAW
+⚡ START VIP RESULT
 
 </button>
 
@@ -624,11 +542,10 @@ class="result"
 id="result">
 
 <h2>
-🎉 WINNER SELECTED
+🎉 RESULT DECLARED
 </h2>
 
-<p id="selectedTicket">
-</p>
+<p id="selectedTicket"></p>
 
 </div>
 
@@ -638,7 +555,6 @@ id="result">
 <div
 id="tickets"
 class="tickets">
-
 </div>
 
 
@@ -651,7 +567,7 @@ class="tickets">
 </h3>
 
 <p>
-1. यह वेबसाइट मनोरंजन के उद्देश्य से बनाई गई है।
+1. यह वेबसाइट केवल मनोरंजन के उद्देश्य से बनाई गई है।
 </p>
 
 <p>
@@ -671,23 +587,20 @@ class="tickets">
 </p>
 
 <p>
-6. उपयोगकर्ता इस वेबसाइट का उपयोग केवल मनोरंजन के लिए करें।
+6. सभी परिणाम केवल ब्राउज़र में मनोरंजन के लिए बनाए जाते हैं।
 </p>
 
 </div>
 
 
 <div class="footer">
-
-© 2026 Premium Ticket Gallery
+© 2026 VIP Premium Ticket Gallery
+</div>
 
 </div>
 
 
-</div>
-
-
-<!-- WINNER SOUND -->
+<!-- SOUND -->
 
 <audio
 id="boomSound"
@@ -702,39 +615,22 @@ type="audio/ogg">
 
 <script>
 
-
-/* CREATE 100 TICKETS */
+/* CREATE 100 VIP TICKETS */
 
 const ticketsBox =
-document.getElementById(
-"tickets"
-);
+document.getElementById("tickets");
 
-
-for(
-let i=1;
-i<=100;
-i++
-){
+for(let i=1;i<=100;i++){
 
 let ticket =
-document.createElement(
-"div"
-);
+document.createElement("div");
 
 ticket.className="ticket";
 
-ticket.id=
-"ticket-"+i;
-
+ticket.id="ticket-"+i;
 
 let number =
-String(i).padStart(
-3,"0"
-);
-
-
-/* RANDOM VIRTUAL POINTS */
+String(i).padStart(3,"0");
 
 let reward =
 Math.floor(
@@ -742,289 +638,182 @@ Math.random()*
 (25000-500+1)
 )+500;
 
-
 ticket.innerHTML=`
 
 <div class="ticket-top">
 
-<span>
-PREMIUM
-</span>
+<span>VIP PREMIUM</span>
 
-<span>
-2026
-</span>
+<span>2026</span>
 
 </div>
-
 
 <div class="ticket-icon">
-
 🎟️
-
 </div>
-
 
 <div class="ticket-number">
-
 #${number}
-
 </div>
-
 
 <div class="ticket-price">
-
-🏆 ${reward.toLocaleString()}
-Points
-
+🏆 ${reward.toLocaleString()} Points
 </div>
 
-
-<div class="ticket-line">
-
-</div>
-
+<div class="ticket-line"></div>
 
 <div class="ticket-status">
-
-● ACTIVE TICKET
-
+● VIP ACTIVE TICKET
 </div>
 
 `;
 
-
-ticketsBox.appendChild(
-ticket
-);
+ticketsBox.appendChild(ticket);
 
 }
 
 
-/* DRAW FUNCTION */
+/* DRAW */
 
-function selectWinner(){
-
+function runDraw(){
 
 const button =
-document.getElementById(
-"drawButton"
-);
-
+document.getElementById("drawButton");
 
 button.disabled=true;
 
-
 document
-.querySelectorAll(
-".ticket"
-)
-.forEach(
-t=>{
-
+.querySelectorAll(".ticket")
+.forEach(t=>{
 t.classList.remove(
 "selected",
 "running"
 );
-
-}
-);
-
+});
 
 let winner =
 Math.floor(
 Math.random()*100
 )+1;
 
-
 let target =
 document.getElementById(
 "ticket-"+winner
 );
 
-
 let current=0;
 
-let speed=45;
-
-
-/* RUNNING ANIMATION */
+let speed=40;
 
 let animation =
-setInterval(
-()=>{
-
+setInterval(()=>{
 
 document
-.querySelectorAll(
-".ticket"
-)
-.forEach(
-t=>{
-
-t.classList.remove(
-"running"
-);
-
-}
-);
-
+.querySelectorAll(".ticket")
+.forEach(t=>{
+t.classList.remove("running");
+});
 
 current++;
 
-
 let index =
 (current-1)%100;
-
 
 let active =
 document.getElementById(
 "ticket-"+(index+1)
 );
 
+active.classList.add("running");
 
-active.classList.add(
-"running"
-);
-
-
-/* SLOW DOWN */
-
-if(
-current>70
-){
-
+if(current>70){
 speed+=5;
-
 }
 
+if(current>=100){
 
-if(
-current>=100
-){
-
-
-clearInterval(
-animation
-);
-
+clearInterval(animation);
 
 document
-.querySelectorAll(
-".ticket"
-)
-.forEach(
-t=>{
+.querySelectorAll(".ticket")
+.forEach(t=>{
+t.classList.remove("running");
+});
 
-t.classList.remove(
-"running"
-);
-
-}
-);
-
-
-target.classList.add(
-"selected"
-);
-
-
-/* RESULT */
+target.classList.add("selected");
 
 document.getElementById(
 "selectedTicket"
-)
-.innerText=
+).innerText=
 
-"🎟️ Ticket #"+
-String(winner)
-.padStart(
-3,"0"
-)+
+"🎟️ VIP Ticket #"+
+String(winner).padStart(3,"0")+
 " Selected";
-
 
 document.getElementById(
 "result"
-)
-.style.display=
-"block";
-
-
-/* SOUND */
+).style.display="block";
 
 let sound =
 document.getElementById(
 "boomSound"
 );
 
-
 sound.currentTime=0;
 
-
-sound.play()
-.catch(
-()=>{}
-);
-
-
-/* SCROLL */
+sound.play().catch(()=>{});
 
 target.scrollIntoView({
-
 behavior:"smooth",
-
 block:"center"
-
 });
-
 
 button.disabled=false;
 
 }
 
-
-},
-speed
-);
+},speed);
 
 }
 
 
-/* COUNTDOWN */
+/* MANUAL START */
+
+function startDraw(){
+
+runDraw();
+
+}
+
+
+/* AUTO 30 SECOND RESULT */
 
 let time=30;
 
+let autoStarted=false;
 
 function countdown(){
 
-
 document.getElementById(
 "timer"
-)
-.innerText=
-time;
-
+).innerText=time;
 
 time--;
 
-
-if(
-time<0
-){
+if(time<0){
 
 time=30;
 
-}
+runDraw();
 
 }
 
+}
 
 setInterval(
 countdown,
 1000
 );
-
 
 </script>
 

@@ -1,85 +1,546 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lucky Draw Demo</title>
+<title>Lucky Rewards Hub</title>
+
 <style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#111827;
-color:#fff;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
+  background:#0b1020;
+  color:white;
+  min-height:100vh;
 }
+
+.container{
+  width:100%;
+  max-width:450px;
+  margin:auto;
+  padding:15px;
+}
+
+.header{
+  background:linear-gradient(135deg,#1e293b,#111827);
+  padding:20px;
+  border-radius:18px;
+  text-align:center;
+  box-shadow:0 0 20px rgba(255,215,0,.15);
+}
+
+.header h1{
+  color:#ffd700;
+  font-size:25px;
+}
+
+.subtitle{
+  color:#aaa;
+  margin-top:7px;
+}
+
 .card{
-background:#1f2937;
-padding:25px;
-border-radius:15px;
-text-align:center;
-width:320px;
-box-shadow:0 0 20px rgba(255,215,0,.3);
+  background:#172033;
+  border-radius:16px;
+  padding:18px;
+  margin-top:15px;
+  box-shadow:0 5px 20px rgba(0,0,0,.3);
 }
-h2{color:gold;}
+
+.card h2{
+  color:#ffd700;
+  margin-bottom:15px;
+}
+
+.wallet{
+  text-align:center;
+}
+
+.coins{
+  font-size:32px;
+  color:#22c55e;
+  font-weight:bold;
+  margin:10px 0;
+}
+
+input{
+  width:100%;
+  padding:13px;
+  margin:6px 0;
+  border:none;
+  outline:none;
+  border-radius:10px;
+  background:#263449;
+  color:white;
+}
+
 button{
-padding:12px 20px;
-border:none;
-border-radius:8px;
-background:gold;
-font-size:18px;
-font-weight:bold;
-cursor:pointer;
-margin-top:15px;
+  width:100%;
+  padding:13px;
+  margin-top:8px;
+  border:none;
+  border-radius:10px;
+  background:#ffd700;
+  color:#111;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
 }
-#result{
-margin-top:20px;
-font-size:22px;
-font-weight:bold;
+
+button:active{
+  transform:scale(.98);
 }
-#history{
-margin-top:15px;
-color:#ccc;
-font-size:14px;
+
+.game{
+  text-align:center;
+}
+
+.number{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  margin:15px auto;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#ffd700,#ff8c00);
+  color:#111;
+  font-size:35px;
+  font-weight:bold;
+  box-shadow:0 0 30px rgba(255,215,0,.3);
+}
+
+.result{
+  font-size:20px;
+  color:#22c55e;
+  min-height:28px;
+}
+
+.plan{
+  display:flex;
+  justify-content:space-between;
+  padding:12px;
+  margin:7px 0;
+  background:#263449;
+  border-radius:10px;
+}
+
+.upi{
+  background:#0b1020;
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
+  word-break:break-all;
+  color:#22c55e;
+  margin:10px 0;
+}
+
+.history{
+  color:#bbb;
+  line-height:1.8;
+  font-size:14px;
+}
+
+.badge{
+  display:inline-block;
+  background:#ffd700;
+  color:#111;
+  padding:6px 12px;
+  border-radius:20px;
+  font-weight:bold;
+}
+
+.footer{
+  text-align:center;
+  color:#777;
+  padding:20px 0;
+  font-size:13px;
+}
+
+.small{
+  color:#aaa;
+  font-size:13px;
+  margin-top:8px;
 }
 </style>
 </head>
+
 <body>
 
+<div class="container">
+
+<div class="header">
+<h1>⭐ LUCKY REWARDS HUB ⭐</h1>
+<p class="subtitle">Entertainment & Rewards Demo</p>
+</div>
+
+
+<!-- PROFILE -->
+
 <div class="card">
-<h2>🎯 Lucky Draw Demo</h2>
 
-<p>Click the button to generate a random number.</p>
+<h2>👤 Profile</h2>
 
-<button onclick="play()">PLAY</button>
+<input id="name" placeholder="Enter Your Name">
 
-<div id="result">Waiting...</div>
+<input id="referral" placeholder="Referral Code">
 
-<div id="history">History:</div>
+<button onclick="saveProfile()">Save Profile</button>
+
+<p class="small" id="welcome"></p>
 
 </div>
 
+
+<!-- WALLET -->
+
+<div class="card wallet">
+
+<h2>🪙 Demo Wallet</h2>
+
+<div class="coins" id="coins">1000</div>
+
+<p>Demo Coins</p>
+
+<button onclick="dailyBonus()">🎁 Claim Daily Bonus +100</button>
+
+</div>
+
+
+<!-- GAME -->
+
+<div class="card game">
+
+<h2>🎯 Lucky Draw Demo</h2>
+
+<div class="number" id="number">?</div>
+
+<div class="result" id="result">
+Press Play
+</div>
+
+<button onclick="playGame()">
+🎮 PLAY DEMO
+</button>
+
+<p class="small">
+This game uses Demo Coins only.
+</p>
+
+</div>
+
+
+<!-- VIP -->
+
+<div class="card">
+
+<h2>👑 VIP Membership</h2>
+
+<div class="plan">
+<span>VIP 1</span>
+<span>₹199</span>
+</div>
+
+<div class="plan">
+<span>VIP 2</span>
+<span>₹499</span>
+</div>
+
+<div class="plan">
+<span>VIP 3</span>
+<span>₹999</span>
+</div>
+
+<p class="small">
+VIP membership is for valid services and benefits only.
+</p>
+
+</div>
+
+
+<!-- UPI -->
+
+<div class="card">
+
+<h2>💳 Payment Information</h2>
+
+<p>UPI ID</p>
+
+<div class="upi" id="upi">
+guptaaman8055-2@oksbi
+</div>
+
+<button onclick="copyUPI()">
+📋 Copy UPI ID
+</button>
+
+<p class="small">
+Use this UPI only for valid membership or service payments.
+</p>
+
+</div>
+
+
+<!-- REFERRAL -->
+
+<div class="card">
+
+<h2>🤝 Referral</h2>
+
+<p>Your Referral Code:</p>
+
+<div class="upi" id="myReferral">
+LUCKY100
+</div>
+
+<button onclick="copyReferral()">
+Copy Referral Code
+</button>
+
+</div>
+
+
+<!-- HISTORY -->
+
+<div class="card">
+
+<h2>📜 Game History</h2>
+
+<div class="history" id="history">
+No history yet.
+</div>
+
+</div>
+
+
+<!-- ABOUT -->
+
+<div class="card">
+
+<h2>ℹ️ About</h2>
+
+<p>
+Welcome to Lucky Rewards Hub.
+This is an entertainment and demo rewards platform.
+All coins shown on this website are virtual Demo Coins
+and have no real monetary value.
+</p>
+
+</div>
+
+
+<div class="footer">
+© 2026 Lucky Rewards Hub<br>
+Demo Entertainment Platform
+</div>
+
+</div>
+
+
 <script>
 
-let history=[];
+let coins =
+Number(localStorage.getItem("demoCoins")) || 1000;
 
-function play(){
+let history =
+JSON.parse(localStorage.getItem("demoHistory")) || [];
 
-let num=Math.floor(Math.random()*20)+1;
+let savedName =
+localStorage.getItem("playerName") || "";
 
-document.getElementById("result").innerHTML=
-"🎉 Lucky Number : <b>"+num+"</b>";
+let savedReferral =
+localStorage.getItem("playerReferral") || "";
 
-history.unshift(num);
 
-if(history.length>10) history.pop();
+function updateUI(){
 
-document.getElementById("history").innerHTML=
-"History : "+history.join(" | ");
+document.getElementById("coins")
+.innerText = coins;
+
+if(savedName){
+
+document.getElementById("name")
+.value = savedName;
+
+document.getElementById("welcome")
+.innerText =
+"Welcome, " + savedName + " 👋";
 
 }
+
+if(savedReferral){
+
+document.getElementById("referral")
+.value = savedReferral;
+
+}
+
+if(history.length){
+
+document.getElementById("history")
+.innerHTML =
+history.map((item,index)=>
+(index+1)+". "+item
+).join("<br>");
+
+}
+
+localStorage.setItem(
+"demoCoins",
+coins
+);
+
+localStorage.setItem(
+"demoHistory",
+JSON.stringify(history)
+);
+
+}
+
+
+function saveProfile(){
+
+let name =
+document.getElementById("name").value;
+
+let referral =
+document.getElementById("referral").value;
+
+if(!name){
+
+alert("Please enter your name");
+
+return;
+
+}
+
+savedName = name;
+
+savedReferral = referral;
+
+localStorage.setItem(
+"playerName",
+name
+);
+
+localStorage.setItem(
+"playerReferral",
+referral
+);
+
+document.getElementById("welcome")
+.innerText =
+"Welcome, " + name + " 👋";
+
+alert("Profile Saved");
+
+}
+
+
+function dailyBonus(){
+
+let today =
+new Date().toDateString();
+
+let lastBonus =
+localStorage.getItem("lastBonus");
+
+if(lastBonus === today){
+
+alert("Daily bonus already claimed!");
+
+return;
+
+}
+
+coins += 100;
+
+localStorage.setItem(
+"lastBonus",
+today
+);
+
+history.unshift(
+"🎁 Daily Bonus +100 Coins"
+);
+
+alert("You received 100 Demo Coins!");
+
+updateUI();
+
+}
+
+
+function playGame(){
+
+let randomNumber =
+Math.floor(Math.random()*20)+1;
+
+let reward =
+Math.floor(Math.random()*201);
+
+document.getElementById("number")
+.innerText =
+randomNumber;
+
+document.getElementById("result")
+.innerText =
+"🎉 +"+reward+" Demo Coins";
+
+coins += reward;
+
+history.unshift(
+"🎯 Lucky Number: "+
+randomNumber+
+" | Reward: "+
+reward+
+" Coins"
+);
+
+if(history.length > 10){
+
+history =
+history.slice(0,10);
+
+}
+
+updateUI();
+
+}
+
+
+function copyUPI(){
+
+navigator.clipboard
+.writeText(
+"guptaaman8055-2@oksbi"
+);
+
+alert(
+"UPI ID Copied Successfully"
+);
+
+}
+
+
+function copyReferral(){
+
+navigator.clipboard
+.writeText("LUCKY100");
+
+alert(
+"Referral Code Copied"
+);
+
+}
+
+
+updateUI();
 
 </script>
 

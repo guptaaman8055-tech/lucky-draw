@@ -4,388 +4,402 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>Premium Ticket Gallery</title>
+<title>VIP Premium Ticket Game</title>
 
 <style>
-
 *{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:Arial,sans-serif;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
 }
 
 body{
-background:#060914;
-color:white;
-min-height:100vh;
+  background:radial-gradient(circle at top,#312e81,#060914 55%);
+  color:#fff;
+  min-height:100vh;
 }
 
 .container{
-max-width:1000px;
-margin:auto;
-padding:15px;
+  max-width:1000px;
+  margin:auto;
+  padding:15px;
 }
 
 /* TELEGRAM BANNER */
-
 .telegram-banner{
-position:relative;
-overflow:hidden;
-display:flex;
-align-items:center;
-gap:15px;
-padding:16px;
-margin-bottom:15px;
-border-radius:16px;
-background:linear-gradient(135deg,#075985,#229ed9,#0c4a6e);
-border:2px solid #67e8f9;
-box-shadow:0 0 20px rgba(34,158,217,.7);
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px;
+  border-radius:18px;
+  margin-bottom:15px;
+  background:linear-gradient(135deg,#075985,#229ed9,#0c4a6e);
+  border:2px solid #67e8f9;
+  box-shadow:0 0 20px #229ed9;
+  animation:bannerGlow 1s infinite alternate;
+}
+
+.telegram-banner:before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:60%;
+  height:100%;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.8),
+    transparent
+  );
+  transform:skewX(-25deg);
+  animation:shine 2s infinite;
+}
+
+@keyframes shine{
+  0%{left:-100%}
+  100%{left:150%}
+}
+
+@keyframes bannerGlow{
+  from{box-shadow:0 0 10px #229ed9}
+  to{box-shadow:0 0 35px #67e8f9,0 0 60px #229ed9}
 }
 
 .telegram-icon{
-font-size:35px;
-animation:shake .6s infinite alternate;
-}
-
-@keyframes shake{
-from{transform:rotate(-10deg)}
-to{transform:rotate(10deg)}
+  position:relative;
+  z-index:2;
+  font-size:35px;
 }
 
 .telegram-text{
-flex:1;
+  position:relative;
+  z-index:2;
+  flex:1;
 }
 
 .join-title{
-font-size:17px;
-font-weight:bold;
+  font-weight:bold;
+  font-size:17px;
 }
 
 .join-subtitle{
-font-size:11px;
-margin-top:5px;
-color:#e0f2fe;
+  font-size:11px;
+  margin-top:4px;
+  color:#e0f2fe;
 }
 
 .join-button{
-text-decoration:none;
-background:white;
-color:#075985;
-padding:10px 15px;
-border-radius:10px;
-font-weight:bold;
-white-space:nowrap;
-animation:pulse 1s infinite alternate;
-}
-
-@keyframes pulse{
-to{
-transform:scale(1.07);
-box-shadow:0 0 20px white;
-}
+  position:relative;
+  z-index:2;
+  text-decoration:none;
+  background:white;
+  color:#075985;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:bold;
+  font-size:12px;
 }
 
 /* HEADER */
-
 .header{
-padding:25px 20px;
-text-align:center;
-border-radius:20px;
-background:linear-gradient(135deg,#111827,#312e81);
-box-shadow:0 0 30px rgba(124,58,237,.4);
+  padding:28px 20px;
+  text-align:center;
+  border-radius:22px;
+  background:linear-gradient(135deg,#111827,#312e81,#581c87);
+  box-shadow:0 0 35px rgba(124,58,237,.5);
 }
 
 .header h1{
-color:#ffd700;
-font-size:28px;
+  color:#ffd700;
+  font-size:30px;
+  text-shadow:0 0 15px gold;
 }
 
 .header p{
-color:#cbd5e1;
-margin-top:8px;
+  color:#cbd5e1;
+  margin-top:8px;
 }
 
 /* TIMER */
-
 .timer-box{
-margin-top:15px;
-padding:18px;
-text-align:center;
-border-radius:15px;
-background:#151d30;
+  margin-top:15px;
+  padding:18px;
+  text-align:center;
+  border-radius:18px;
+  background:#151d30;
 }
 
 .timer-title{
-font-size:13px;
-color:#9ca3af;
+  color:#9ca3af;
+  font-size:13px;
 }
 
 .timer{
-font-size:42px;
-font-weight:bold;
-color:#ff4d4d;
-margin-top:5px;
-text-shadow:0 0 15px red;
+  font-size:45px;
+  font-weight:bold;
+  color:#ff4d4d;
+  margin-top:5px;
+  text-shadow:0 0 20px red;
 }
 
-/* REWARD */
-
-.reward{
-margin-top:15px;
-padding:20px;
-text-align:center;
-border-radius:15px;
-background:linear-gradient(135deg,#14532d,#166534);
-}
-
-.reward h2{
-color:#fde047;
-}
-
-.reward-value{
-font-size:28px;
-font-weight:bold;
-margin:8px 0;
+/* STATUS */
+.status{
+  margin-top:15px;
+  padding:12px;
+  text-align:center;
+  border-radius:12px;
+  background:#111827;
+  color:#facc15;
+  font-size:14px;
 }
 
 /* BUTTON */
-
 button{
-display:block;
-margin:20px auto;
-padding:14px 28px;
-border:none;
-border-radius:12px;
-background:linear-gradient(135deg,#ffd700,#f59e0b);
-color:#111;
-font-size:17px;
-font-weight:bold;
-cursor:pointer;
+  display:block;
+  margin:20px auto;
+  padding:15px 30px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(135deg,#ffd700,#f59e0b);
+  color:#111;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 0 20px rgba(255,215,0,.4);
 }
 
 button:disabled{
-opacity:.5;
+  opacity:.5;
 }
 
 /* RESULT */
-
 .result{
-display:none;
-padding:22px;
-margin-top:20px;
-text-align:center;
-border-radius:15px;
-background:#172033;
-border:2px solid #ffd700;
-box-shadow:0 0 30px rgba(255,215,0,.4);
+  display:none;
+  padding:25px;
+  margin-top:20px;
+  text-align:center;
+  border-radius:20px;
+  background:linear-gradient(135deg,#172033,#312e81);
+  border:2px solid #ffd700;
+  box-shadow:0 0 40px rgba(255,215,0,.5);
+  animation:resultPop .7s ease;
+}
+
+@keyframes resultPop{
+  0%{transform:scale(.5);opacity:0}
+  70%{transform:scale(1.1)}
+  100%{transform:scale(1);opacity:1}
 }
 
 .result h2{
-color:#ffd700;
-margin-bottom:10px;
+  color:#ffd700;
+  margin-bottom:10px;
 }
 
-#selectedTicket{
-font-size:22px;
-font-weight:bold;
-color:#22c55e;
+.winner-number{
+  font-size:42px;
+  color:#22c55e;
+  font-weight:bold;
+  text-shadow:0 0 20px #22c55e;
 }
 
 /* TICKETS */
-
 .tickets{
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(150px,1fr));
-gap:12px;
-margin-top:20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:14px;
+  margin-top:20px;
 }
 
 .ticket{
-padding:15px;
-border-radius:12px;
-background:#172554;
-border:1px solid #475569;
-box-shadow:0 5px 15px rgba(0,0,0,.3);
-transition:.2s;
+  position:relative;
+  overflow:hidden;
+  padding:15px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#111827,#312e81);
+  border:1px solid rgba(255,215,0,.5);
+  box-shadow:0 7px 20px rgba(0,0,0,.4);
+  transition:.3s;
+}
+
+.ticket:before{
+  content:"VIP";
+  position:absolute;
+  top:8px;
+  right:-25px;
+  background:#ffd700;
+  color:#111;
+  font-size:9px;
+  font-weight:bold;
+  padding:4px 25px;
+  transform:rotate(35deg);
 }
 
 .ticket:hover{
-transform:translateY(-3px);
+  transform:translateY(-5px);
+  box-shadow:0 0 25px rgba(255,215,0,.5);
 }
 
 .ticket-top{
-display:flex;
-justify-content:space-between;
-font-size:10px;
-color:#cbd5e1;
+  display:flex;
+  justify-content:space-between;
+  color:#cbd5e1;
+  font-size:10px;
 }
 
 .ticket-icon{
-font-size:35px;
-text-align:center;
-margin:10px 0;
+  text-align:center;
+  font-size:35px;
+  margin:12px 0;
 }
 
 .ticket-number{
-text-align:center;
-font-size:24px;
-font-weight:bold;
-color:#ffd700;
+  text-align:center;
+  color:#ffd700;
+  font-size:24px;
+  font-weight:bold;
+  letter-spacing:2px;
 }
 
-.ticket-price{
-text-align:center;
-margin-top:8px;
-font-size:13px;
-color:#86efac;
+.ticket-points{
+  text-align:center;
+  color:#86efac;
+  font-size:13px;
+  margin-top:7px;
 }
 
 .ticket-line{
-border-top:1px dashed #64748b;
-margin:10px 0;
+  border-top:1px dashed #ffd700;
+  margin:12px 0;
 }
 
 .ticket-status{
-text-align:center;
-font-size:10px;
-color:#94a3b8;
+  text-align:center;
+  font-size:10px;
+  color:#94a3b8;
 }
 
-/* RUNNING EFFECT */
-
+/* RUNNING */
 .ticket.running{
-transform:scale(1.12);
-background:#854d0e;
-border:3px solid #ffd700;
-box-shadow:
-0 0 20px gold,
-0 0 50px orange;
-animation:runningFlash .15s infinite alternate;
+  transform:scale(1.08);
+  filter:brightness(2);
+  box-shadow:
+    0 0 25px white,
+    0 0 55px gold;
+  animation:runningFlash .15s infinite alternate;
 }
 
 @keyframes runningFlash{
-from{
-filter:brightness(1);
-}
-to{
-filter:brightness(2);
-}
+  from{filter:brightness(1.5)}
+  to{filter:brightness(3)}
 }
 
-/* WINNING TICKET */
-
+/* WINNER */
 .ticket.selected{
-position:relative;
-z-index:10;
-transform:scale(1.25);
-background:linear-gradient(135deg,#166534,#22c55e);
-border:5px solid #fff;
-box-shadow:
-0 0 20px #fff,
-0 0 40px #22c55e,
-0 0 80px #ffd700,
-0 0 120px #ffd700;
-animation:
-winnerPulse .7s infinite alternate;
+  z-index:5;
+  outline:5px solid #22c55e;
+  transform:scale(1.15);
+  box-shadow:
+    0 0 30px #22c55e,
+    0 0 70px gold;
+  animation:winnerPulse .7s infinite alternate;
 }
 
 @keyframes winnerPulse{
-
-from{
-transform:scale(1.18);
-filter:brightness(1);
+  from{filter:brightness(1)}
+  to{filter:brightness(2)}
 }
 
-to{
-transform:scale(1.32);
-filter:brightness(1.8);
+/* HISTORY */
+.history{
+  margin-top:20px;
+  padding:18px;
+  border-radius:16px;
+  background:#111827;
 }
 
+.history h3{
+  color:#ffd700;
+  margin-bottom:10px;
 }
 
-/* WINNER LABEL */
+.history-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
 
-.ticket.selected:after{
-content:"🏆 WINNER 🏆";
-position:absolute;
-left:50%;
-bottom:-15px;
-transform:translateX(-50%);
-background:#ffd700;
-color:#111;
-padding:5px 12px;
-border-radius:20px;
-font-size:11px;
-font-weight:bold;
-white-space:nowrap;
-box-shadow:0 0 20px gold;
+.history-item{
+  background:#312e81;
+  padding:8px 12px;
+  border-radius:8px;
+  color:#fff;
 }
 
 /* TERMS */
-
 .terms{
-margin-top:25px;
-padding:20px;
-border-radius:15px;
-background:#111827;
-color:#9ca3af;
-font-size:12px;
-line-height:1.7;
+  margin-top:25px;
+  padding:20px;
+  border-radius:15px;
+  background:#111827;
+  color:#9ca3af;
+  font-size:12px;
+  line-height:1.7;
 }
 
 .terms h3{
-color:#ffd700;
-margin-bottom:10px;
+  color:#ffd700;
+  margin-bottom:10px;
 }
 
-/* FOOTER */
-
 .footer{
-padding:20px;
-text-align:center;
-color:#64748b;
-font-size:12px;
+  padding:20px;
+  text-align:center;
+  color:#64748b;
+  font-size:12px;
 }
 
 /* MOBILE */
-
 @media(max-width:500px){
 
-.telegram-banner{
-gap:10px;
-padding:12px;
-}
+  .telegram-banner{
+    gap:9px;
+    padding:12px;
+  }
 
-.telegram-icon{
-font-size:28px;
-}
+  .telegram-icon{
+    font-size:27px;
+  }
 
-.join-title{
-font-size:14px;
-}
+  .join-title{
+    font-size:13px;
+  }
 
-.join-subtitle{
-font-size:9px;
-}
+  .join-subtitle{
+    font-size:9px;
+  }
 
-.join-button{
-padding:9px 11px;
-font-size:11px;
-}
+  .join-button{
+    padding:8px 10px;
+    font-size:10px;
+  }
 
-.tickets{
-grid-template-columns:
-repeat(2,1fr);
-}
+  .header h1{
+    font-size:24px;
+  }
 
-.ticket.selected{
-transform:scale(1.12);
-}
+  .tickets{
+    grid-template-columns:repeat(2,1fr);
+  }
 
+  .ticket.selected{
+    transform:scale(1.08);
+  }
 }
-
 </style>
 </head>
 
@@ -394,421 +408,384 @@ transform:scale(1.12);
 <div class="container">
 
 <!-- TELEGRAM -->
-
 <div class="telegram-banner">
 
-<div class="telegram-icon">
-✈️
-</div>
+  <div class="telegram-icon">✈️</div>
 
-<div class="telegram-text">
+  <div class="telegram-text">
+    <div class="join-title">🔥 JOIN VIP TELEGRAM 🔥</div>
+    <div class="join-subtitle">
+      Latest Updates & Entertainment
+    </div>
+  </div>
 
-<div class="join-title">
-🔥 JOIN VIP TELEGRAM 🔥
-</div>
-
-<div class="join-subtitle">
-Latest Updates & Entertainment
-</div>
-
-</div>
-
-<a
-href="https://t.me/+tR2_XR-9ju05M2M9"
-target="_blank"
-class="join-button">
-
-JOIN NOW
-
-</a>
+  <a
+    href="https://t.me/+tR2_XR-9ju05M2M9"
+    target="_blank"
+    class="join-button">
+    JOIN NOW
+  </a>
 
 </div>
-
 
 <!-- HEADER -->
-
 <div class="header">
-
-<h1>
-🎟️ PREMIUM TICKET GALLERY
-</h1>
-
-<p>
-Exclusive Virtual Entertainment Experience
-</p>
-
+  <h1>🎟️ VIP PREMIUM TICKET GAME</h1>
+  <p>Virtual Entertainment Experience</p>
 </div>
-
 
 <!-- TIMER -->
-
 <div class="timer-box">
-
-<div class="timer-title">
-NEXT RESULT IN
+  <div class="timer-title">NEXT RESULT IN</div>
+  <div class="timer" id="timer">60</div>
 </div>
 
-<div class="timer" id="timer">
-60
+<!-- STATUS -->
+<div class="status" id="status">
+  🟢 Game Ready — Next result automatically आएगा
 </div>
 
-</div>
-
-
-<!-- REWARD -->
-
-<div class="reward">
-
-<h2>
-🏆 REWARD POINTS
-</h2>
-
-<div class="reward-value">
-500 - 25,000 Points
-</div>
-
-<p>
-Virtual Entertainment Points
-</p>
-
-</div>
-
-
-<!-- START BUTTON -->
-
-<button
-id="drawButton"
-onclick="startDraw()">
-
-⚡ START RESULT
-
+<!-- MANUAL BUTTON -->
+<button id="drawButton" onclick="startDraw()">
+  ⚡ START RESULT
 </button>
 
-
 <!-- RESULT -->
-
-<div
-class="result"
-id="result">
-
-<h2>
-🎉 RESULT DECLARED
-</h2>
-
-<p id="selectedTicket">
-</p>
-
+<div class="result" id="result">
+  <h2>🎉 RESULT DECLARED 🎉</h2>
+  <div class="winner-number" id="winnerNumber">
+    #000
+  </div>
+  <p id="selectedTicket">
+    VIP Ticket Selected
+  </p>
 </div>
-
 
 <!-- TICKETS -->
+<div id="tickets" class="tickets"></div>
 
-<div
-id="tickets"
-class="tickets">
+<!-- HISTORY -->
+<div class="history">
+  <h3>📜 PREVIOUS RESULTS</h3>
+  <div id="historyList" class="history-list">
+    <span class="history-item">No results yet</span>
+  </div>
 </div>
-
 
 <!-- TERMS -->
-
 <div class="terms">
+  <h3>📜 Terms & Conditions</h3>
 
-<h3>
-📜 Terms & Conditions
-</h3>
-
-<p>
-1. यह वेबसाइट केवल मनोरंजन के उद्देश्य से बनाई गई है।
-</p>
-
-<p>
-2. सभी टिकट और Points वर्चुअल हैं।
-</p>
-
-<p>
-3. Virtual Points का कोई वास्तविक मौद्रिक मूल्य नहीं है।
-</p>
-
-<p>
-4. किसी भी Virtual Points को नकद में बदला नहीं जा सकता।
-</p>
-
-<p>
-5. यह सिस्टम वास्तविक लॉटरी या जुआ सेवा नहीं है।
-</p>
-
-<p>
-6. सभी परिणाम केवल ब्राउज़र में मनोरंजन के लिए बनाए जाते हैं।
-</p>
-
+  <p>1. यह वेबसाइट केवल virtual entertainment के उद्देश्य से बनाई गई है।</p>
+  <p>2. सभी tickets और points केवल virtual हैं।</p>
+  <p>3. Virtual points का कोई वास्तविक मौद्रिक मूल्य नहीं है।</p>
+  <p>4. यह सिस्टम किसी वास्तविक lottery या gambling service का संचालन नहीं करता।</p>
+  <p>5. Results browser में random entertainment experience के लिए generate होते हैं।</p>
 </div>
-
 
 <div class="footer">
-
-© 2026 Premium Ticket Gallery
-
+  © 2026 VIP Premium Ticket Game
 </div>
 
 </div>
-
 
 <!-- SOUND -->
-
-<audio
-id="boomSound"
-preload="auto">
-
-<source
-src="https://actions.google.com/sounds/v1/impacts/crash.ogg"
-type="audio/ogg">
-
+<audio id="boomSound" preload="auto">
+  <source
+    src="https://actions.google.com/sounds/v1/impacts/crash.ogg"
+    type="audio/ogg">
 </audio>
-
 
 <script>
 
-/* CREATE 100 TICKETS */
+/* =========================
+   CREATE 100 TICKETS
+========================= */
 
 const ticketsBox =
 document.getElementById("tickets");
 
 for(let i=1;i<=100;i++){
 
-let ticket =
-document.createElement("div");
+  const ticket =
+  document.createElement("div");
 
-ticket.className="ticket";
+  ticket.className="ticket";
+  ticket.id="ticket-"+i;
 
-ticket.id="ticket-"+i;
+  const number =
+  String(i).padStart(3,"0");
 
-let number =
-String(i).padStart(3,"0");
+  const points =
+  Math.floor(Math.random()*
+  (25000-500+1))+500;
 
-let reward =
-Math.floor(
-Math.random()*
-(25000-500+1)
-)+500;
+  ticket.innerHTML=`
 
-ticket.innerHTML=`
+    <div class="ticket-top">
+      <span>VIP TICKET</span>
+      <span>2026</span>
+    </div>
 
-<div class="ticket-top">
+    <div class="ticket-icon">
+      🎟️
+    </div>
 
-<span>PREMIUM</span>
+    <div class="ticket-number">
+      #${number}
+    </div>
 
-<span>2026</span>
+    <div class="ticket-points">
+      🏆 ${points.toLocaleString()} Points
+    </div>
 
-</div>
+    <div class="ticket-line"></div>
 
-<div class="ticket-icon">
-🎟️
-</div>
+    <div class="ticket-status">
+      ● ACTIVE
+    </div>
 
-<div class="ticket-number">
-#${number}
-</div>
+  `;
 
-<div class="ticket-price">
-🏆 ${reward.toLocaleString()} Points
-</div>
-
-<div class="ticket-line"></div>
-
-<div class="ticket-status">
-● ACTIVE TICKET
-</div>
-
-`;
-
-ticketsBox.appendChild(ticket);
-
+  ticketsBox.appendChild(ticket);
 }
 
 
-/* DRAW */
+/* =========================
+   VARIABLES
+========================= */
 
-let drawing=false;
+let isDrawing=false;
+let history=[];
+
+
+/* =========================
+   DRAW
+========================= */
 
 function startDraw(){
 
-if(drawing) return;
+  if(isDrawing) return;
 
-drawing=true;
+  isDrawing=true;
 
-const button =
-document.getElementById("drawButton");
+  const button =
+  document.getElementById("drawButton");
 
-button.disabled=true;
+  const status =
+  document.getElementById("status");
 
-document
-.querySelectorAll(".ticket")
-.forEach(t=>{
-t.classList.remove(
-"selected",
-"running"
-);
-});
+  button.disabled=true;
 
+  status.innerText =
+  "⚡ RESULT RUNNING — Ticket select हो रहा है...";
 
-let winner =
-Math.floor(
-Math.random()*100
-)+1;
+  document
+  .querySelectorAll(".ticket")
+  .forEach(t=>{
+    t.classList.remove(
+      "running",
+      "selected"
+    );
+  });
 
-
-let target =
-document.getElementById(
-"ticket-"+winner
-);
+  document
+  .getElementById("result")
+  .style.display="none";
 
 
-let current=0;
+  const winner =
+  Math.floor(Math.random()*100)+1;
 
-let speed=40;
-
-
-/* RUNNING TICKET */
-
-let animation =
-setInterval(()=>{
-
-document
-.querySelectorAll(".ticket")
-.forEach(t=>{
-t.classList.remove("running");
-});
+  const target =
+  document.getElementById(
+    "ticket-"+winner
+  );
 
 
-current++;
+  let current=0;
+
+  const totalSteps=100;
+
+  let speed=35;
 
 
-let index =
-(current-1)%100;
+  function move(){
+
+    document
+    .querySelectorAll(".ticket")
+    .forEach(t=>{
+      t.classList.remove("running");
+    });
 
 
-let active =
-document.getElementById(
-"ticket-"+(index+1)
-);
+    current++;
+
+    const index =
+    ((current-1)%100)+1;
 
 
-active.classList.add("running");
+    const active =
+    document.getElementById(
+      "ticket-"+index
+    );
 
 
-/* SLOW DOWN NEAR END */
+    active.classList.add("running");
 
-if(current>70){
 
-speed+=8;
+    if(current<totalSteps){
+
+      if(current>75){
+        speed+=5;
+      }
+
+      setTimeout(move,speed);
+
+    }else{
+
+      finishWinner();
+
+    }
+
+  }
+
+
+  function finishWinner(){
+
+    document
+    .querySelectorAll(".ticket")
+    .forEach(t=>{
+      t.classList.remove("running");
+    });
+
+
+    target.classList.add("selected");
+
+
+    const formatted =
+    String(winner).padStart(3,"0");
+
+
+    document
+    .getElementById("winnerNumber")
+    .innerText="#"+formatted;
+
+
+    document
+    .getElementById("selectedTicket")
+    .innerText=
+    "🎟️ VIP Ticket #"+
+    formatted+
+    " Selected";
+
+
+    document
+    .getElementById("result")
+    .style.display="block";
+
+
+    status.innerText =
+    "🎉 Result घोषित — Next result 60 seconds में";
+
+
+    /* HISTORY */
+
+    history.unshift(winner);
+
+    if(history.length>10){
+      history.pop();
+    }
+
+
+    const historyList =
+    document.getElementById(
+      "historyList"
+    );
+
+    historyList.innerHTML="";
+
+
+    history.forEach((num,index)=>{
+
+      const item =
+      document.createElement("span");
+
+      item.className=
+      "history-item";
+
+      item.innerText=
+      "#"+
+      String(num).padStart(3,"0");
+
+      historyList.appendChild(item);
+
+    });
+
+
+    /* SOUND */
+
+    const sound =
+    document.getElementById(
+      "boomSound"
+    );
+
+    sound.currentTime=0;
+
+    sound.play().catch(()=>{});
+
+
+    /* SCROLL */
+
+    target.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+
+    button.disabled=false;
+
+    isDrawing=false;
+
+  }
+
+
+  move();
 
 }
 
 
-if(current>=100){
-
-clearInterval(animation);
-
-
-document
-.querySelectorAll(".ticket")
-.forEach(t=>{
-t.classList.remove("running");
-});
-
-
-/* HIGHLIGHT WINNER */
-
-target.classList.add("selected");
-
-
-/* RESULT TEXT */
-
-document.getElementById(
-"selectedTicket"
-).innerText=
-
-"🏆 VIP Ticket #"+
-String(winner).padStart(3,"0")+
-" — WINNER";
-
-
-document.getElementById(
-"result"
-).style.display=
-"block";
-
-
-/* SOUND */
-
-let sound =
-document.getElementById(
-"boomSound"
-);
-
-sound.currentTime=0;
-
-sound.play().catch(()=>{});
-
-
-/* SCROLL TO WINNER */
-
-setTimeout(()=>{
-
-target.scrollIntoView({
-
-behavior:"smooth",
-
-block:"center"
-
-});
-
-},300);
-
-
-button.disabled=false;
-
-drawing=false;
-
-}
-
-},speed);
-
-}
-
-
-/* 60 SECOND AUTO TIMER */
+/* =========================
+   60 SECOND AUTO TIMER
+========================= */
 
 let time=60;
 
-function countdown(){
-
-document.getElementById(
-"timer"
-).innerText=
-time;
+const timer =
+document.getElementById("timer");
 
 
-time--;
+setInterval(()=>{
+
+  timer.innerText =
+  String(time).padStart(2,"0");
 
 
-if(time<0){
+  if(time<=0){
 
-time=60;
+    time=60;
 
-startDraw();
+    startDraw();
 
-}
+  }else{
 
-}
+    time--;
 
+  }
 
-setInterval(
-countdown,
-1000
-);
+},1000);
 
 </script>
 
 </body>
-  </html>
+</html>

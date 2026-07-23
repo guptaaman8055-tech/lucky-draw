@@ -7,6 +7,7 @@
 <title>VIP Premium Ticket Game</title>
 
 <style>
+
 *{
   box-sizing:border-box;
   margin:0;
@@ -26,7 +27,8 @@ body{
   padding:15px;
 }
 
-/* TELEGRAM BANNER */
+/* TELEGRAM */
+
 .telegram-banner{
   position:relative;
   overflow:hidden;
@@ -105,6 +107,7 @@ body{
 }
 
 /* HEADER */
+
 .header{
   padding:28px 20px;
   text-align:center;
@@ -125,6 +128,7 @@ body{
 }
 
 /* TIMER */
+
 .timer-box{
   margin-top:15px;
   padding:18px;
@@ -147,6 +151,7 @@ body{
 }
 
 /* STATUS */
+
 .status{
   margin-top:15px;
   padding:12px;
@@ -158,6 +163,7 @@ body{
 }
 
 /* BUTTON */
+
 button{
   display:block;
   margin:20px auto;
@@ -177,8 +183,11 @@ button:disabled{
 }
 
 /* RESULT */
+
 .result{
   display:none;
+  position:relative;
+  overflow:hidden;
   padding:25px;
   margin-top:20px;
   text-align:center;
@@ -186,13 +195,6 @@ button:disabled{
   background:linear-gradient(135deg,#172033,#312e81);
   border:2px solid #ffd700;
   box-shadow:0 0 40px rgba(255,215,0,.5);
-  animation:resultPop .7s ease;
-}
-
-@keyframes resultPop{
-  0%{transform:scale(.5);opacity:0}
-  70%{transform:scale(1.1)}
-  100%{transform:scale(1);opacity:1}
 }
 
 .result h2{
@@ -200,14 +202,196 @@ button:disabled{
   margin-bottom:10px;
 }
 
+/* WINNER NUMBER */
+
 .winner-number{
-  font-size:42px;
+  position:relative;
+  display:inline-block;
+  font-size:55px;
   color:#22c55e;
   font-weight:bold;
-  text-shadow:0 0 20px #22c55e;
+  text-shadow:
+    0 0 10px #22c55e,
+    0 0 30px #22c55e;
+  padding:25px 40px;
+  margin:10px 0;
+}
+
+/* WINNER LIGHTNING AREA */
+
+.winner-number.lightning-active{
+  animation:
+    winnerFlash .15s infinite alternate,
+    numberShake .08s infinite;
+}
+
+/* SCREEN FLASH */
+
+.screen-flash{
+  position:fixed;
+  inset:0;
+  background:white;
+  opacity:0;
+  pointer-events:none;
+  z-index:9999;
+}
+
+.screen-flash.flash{
+  animation:screenFlash .35s ease-out;
+}
+
+@keyframes screenFlash{
+
+  0%{
+    opacity:0;
+  }
+
+  20%{
+    opacity:.9;
+  }
+
+  40%{
+    opacity:0;
+  }
+
+  60%{
+    opacity:.6;
+  }
+
+  100%{
+    opacity:0;
+  }
+
+}
+
+/* ELECTRIC FLASH */
+
+@keyframes winnerFlash{
+
+  from{
+    color:#22c55e;
+    text-shadow:
+      0 0 10px #22c55e,
+      0 0 30px #22c55e;
+    filter:brightness(1);
+  }
+
+  to{
+    color:white;
+    text-shadow:
+      0 0 10px white,
+      0 0 30px #67e8f9,
+      0 0 60px #22c55e;
+    filter:brightness(2.5);
+  }
+
+}
+
+@keyframes numberShake{
+
+  0%{
+    transform:translateX(-2px);
+  }
+
+  50%{
+    transform:translateX(2px);
+  }
+
+  100%{
+    transform:translateX(-2px);
+  }
+
+}
+
+/* LIGHTNING BOLT */
+
+.lightning-bolt{
+  position:absolute;
+  top:-25px;
+  left:50%;
+  width:12px;
+  height:100px;
+  background:white;
+
+  clip-path:polygon(
+    50% 0%,
+    100% 0%,
+    62% 38%,
+    100% 38%,
+    25% 100%,
+    40% 55%,
+    0% 55%
+  );
+
+  filter:
+    drop-shadow(0 0 5px white)
+    drop-shadow(0 0 15px #67e8f9)
+    drop-shadow(0 0 30px #22c55e);
+
+  opacity:0;
+  transform:translateX(-50%) scaleY(0);
+
+  z-index:10;
+}
+
+/* MULTIPLE LIGHTNING */
+
+.lightning-bolt.bolt1{
+  left:25%;
+  transform:rotate(-15deg) scaleY(0);
+}
+
+.lightning-bolt.bolt2{
+  left:50%;
+  transform:rotate(5deg) scaleY(0);
+}
+
+.lightning-bolt.bolt3{
+  left:75%;
+  transform:rotate(15deg) scaleY(0);
+}
+
+.lightning-active .lightning-bolt{
+  animation:boltStrike .5s ease-out;
+}
+
+@keyframes boltStrike{
+
+  0%{
+    opacity:0;
+    transform:translateX(-50%) scaleY(0);
+  }
+
+  15%{
+    opacity:1;
+    transform:translateX(-50%) scaleY(1);
+  }
+
+  25%{
+    opacity:.2;
+  }
+
+  35%{
+    opacity:1;
+  }
+
+  50%{
+    opacity:.1;
+  }
+
+  65%{
+    opacity:1;
+  }
+
+  100%{
+    opacity:0;
+    transform:translateX(-50%) scaleY(1.2);
+  }
+
 }
 
 /* TICKETS */
+
 .tickets{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
@@ -284,6 +468,7 @@ button:disabled{
 }
 
 /* RUNNING */
+
 .ticket.running{
   transform:scale(1.08);
   filter:brightness(2);
@@ -298,7 +483,8 @@ button:disabled{
   to{filter:brightness(3)}
 }
 
-/* WINNER */
+/* SELECTED TICKET */
+
 .ticket.selected{
   z-index:5;
   outline:5px solid #22c55e;
@@ -315,6 +501,7 @@ button:disabled{
 }
 
 /* HISTORY */
+
 .history{
   margin-top:20px;
   padding:18px;
@@ -341,6 +528,7 @@ button:disabled{
 }
 
 /* TERMS */
+
 .terms{
   margin-top:25px;
   padding:20px;
@@ -364,6 +552,7 @@ button:disabled{
 }
 
 /* MOBILE */
+
 @media(max-width:500px){
 
   .telegram-banner{
@@ -399,102 +588,230 @@ button:disabled{
   .ticket.selected{
     transform:scale(1.08);
   }
+
+  .winner-number{
+    font-size:42px;
+    padding:20px 30px;
+  }
+
 }
+
 </style>
 </head>
 
 <body>
 
+<!-- SCREEN FLASH -->
+
+<div id="screenFlash" class="screen-flash"></div>
+
 <div class="container">
 
 <!-- TELEGRAM -->
+
 <div class="telegram-banner">
 
   <div class="telegram-icon">✈️</div>
 
   <div class="telegram-text">
-    <div class="join-title">🔥 JOIN VIP TELEGRAM 🔥</div>
+
+    <div class="join-title">
+      🔥 JOIN VIP TELEGRAM 🔥
+    </div>
+
     <div class="join-subtitle">
       Latest Updates & Entertainment
     </div>
+
   </div>
 
   <a
     href="https://t.me/+tR2_XR-9ju05M2M9"
     target="_blank"
     class="join-button">
+
     JOIN NOW
+
   </a>
 
 </div>
 
+
 <!-- HEADER -->
+
 <div class="header">
-  <h1>🎟️ VIP PREMIUM TICKET GAME</h1>
-  <p>Virtual Entertainment Experience</p>
+
+  <h1>
+    🎟️ VIP PREMIUM TICKET GAME
+  </h1>
+
+  <p>
+    Virtual Entertainment Experience
+  </p>
+
 </div>
+
 
 <!-- TIMER -->
+
 <div class="timer-box">
-  <div class="timer-title">NEXT RESULT IN</div>
-  <div class="timer" id="timer">60</div>
+
+  <div class="timer-title">
+    NEXT RESULT IN
+  </div>
+
+  <div class="timer" id="timer">
+    60
+  </div>
+
 </div>
+
 
 <!-- STATUS -->
+
 <div class="status" id="status">
+
   🟢 Game Ready — Next result automatically आएगा
+
 </div>
 
-<!-- MANUAL BUTTON -->
-<button id="drawButton" onclick="startDraw()">
+
+<!-- BUTTON -->
+
+<button
+  id="drawButton"
+  onclick="startDraw()">
+
   ⚡ START RESULT
+
 </button>
 
+
 <!-- RESULT -->
-<div class="result" id="result">
-  <h2>🎉 RESULT DECLARED 🎉</h2>
-  <div class="winner-number" id="winnerNumber">
+
+<div
+  class="result"
+  id="result">
+
+  <h2>
+    ⚡🎉 RESULT DECLARED 🎉⚡
+  </h2>
+
+  <!-- WINNER NUMBER -->
+
+  <div
+    class="winner-number"
+    id="winnerNumber">
+
+    <span class="lightning-bolt bolt1"></span>
+    <span class="lightning-bolt bolt2"></span>
+    <span class="lightning-bolt bolt3"></span>
+
     #000
+
   </div>
+
   <p id="selectedTicket">
     VIP Ticket Selected
   </p>
+
 </div>
+
 
 <!-- TICKETS -->
-<div id="tickets" class="tickets"></div>
+
+<div
+  id="tickets"
+  class="tickets">
+</div>
+
 
 <!-- HISTORY -->
+
 <div class="history">
-  <h3>📜 PREVIOUS RESULTS</h3>
-  <div id="historyList" class="history-list">
-    <span class="history-item">No results yet</span>
+
+  <h3>
+    📜 PREVIOUS RESULTS
+  </h3>
+
+  <div
+    id="historyList"
+    class="history-list">
+
+    <span class="history-item">
+      No results yet
+    </span>
+
   </div>
+
 </div>
+
 
 <!-- TERMS -->
-<div class="terms">
-  <h3>📜 Terms & Conditions</h3>
 
-  <p>1. यह वेबसाइट केवल virtual entertainment के उद्देश्य से बनाई गई है।</p>
-  <p>2. सभी tickets और points केवल virtual हैं।</p>
-  <p>3. Virtual points का कोई वास्तविक मौद्रिक मूल्य नहीं है।</p>
-  <p>4. यह सिस्टम किसी वास्तविक lottery या gambling service का संचालन नहीं करता।</p>
-  <p>5. Results browser में random entertainment experience के लिए generate होते हैं।</p>
+<div class="terms">
+
+  <h3>
+    📜 Terms & Conditions
+  </h3>
+
+  <p>
+    1. यह वेबसाइट केवल virtual entertainment के उद्देश्य से बनाई गई है।
+  </p>
+
+  <p>
+    2. सभी tickets और points केवल virtual हैं।
+  </p>
+
+  <p>
+    3. Virtual points का कोई वास्तविक मौद्रिक मूल्य नहीं है।
+  </p>
+
+  <p>
+    4. यह सिस्टम किसी वास्तविक lottery या gambling service का संचालन नहीं करता।
+  </p>
+
+  <p>
+    5. Results browser में random entertainment experience के लिए generate होते हैं।
+  </p>
+
 </div>
+
 
 <div class="footer">
+
   © 2026 VIP Premium Ticket Game
-</div>
 
 </div>
 
-<!-- SOUND -->
-<audio id="boomSound" preload="auto">
+</div>
+
+
+<!-- ELECTRIC SOUND -->
+
+<audio
+  id="electricSound"
+  preload="auto">
+
+  <source
+    src="https://actions.google.com/sounds/v1/ambiences/electricity.ogg"
+    type="audio/ogg">
+
+</audio>
+
+
+<!-- WINNER SOUND -->
+
+<audio
+  id="boomSound"
+  preload="auto">
+
   <source
     src="https://actions.google.com/sounds/v1/impacts/crash.ogg"
     type="audio/ogg">
+
 </audio>
+
 
 <script>
 
@@ -511,20 +828,30 @@ for(let i=1;i<=100;i++){
   document.createElement("div");
 
   ticket.className="ticket";
+
   ticket.id="ticket-"+i;
 
   const number =
   String(i).padStart(3,"0");
 
   const points =
-  Math.floor(Math.random()*
-  (25000-500+1))+500;
+  Math.floor(
+    Math.random()*
+    (25000-500+1)
+  )+500;
 
   ticket.innerHTML=`
 
     <div class="ticket-top">
-      <span>VIP TICKET</span>
-      <span>2026</span>
+
+      <span>
+        VIP TICKET
+      </span>
+
+      <span>
+        2026
+      </span>
+
     </div>
 
     <div class="ticket-icon">
@@ -539,7 +866,8 @@ for(let i=1;i<=100;i++){
       🏆 ${points.toLocaleString()} Points
     </div>
 
-    <div class="ticket-line"></div>
+    <div class="ticket-line">
+    </div>
 
     <div class="ticket-status">
       ● ACTIVE
@@ -548,6 +876,7 @@ for(let i=1;i<=100;i++){
   `;
 
   ticketsBox.appendChild(ticket);
+
 }
 
 
@@ -556,11 +885,12 @@ for(let i=1;i<=100;i++){
 ========================= */
 
 let isDrawing=false;
+
 let history=[];
 
 
 /* =========================
-   DRAW
+   START DRAW
 ========================= */
 
 function startDraw(){
@@ -570,32 +900,45 @@ function startDraw(){
   isDrawing=true;
 
   const button =
-  document.getElementById("drawButton");
+  document.getElementById(
+    "drawButton"
+  );
 
   const status =
-  document.getElementById("status");
+  document.getElementById(
+    "status"
+  );
 
   button.disabled=true;
 
   status.innerText =
   "⚡ RESULT RUNNING — Ticket select हो रहा है...";
 
+
   document
   .querySelectorAll(".ticket")
   .forEach(t=>{
+
     t.classList.remove(
       "running",
       "selected"
     );
+
   });
+
 
   document
   .getElementById("result")
   .style.display="none";
 
 
+  /* WINNER */
+
   const winner =
-  Math.floor(Math.random()*100)+1;
+  Math.floor(
+    Math.random()*100
+  )+1;
+
 
   const target =
   document.getElementById(
@@ -610,16 +953,23 @@ function startDraw(){
   let speed=35;
 
 
+  /* RUNNING */
+
   function move(){
 
     document
     .querySelectorAll(".ticket")
     .forEach(t=>{
-      t.classList.remove("running");
+
+      t.classList.remove(
+        "running"
+      );
+
     });
 
 
     current++;
+
 
     const index =
     ((current-1)%100)+1;
@@ -631,7 +981,9 @@ function startDraw(){
     );
 
 
-    active.classList.add("running");
+    active.classList.add(
+      "running"
+    );
 
 
     if(current<totalSteps){
@@ -640,7 +992,10 @@ function startDraw(){
         speed+=5;
       }
 
-      setTimeout(move,speed);
+      setTimeout(
+        move,
+        speed
+      );
 
     }else{
 
@@ -651,47 +1006,144 @@ function startDraw(){
   }
 
 
+  /* FINISH */
+
   function finishWinner(){
 
     document
     .querySelectorAll(".ticket")
     .forEach(t=>{
-      t.classList.remove("running");
+
+      t.classList.remove(
+        "running"
+      );
+
     });
 
 
-    target.classList.add("selected");
+    target.classList.add(
+      "selected"
+    );
 
 
     const formatted =
-    String(winner).padStart(3,"0");
+    String(winner)
+    .padStart(3,"0");
 
 
-    document
-    .getElementById("winnerNumber")
-    .innerText="#"+formatted;
+    /* WINNER NUMBER */
+
+    const winnerNumber =
+    document.getElementById(
+      "winnerNumber"
+    );
 
 
-    document
-    .getElementById("selectedTicket")
-    .innerText=
-    "🎟️ VIP Ticket #"+
+    winnerNumber.innerHTML=`
+
+      <span class="lightning-bolt bolt1"></span>
+      <span class="lightning-bolt bolt2"></span>
+      <span class="lightning-bolt bolt3"></span>
+
+      #${formatted}
+
+    `;
+
+
+    /* LIGHTNING EFFECT */
+
+    winnerNumber.classList.remove(
+      "lightning-active"
+    );
+
+
+    void winnerNumber.offsetWidth;
+
+
+    winnerNumber.classList.add(
+      "lightning-active"
+    );
+
+
+    /* SCREEN FLASH */
+
+    const flash =
+    document.getElementById(
+      "screenFlash"
+    );
+
+
+    flash.classList.remove(
+      "flash"
+    );
+
+
+    void flash.offsetWidth;
+
+
+    flash.classList.add(
+      "flash"
+    );
+
+
+    /* RESULT TEXT */
+
+    document.getElementById(
+      "selectedTicket"
+    ).innerText=
+
+    "⚡🎟️ VIP Ticket #"+
     formatted+
-    " Selected";
+    " Selected 🎟️⚡";
 
 
-    document
-    .getElementById("result")
-    .style.display="block";
+    document.getElementById(
+      "result"
+    ).style.display=
+    "block";
 
 
-    status.innerText =
-    "🎉 Result घोषित — Next result 60 seconds में";
+    /* ELECTRIC SOUND */
+
+    const electricSound =
+    document.getElementById(
+      "electricSound"
+    );
+
+
+    electricSound.currentTime=0;
+
+    electricSound.volume=.8;
+
+    electricSound.play()
+    .catch(()=>{});
+
+
+    /* BOOM SOUND */
+
+    setTimeout(()=>{
+
+      const boomSound =
+      document.getElementById(
+        "boomSound"
+      );
+
+      boomSound.currentTime=0;
+
+      boomSound.volume=.5;
+
+      boomSound.play()
+      .catch(()=>{});
+
+    },300);
 
 
     /* HISTORY */
 
-    history.unshift(winner);
+    history.unshift(
+      winner
+    );
+
 
     if(history.length>10){
       history.pop();
@@ -703,43 +1155,43 @@ function startDraw(){
       "historyList"
     );
 
+
     historyList.innerHTML="";
 
 
-    history.forEach((num,index)=>{
+    history.forEach(num=>{
 
       const item =
-      document.createElement("span");
+      document.createElement(
+        "span"
+      );
+
 
       item.className=
       "history-item";
 
+
       item.innerText=
       "#"+
-      String(num).padStart(3,"0");
+      String(num)
+      .padStart(3,"0");
 
-      historyList.appendChild(item);
+
+      historyList.appendChild(
+        item
+      );
 
     });
-
-
-    /* SOUND */
-
-    const sound =
-    document.getElementById(
-      "boomSound"
-    );
-
-    sound.currentTime=0;
-
-    sound.play().catch(()=>{});
 
 
     /* SCROLL */
 
     target.scrollIntoView({
+
       behavior:"smooth",
+
       block:"center"
+
     });
 
 
@@ -756,19 +1208,23 @@ function startDraw(){
 
 
 /* =========================
-   60 SECOND AUTO TIMER
+   60 SECOND AUTO RESULT
 ========================= */
 
 let time=60;
 
+
 const timer =
-document.getElementById("timer");
+document.getElementById(
+  "timer"
+);
 
 
 setInterval(()=>{
 
   timer.innerText =
-  String(time).padStart(2,"0");
+  String(time)
+  .padStart(2,"0");
 
 
   if(time<=0){

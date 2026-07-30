@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>VIP Premium Ticket Game</title>
 
 <style>
-
-/* =========================
-   BASIC
-========================= */
 
 *{
   box-sizing:border-box;
@@ -23,288 +16,171 @@ content="width=device-width,initial-scale=1.0">
 }
 
 body{
-
   min-height:100vh;
-
   color:white;
-
   background:
-  radial-gradient(
-    circle at top,
-    #312e81,
-    #080914 55%
-  );
-
+  radial-gradient(circle at top,#312e81,#080914 55%);
   overflow-x:hidden;
-
 }
 
 .container{
-
-  max-width:900px;
-
+  max-width:1000px;
   margin:auto;
-
   padding:15px;
-
 }
 
-
-/* =========================
-   TELEGRAM
-========================= */
+/* TELEGRAM */
 
 .telegram-banner{
-
   display:flex;
-
   align-items:center;
-
   gap:12px;
-
   padding:15px;
-
   margin-bottom:15px;
-
   border-radius:18px;
-
   background:
-  linear-gradient(
-    135deg,
-    #075985,
-    #229ed9,
-    #0c4a6e
-  );
-
+  linear-gradient(135deg,#075985,#229ed9,#0c4a6e);
   border:2px solid #67e8f9;
-
   box-shadow:
-  0 0 25px #229ed9;
+  0 0 15px #229ed9,
+  0 0 35px #00eaff;
+  animation:telegramGlow 1.5s infinite alternate;
+}
 
+@keyframes telegramGlow{
+  from{
+    box-shadow:0 0 15px #229ed9;
+  }
+  to{
+    box-shadow:
+    0 0 25px #67e8f9,
+    0 0 50px #229ed9;
+  }
 }
 
 .telegram-icon{
-
   font-size:32px;
-
 }
 
 .telegram-text{
-
   flex:1;
-
 }
 
 .join-title{
-
   font-size:16px;
-
   font-weight:bold;
-
 }
 
 .join-subtitle{
-
   font-size:10px;
-
   color:#e0f2fe;
-
   margin-top:4px;
+}
 
+.amount-info{
+  font-size:11px;
+  color:#fde047;
+  margin-top:5px;
+  font-weight:bold;
 }
 
 .join-button{
-
   text-decoration:none;
-
   background:white;
-
   color:#075985;
-
   padding:10px 14px;
-
   border-radius:10px;
-
   font-weight:bold;
-
   font-size:12px;
-
 }
 
-
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 
 .header{
-
   text-align:center;
-
   padding:25px 15px;
-
   border-radius:22px;
-
   background:
-  linear-gradient(
-    135deg,
-    #111827,
-    #312e81,
-    #581c87
-  );
-
-  box-shadow:
-  0 0 35px
-  rgba(124,58,237,.5);
-
+  linear-gradient(135deg,#111827,#312e81,#581c87);
+  box-shadow:0 0 35px rgba(124,58,237,.5);
 }
 
 .header h1{
-
   color:#ffd700;
-
   font-size:29px;
-
   text-shadow:
   0 0 10px gold,
   0 0 25px #f59e0b;
-
 }
 
 .header p{
-
   margin-top:8px;
-
   color:#cbd5e1;
-
 }
 
-
-/* =========================
-   START BUTTON
-========================= */
+/* START BUTTON */
 
 .start-game{
-
   display:block;
-
   margin:20px auto;
-
   padding:15px 35px;
-
   border:0;
-
   border-radius:14px;
-
   background:
-  linear-gradient(
-    135deg,
-    #ffd700,
-    #f59e0b
-  );
-
+  linear-gradient(135deg,#ffd700,#f59e0b);
   color:#111;
-
   font-size:18px;
-
   font-weight:bold;
-
   cursor:pointer;
-
   box-shadow:
   0 0 15px gold,
-  0 0 35px
-  rgba(255,215,0,.5);
-
+  0 0 35px rgba(255,215,0,.5);
 }
 
 .start-game:disabled{
-
   opacity:.5;
-
 }
 
-
-/* =========================
-   TIMER + WINNER BOX
-========================= */
+/* TIMER + WINNER BOX */
 
 .timer-ticket-row{
-
   display:flex;
-
-  align-items:center;
-
+  align-items:stretch;
   justify-content:center;
-
-  gap:25px;
-
+  gap:20px;
   margin-top:20px;
-
 }
 
-
-/* =========================
-   TIMER BOX
-========================= */
+/* TIMER */
 
 .timer-box{
-
   display:none;
-
   flex:1;
-
-  max-width:430px;
-
+  max-width:450px;
   text-align:center;
-
   padding:25px;
-
   border-radius:22px;
-
   background:
-  linear-gradient(
-    135deg,
-    #111827,
-    #172554
-  );
-
+  linear-gradient(135deg,#111827,#172554);
   border:2px solid #6366f1;
-
   box-shadow:
-  0 0 25px
-  rgba(99,102,241,.5);
-
+  0 0 25px rgba(99,102,241,.5);
 }
 
 .timer-title{
-
   font-size:14px;
-
   color:#cbd5e1;
-
   letter-spacing:2px;
-
   font-weight:bold;
-
 }
 
-
-/* VIP TIMER */
-
 .timer{
-
   margin-top:12px;
-
   font-size:72px;
-
   font-weight:900;
-
   letter-spacing:8px;
-
   color:white;
-
   padding:8px 20px;
-
   border-radius:18px;
 
   background:
@@ -331,98 +207,52 @@ body{
   0 0 15px #00eaff,
   0 0 35px #ff00cc,
   0 0 60px gold;
-
 }
-
 
 @keyframes timerGradient{
-
-  0%{
-    background-position:0% 50%;
-  }
-
-  50%{
-    background-position:100% 50%;
-  }
-
-  100%{
-    background-position:0% 50%;
-  }
-
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
-
 
 @keyframes timerPulse{
-
   from{
-
     transform:scale(1);
-
     filter:brightness(1);
-
   }
-
   to{
-
     transform:scale(1.05);
-
     filter:brightness(1.7);
-
   }
-
 }
 
-
-/* TIMER WARNING */
-
 .timer.warning{
-
   animation:
   timerGradient 3s ease infinite,
   timerWarning .5s infinite alternate;
-
 }
-
 
 @keyframes timerWarning{
-
   from{
-
     transform:scale(1);
-
   }
-
   to{
-
     transform:scale(1.12);
-
     filter:brightness(2);
-
   }
-
 }
 
-
-/* =========================
-   WINNER BOX
-========================= */
+/* WINNER BOX - BLANK UNTIL TIMER ENDS */
 
 .countdown-ticket{
-
   display:none;
-
-  width:260px;
-
-  min-height:220px;
-
+  flex:1;
+  max-width:400px;
+  min-height:180px;
   padding:20px;
-
   text-align:center;
-
   border-radius:22px;
-
   position:relative;
-
   overflow:hidden;
 
   background:
@@ -439,48 +269,13 @@ body{
   0 0 15px gold,
   0 0 35px #ff00cc,
   0 0 60px #00eaff;
-
-  animation:
-  countdownTicketGlow
-  1s infinite alternate;
-
 }
 
-
-@keyframes countdownTicketGlow{
-
-  from{
-
-    transform:scale(1);
-
-    box-shadow:
-    0 0 15px gold,
-    0 0 30px #ff00cc;
-
-  }
-
-  to{
-
-    transform:scale(1.06);
-
-    box-shadow:
-    0 0 25px white,
-    0 0 50px #00eaff,
-    0 0 80px #ff00cc;
-
-  }
-
-}
-
-
-/* COLOR LIGHT */
+/* MOVING LIGHT */
 
 .countdown-ticket:before{
-
   content:"";
-
   position:absolute;
-
   inset:-100%;
 
   background:
@@ -495,203 +290,151 @@ body{
   animation:
   ticketRotate 2s linear infinite;
 
-  opacity:.35;
-
+  opacity:.25;
 }
-
 
 @keyframes ticketRotate{
-
   to{
-
     transform:rotate(360deg);
-
   }
-
 }
 
-
-.countdown-ticket-content{
-
+.countdown-content{
   position:relative;
-
   z-index:2;
-
 }
 
+/* BLANK STATE */
 
-/* LABEL */
-
-.countdown-ticket-label{
-
-  color:#fde047;
-
+.blank-message{
+  padding-top:35px;
+  color:#94a3b8;
   font-size:14px;
-
-  font-weight:bold;
-
-  margin-top:5px;
-
+  letter-spacing:2px;
 }
 
+/* WINNER CONTENT */
 
-/* EMPTY BOX */
-
-.countdown-ticket-number{
-
-  min-height:70px;
-
-  margin-top:10px;
-
-  font-size:52px;
-
-  font-weight:900;
-
-  letter-spacing:5px;
-
-  color:white;
-
-  text-shadow:
-  0 0 10px white,
-  0 0 25px #00eaff,
-  0 0 45px #ff00cc,
-  0 0 70px gold;
-
+.winner-content{
+  display:none;
 }
 
-
-/* WINNING AMOUNT */
-
-.winning-amount{
-
-  min-height:55px;
-
-  margin-top:15px;
-
-  padding:10px 18px;
-
-  border-radius:12px;
-
-  font-size:25px;
-
+.winner-label{
+  color:#fde047;
+  font-size:13px;
   font-weight:bold;
+}
 
-  color:white;
-
-  background:
-  linear-gradient(
-    90deg,
-    #ff004c,
-    #7c3aed,
-    #00eaff,
-    #00ff88,
-    #ff004c
-  );
-
-  background-size:300% 100%;
-
+.winner-icon{
+  font-size:45px;
+  margin:5px;
   animation:
-  amountGradient 2s linear infinite,
-  amountPulse .7s infinite alternate;
+  winnerIcon .7s infinite alternate;
+}
+
+@keyframes winnerIcon{
+  from{
+    filter:drop-shadow(0 0 5px gold);
+  }
+  to{
+    filter:
+    drop-shadow(0 0 15px white)
+    drop-shadow(0 0 30px #00eaff);
+  }
+}
+
+.winner-number{
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:5px;
+  color:white;
 
   text-shadow:
   0 0 8px white,
-  0 0 20px gold;
-
-  box-shadow:
-  0 0 15px gold,
+  0 0 20px #00eaff,
   0 0 35px #ff00cc,
-  0 0 55px #00eaff;
+  0 0 50px gold;
 
+  animation:
+  winnerNumberFlash .5s infinite alternate;
 }
 
-
-@keyframes amountGradient{
-
-  0%{
-    background-position:0% 50%;
-  }
-
-  50%{
-    background-position:100% 50%;
-  }
-
-  100%{
-    background-position:0% 50%;
-  }
-
-}
-
-
-@keyframes amountPulse{
-
+@keyframes winnerNumberFlash{
   from{
-    transform:scale(1);
+    filter:brightness(1);
   }
-
   to{
-    transform:scale(1.08);
+    filter:brightness(2);
   }
-
 }
 
+.winning-amount{
+  margin-top:8px;
+  font-size:25px;
+  font-weight:bold;
+  color:#22ff88;
 
-/* =========================
-   STATUS
-========================= */
+  text-shadow:
+  0 0 10px #22ff88,
+  0 0 25px #00eaff,
+  0 0 40px gold;
+}
+
+/* STATUS */
 
 .status{
-
   display:none;
-
   text-align:center;
-
   margin-top:15px;
-
   padding:12px;
-
   border-radius:12px;
-
   background:#111827;
-
   color:#facc15;
-
 }
 
+/* PRIZE POOL */
 
-/* =========================
-   TICKETS
-========================= */
+.prize-pool{
+  display:none;
+  margin-top:15px;
+  padding:15px;
+  text-align:center;
+  border-radius:15px;
+  background:#111827;
+  border:1px solid #7c3aed;
+}
+
+.prize-pool-title{
+  color:#94a3b8;
+  font-size:12px;
+}
+
+.total-amount{
+  color:#22ff88;
+  font-size:25px;
+  font-weight:bold;
+  margin-top:5px;
+  text-shadow:0 0 15px #22ff88;
+}
+
+/* TICKETS */
 
 .ticket-area{
-
   margin-top:20px;
-
   min-height:200px;
-
 }
-
 
 .tickets{
-
   display:grid;
-
   grid-template-columns:
   repeat(auto-fit,minmax(145px,1fr));
-
   gap:14px;
-
 }
 
-
 .ticket{
-
   position:relative;
-
   padding:15px;
-
   text-align:center;
-
   border-radius:16px;
 
   background:
@@ -702,135 +445,85 @@ body{
   );
 
   border:
-  1px solid
-  rgba(255,215,0,.6);
+  1px solid rgba(255,215,0,.6);
 
   box-shadow:
-  0 7px 20px
-  rgba(0,0,0,.5);
+  0 7px 20px rgba(0,0,0,.5);
 
   animation:
   ticketAppear .5s ease;
-
 }
-
 
 @keyframes ticketAppear{
-
   from{
-
     transform:scale(.5);
-
     opacity:0;
-
   }
-
   to{
-
     transform:scale(1);
-
     opacity:1;
-
   }
-
 }
-
 
 .ticket-top{
-
   display:flex;
-
   justify-content:space-between;
-
   color:#cbd5e1;
-
   font-size:10px;
-
 }
-
 
 .ticket-icon{
-
-  font-size:38px;
-
-  margin:12px 0;
-
+  font-size:35px;
+  margin:10px 0;
 }
-
 
 .ticket-number{
-
   color:#ffd700;
-
-  font-size:25px;
-
+  font-size:24px;
   font-weight:bold;
-
 }
 
-
-.ticket-points{
-
+.ticket-amount{
   margin-top:8px;
-
-  color:#86efac;
-
-  font-size:13px;
-
+  color:#22ff88;
+  font-size:15px;
+  font-weight:bold;
 }
 
+.ticket-status{
+  margin-top:8px;
+  color:#94a3b8;
+  font-size:10px;
+}
 
-/* HIDE TICKETS AT 30 SEC */
+/* HIDE TICKETS */
 
 .tickets.hide{
-
   animation:
   hideTickets .8s forwards;
-
 }
-
 
 @keyframes hideTickets{
-
   0%{
-
     opacity:1;
-
     transform:scale(1);
-
   }
-
   100%{
-
     opacity:0;
-
     transform:scale(.2);
-
     visibility:hidden;
-
   }
-
 }
 
-
-/* =========================
-   RESULT
-========================= */
+/* RESULT */
 
 .result{
-
   display:none;
-
   position:relative;
-
-  margin-top:20px;
-
+  margin-top:25px;
   padding:35px 15px 45px;
-
   text-align:center;
-
   border-radius:25px;
-
   overflow:hidden;
 
   background:
@@ -846,16 +539,11 @@ body{
   0 0 20px gold,
   0 0 50px #7c3aed,
   0 0 100px #06b6d4;
-
 }
 
-
 .result:before{
-
   content:"";
-
   position:absolute;
-
   inset:-50%;
 
   background:
@@ -873,55 +561,35 @@ body{
   rotateLight 3s linear infinite;
 
   opacity:.25;
-
 }
-
 
 @keyframes rotateLight{
-
   to{
-
     transform:rotate(360deg);
-
   }
-
 }
-
 
 .result-content{
-
   position:relative;
-
   z-index:2;
-
 }
 
-
 .result-title{
-
-  font-size:22px;
-
+  font-size:24px;
   color:#ffd700;
-
   margin-bottom:20px;
 
   text-shadow:
   0 0 10px gold,
   0 0 30px orange;
-
 }
 
-
-/* WINNER TICKET */
+/* BIG WINNER */
 
 .winner-ticket{
-
   display:inline-block;
-
-  min-width:280px;
-
+  min-width:300px;
   padding:30px 40px;
-
   border-radius:25px;
 
   background:
@@ -943,84 +611,43 @@ body{
   animation:
   winnerBoom 1s ease,
   winnerGlow 1s infinite alternate;
-
 }
-
 
 @keyframes winnerBoom{
-
   0%{
-
-    transform:
-    scale(.1)
-    rotate(-10deg);
-
+    transform:scale(.1) rotate(-10deg);
     opacity:0;
-
   }
-
   60%{
-
-    transform:
-    scale(1.25)
-    rotate(5deg);
-
+    transform:scale(1.25) rotate(5deg);
   }
-
   100%{
-
-    transform:
-    scale(1)
-    rotate(0);
-
+    transform:scale(1) rotate(0);
     opacity:1;
-
   }
-
 }
 
-
 @keyframes winnerGlow{
-
   from{
-
     box-shadow:
     0 0 15px gold,
     0 0 30px #ff00cc,
     0 0 50px #00eaff;
-
   }
-
   to{
-
     box-shadow:
     0 0 30px white,
     0 0 60px gold,
     0 0 100px #ff00cc,
     0 0 140px #00eaff;
-
   }
-
 }
 
-
-.winner-icon{
-
-  font-size:70px;
-
-}
-
-
-.winner-number{
-
+.winner-big-number{
   margin:15px 0;
-
   font-size:70px;
-
   font-weight:bold;
-
   color:white;
-
   letter-spacing:5px;
 
   text-shadow:
@@ -1031,188 +658,138 @@ body{
 
   animation:
   numberFlash .6s infinite alternate;
-
 }
-
 
 @keyframes numberFlash{
-
   from{
-
     filter:brightness(1);
-
   }
-
   to{
-
     filter:brightness(2);
-
   }
-
 }
 
-
-.winner-text{
-
-  color:#fde047;
-
-  font-size:18px;
-
+.winner-big-amount{
+  font-size:35px;
+  color:#22ff88;
   font-weight:bold;
-
-}
-
-
-/* RESULT AMOUNT */
-
-.result-amount{
-
-  margin-top:20px;
-
-  font-size:32px;
-
-  font-weight:bold;
-
-  color:#fff;
 
   text-shadow:
-  0 0 10px white,
-  0 0 30px #00ff88,
+  0 0 10px #22ff88,
+  0 0 30px #00eaff,
   0 0 50px gold;
-
 }
 
+.winner-text{
+  margin-top:10px;
+  color:#fde047;
+  font-size:18px;
+  font-weight:bold;
+}
 
 /* NEXT ROUND */
 
 .next-round{
-
   display:none;
-
   margin:25px auto 0;
-
   padding:13px 25px;
-
   border:0;
-
   border-radius:12px;
 
-  background:#22c55e;
+  background:
+  linear-gradient(
+    135deg,
+    #22c55e,
+    #06b6d4
+  );
 
   color:white;
-
   font-weight:bold;
-
   cursor:pointer;
 
+  box-shadow:
+  0 0 20px #22c55e;
 }
 
+/* FOOTER */
 
-/* =========================
-   MOBILE
-========================= */
+.footer{
+  text-align:center;
+  color:#64748b;
+  font-size:11px;
+  padding:25px 10px;
+}
+
+/* MOBILE */
 
 @media(max-width:600px){
 
   .telegram-banner{
-
     padding:11px;
-
   }
 
   .telegram-icon{
-
     font-size:25px;
-
   }
 
   .join-title{
-
     font-size:12px;
-
   }
 
   .join-subtitle{
-
     font-size:8px;
-
   }
 
   .join-button{
-
     padding:8px;
-
     font-size:10px;
-
   }
 
   .header h1{
-
     font-size:23px;
-
   }
 
   .timer-ticket-row{
-
     flex-direction:column;
-
     gap:15px;
-
   }
 
-  .timer-box{
-
+  .timer-box,
+  .countdown-ticket{
     width:100%;
-
     max-width:none;
-
   }
 
   .timer{
-
     font-size:55px;
-
-  }
-
-  .countdown-ticket{
-
-    width:90%;
-
   }
 
   .tickets{
-
     grid-template-columns:
     repeat(2,1fr);
-
   }
 
   .winner-ticket{
-
     min-width:90%;
-
     padding:25px 15px;
-
   }
 
-  .winner-number{
-
+  .winner-big-number{
     font-size:55px;
+  }
 
+  .winner-big-amount{
+    font-size:28px;
   }
 
 }
 
 </style>
-
 </head>
-
 
 <body>
 
-
 <div class="container">
-
 
 <!-- TELEGRAM -->
 
@@ -1230,6 +807,10 @@ body{
 
     <div class="join-subtitle">
       Latest Updates & Entertainment
+    </div>
+
+    <div class="amount-info">
+      💰 Winning Amount पाने के लिए Telegram पर अपना Ticket Number भेजें
     </div>
 
   </div>
@@ -1264,11 +845,11 @@ body{
 <!-- START -->
 
 <button
-id="startGame"
-class="start-game"
-onclick="startGame()">
+  id="startGame"
+  class="start-game"
+  onclick="startGame()">
 
-⚡ START GAME
+  ⚡ START GAME
 
 </button>
 
@@ -1277,65 +858,83 @@ onclick="startGame()">
 
 <div class="timer-ticket-row">
 
-
-<!-- TIMER -->
-
-<div
-id="timerBox"
-class="timer-box">
-
-  <div class="timer-title">
-    ⚡ NEXT RESULT IN ⚡
-  </div>
+  <!-- TIMER -->
 
   <div
-  id="timer"
-  class="timer">
+    id="timerBox"
+    class="timer-box">
 
-  60
+    <div class="timer-title">
+      ⚡ NEXT RESULT IN ⚡
+    </div>
+
+    <div
+      id="timer"
+      class="timer">
+
+      60
+
+    </div>
 
   </div>
 
-</div>
 
-
-<!-- EMPTY WINNER BOX -->
-
-<div
-id="countdownTicket"
-class="countdown-ticket">
+  <!-- WINNER BOX -->
 
   <div
-  class="countdown-ticket-content">
+    id="countdownTicket"
+    class="countdown-ticket">
 
-    <div
-    class="countdown-ticket-label">
+    <div class="countdown-content">
 
-    🏆 WINNING TICKET 🏆
+      <!-- BLANK BEFORE RESULT -->
 
-    </div>
+      <div
+        id="blankMessage"
+        class="blank-message">
 
+        🔒 WINNER TICKET LOCKED
+        <br><br>
+        ⏳ WAIT FOR RESULT
 
-    <!-- EMPTY UNTIL RESULT -->
-
-    <div
-    id="countdownTicketNumber"
-    class="countdown-ticket-number">
-
-    </div>
+      </div>
 
 
-    <!-- EMPTY UNTIL RESULT -->
+      <!-- WINNER AFTER TIMER -->
 
-    <div
-    id="winningAmount"
-    class="winning-amount">
+      <div
+        id="winnerContent"
+        class="winner-content">
+
+        <div class="winner-label">
+          🏆 WINNING TICKET 🏆
+        </div>
+
+        <div class="winner-icon">
+          🎟️
+        </div>
+
+        <div
+          id="countdownTicketNumber"
+          class="winner-number">
+
+          #000
+
+        </div>
+
+        <div
+          id="countdownWinningAmount"
+          class="winning-amount">
+
+          ₹0
+
+        </div>
+
+      </div>
 
     </div>
 
   </div>
-
-</div>
 
 </div>
 
@@ -1343,77 +942,82 @@ class="countdown-ticket">
 <!-- STATUS -->
 
 <div
-id="status"
-class="status">
+  id="status"
+  class="status">
 
-🎮 Game Running...
+  🎮 Game Running...
 
 </div>
 
 
-<!-- TICKET AREA -->
+<!-- TOTAL PRIZE -->
 
 <div
-class="ticket-area">
+  id="prizePool"
+  class="prize-pool">
+
+  <div class="prize-pool-title">
+    🏆 TOTAL VIRTUAL PRIZE POOL
+  </div>
+
+  <div class="total-amount">
+    ₹2,00,000
+  </div>
+
+</div>
+
+
+<!-- TICKETS -->
+
+<div
+  id="ticketArea"
+  class="ticket-area">
 
   <div
-  id="tickets"
-  class="tickets">
+    id="tickets"
+    class="tickets">
 
   </div>
 
 </div>
 
 
-<!-- RESULT -->
+<!-- FINAL RESULT -->
 
 <div
-id="result"
-class="result">
+  id="result"
+  class="result">
 
-  <div
-  class="result-content">
+  <div class="result-content">
 
-    <div
-    class="result-title">
-
-    ⚡🎉 WINNER RESULT 🎉⚡
-
+    <div class="result-title">
+      ⚡🎉 WINNER RESULT 🎉⚡
     </div>
 
+    <div class="winner-ticket">
 
-    <div
-    class="winner-ticket">
+      <div class="winner-icon">
+        🎟️
+      </div>
 
       <div
-      class="winner-icon">
+        id="winnerNumber"
+        class="winner-big-number">
 
-      🎟️
+        #000
 
       </div>
 
-
       <div
-      id="winnerNumber"
-      class="winner-number">
+        id="winnerAmount"
+        class="winner-big-amount">
 
-      #000
+        ₹0
 
       </div>
 
-
-      <div
-      class="winner-text">
-
-      🏆 VIP WINNER TICKET 🏆
-
-      </div>
-
-
-      <div
-      id="resultAmount"
-      class="result-amount">
-
+      <div class="winner-text">
+        🏆 VIP WINNER TICKET 🏆
       </div>
 
     </div>
@@ -1426,73 +1030,144 @@ class="result">
 <!-- NEXT ROUND -->
 
 <button
-id="nextRound"
-class="next-round"
-onclick="startNewRound()">
+  id="nextRound"
+  class="next-round"
+  onclick="startNewRound()">
 
-🔄 NEXT ROUND
+  🔄 NEXT ROUND
 
 </button>
 
 
+<div class="footer">
+
+  © 2026 VIP Premium Ticket Game
+  <br><br>
+  Virtual Entertainment Experience
+
+</div>
+
 </div>
 
 
-<!-- TIMER SOUND -->
+<!-- SOUNDS -->
 
 <audio
-id="tickSound"
-preload="auto">
+  id="tickSound"
+  preload="auto">
 
-<source
-src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
-type="audio/ogg">
+  <source
+    src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
+    type="audio/ogg">
 
 </audio>
 
 
-<!-- ELECTRIC SOUND -->
-
 <audio
-id="electricSound"
-preload="auto">
+  id="electricSound"
+  preload="auto">
 
-<source
-src="https://actions.google.com/sounds/v1/ambiences/electricity.ogg"
-type="audio/ogg">
+  <source
+    src="https://actions.google.com/sounds/v1/ambiences/electricity.ogg"
+    type="audio/ogg">
 
 </audio>
 
 
-<!-- RESULT SOUND -->
-
 <audio
-id="boomSound"
-preload="auto">
+  id="boomSound"
+  preload="auto">
 
-<source
-src="https://actions.google.com/sounds/v1/impacts/crash.ogg"
-type="audio/ogg">
+  <source
+    src="https://actions.google.com/sounds/v1/impacts/crash.ogg"
+    type="audio/ogg">
 
 </audio>
 
 
 <script>
 
-
 /* =========================
-   VARIABLES
+   GAME VARIABLES
 ========================= */
 
-let time=60;
+const TOTAL_TICKETS = 30;
 
-let timerInterval=null;
+const TOTAL_PRIZE = 200000;
 
-let gameStarted=false;
+let time = 60;
+
+let timerInterval = null;
+
+let gameStarted = false;
+
+let ticketData = [];
 
 
 /* =========================
-   CREATE 100 TICKETS
+   CREATE PRIZE AMOUNTS
+   TOTAL = ₹2,00,000
+========================= */
+
+function createPrizeAmounts(){
+
+  /*
+    30 अलग-अलग amounts
+    कुल = ₹2,00,000
+  */
+
+  let amounts = [];
+
+  let remaining = TOTAL_PRIZE;
+
+  for(let i=0;i<TOTAL_TICKETS-1;i++){
+
+    let minRemaining =
+    (TOTAL_TICKETS-i-1)*1000;
+
+    let maxAmount =
+    Math.min(
+      15000,
+      remaining-minRemaining
+    );
+
+    let amount =
+    Math.floor(
+      Math.random()*
+      (maxAmount-1000+1)
+    )+1000;
+
+    /*
+      Amount को 100 के multiple में
+      round करना
+    */
+
+    amount =
+    Math.round(amount/100)*100;
+
+    amounts.push(amount);
+
+    remaining -= amount;
+
+  }
+
+  amounts.push(remaining);
+
+  /*
+    Amounts को shuffle करना
+  */
+
+  amounts.sort(
+    ()=>Math.random()-.5
+  );
+
+  return amounts;
+
+}
+
+
+/* =========================
+   CREATE 30 TICKETS
 ========================= */
 
 function createTickets(){
@@ -1504,31 +1179,36 @@ function createTickets(){
 
   tickets.innerHTML="";
 
+  ticketData=[];
 
-  for(
-    let i=1;
-    i<=100;
-    i++
-  ){
+  const amounts =
+  createPrizeAmounts();
+
+
+  for(let i=1;i<=TOTAL_TICKETS;i++){
+
+    const amount =
+    amounts[i-1];
+
+    ticketData.push({
+
+      number:i,
+
+      amount:amount
+
+    });
+
 
     const ticket =
     document.createElement(
       "div"
     );
 
-    ticket.className=
-    "ticket";
+    ticket.className="ticket";
 
 
     const number =
-    String(i)
-    .padStart(3,"0");
-
-
-    const points =
-    Math.floor(
-      Math.random()*25000
-    )+500;
+    String(i).padStart(3,"0");
 
 
     ticket.innerHTML=`
@@ -1536,25 +1216,29 @@ function createTickets(){
       <div class="ticket-top">
 
         <span>
-        VIP
+          VIP TICKET
         </span>
 
         <span>
-        2026
+          #${number}
         </span>
 
       </div>
 
       <div class="ticket-icon">
-      🎟️
+        🎟️
       </div>
 
       <div class="ticket-number">
-      #${number}
+        #${number}
       </div>
 
-      <div class="ticket-points">
-      🏆 ${points.toLocaleString()} Points
+      <div class="ticket-amount">
+        🏆 ₹${amount.toLocaleString("en-IN")}
+      </div>
+
+      <div class="ticket-status">
+        ● ACTIVE
       </div>
 
     `;
@@ -1575,81 +1259,56 @@ function createTickets(){
 
 function startGame(){
 
-  if(gameStarted)
-  return;
-
+  if(gameStarted) return;
 
   gameStarted=true;
 
 
   document
-  .getElementById(
-    "startGame"
-  )
+  .getElementById("startGame")
   .disabled=true;
 
 
   document
-  .getElementById(
-    "timerBox"
-  )
-  .style.display=
-  "block";
+  .getElementById("timerBox")
+  .style.display="block";
 
 
   document
-  .getElementById(
-    "countdownTicket"
-  )
-  .style.display=
-  "block";
+  .getElementById("countdownTicket")
+  .style.display="block";
 
 
   document
-  .getElementById(
-    "status"
-  )
-  .style.display=
-  "block";
+  .getElementById("status")
+  .style.display="block";
 
 
   document
-  .getElementById(
-    "result"
-  )
-  .style.display=
-  "none";
+  .getElementById("prizePool")
+  .style.display="block";
 
 
   document
-  .getElementById(
-    "nextRound"
-  )
-  .style.display=
-  "none";
-
-
-  /* CLEAR WINNER BOX */
-
-  document
-  .getElementById(
-    "countdownTicketNumber"
-  )
-  .innerText="";
+  .getElementById("result")
+  .style.display="none";
 
 
   document
-  .getElementById(
-    "winningAmount"
-  )
-  .innerText="";
+  .getElementById("nextRound")
+  .style.display="none";
+
+
+  /* RESET WINNER BOX */
+
+  document
+  .getElementById("blankMessage")
+  .style.display="block";
 
 
   document
-  .getElementById(
-    "resultAmount"
-  )
-  .innerText="";
+  .getElementById("winnerContent")
+  .style.display="none";
 
 
   /* CREATE TICKETS */
@@ -1657,18 +1316,7 @@ function startGame(){
   createTickets();
 
 
-  /* RESET TICKETS */
-
-  document
-  .getElementById(
-    "tickets"
-  )
-  .classList.remove(
-    "hide"
-  );
-
-
-  /* RESET TIMER */
+  /* RESET TIME */
 
   time=60;
 
@@ -1684,6 +1332,17 @@ function startGame(){
 
   timer.classList.remove(
     "warning"
+  );
+
+
+  const tickets =
+  document.getElementById(
+    "tickets"
+  );
+
+
+  tickets.classList.remove(
+    "hide"
   );
 
 
@@ -1718,12 +1377,12 @@ function countdown(){
   .padStart(2,"0");
 
 
-  /* TIMER SOUND */
+  /* SOUND */
 
   playTick();
 
 
-  /* WARNING */
+  /* LAST 10 SECONDS */
 
   if(time<=10){
 
@@ -1734,7 +1393,9 @@ function countdown(){
   }
 
 
-  /* 30 SECOND POINT */
+  /* 30 SECOND POINT
+     TICKETS HIDE
+  */
 
   if(time===30){
 
@@ -1743,7 +1404,7 @@ function countdown(){
   }
 
 
-  /* TIMER FINISHED */
+  /* TIMER FINISH */
 
   if(time<=0){
 
@@ -1751,7 +1412,9 @@ function countdown(){
       timerInterval
     );
 
+
     showWinner();
+
 
     return;
 
@@ -1764,7 +1427,7 @@ function countdown(){
 
 
 /* =========================
-   HIDE ALL TICKETS
+   HIDE 30 TICKETS
 ========================= */
 
 function hideTickets(){
@@ -1785,7 +1448,7 @@ function hideTickets(){
     "status"
   )
   .innerText=
-  "⚡ RESULT LOCKED — Winner is being selected...";
+  "⚡ RESULT LOCKED — WINNER IS BEING SELECTED...";
 
 }
 
@@ -1796,53 +1459,56 @@ function hideTickets(){
 
 function showWinner(){
 
+  /*
+    Random winning ticket
+    1 से 30 तक
+  */
 
-  /* RANDOM WINNER */
+  const winnerIndex =
+  Math.floor(
+    Math.random()*
+    ticketData.length
+  );
+
 
   const winner =
-  Math.floor(
-    Math.random()*100
-  )+1;
+  ticketData[
+    winnerIndex
+  ];
 
 
   const formatted =
-  String(winner)
+  String(
+    winner.number
+  )
   .padStart(3,"0");
 
 
-  /* WINNING AMOUNTS */
-
-  const winningAmounts=[
-
-    500,
-    1000,
-    2500,
-    5000,
-    7500,
-    10000,
-    12500,
-    15000,
-    20000,
-    25000
-
-  ];
+  const amountText =
+  "₹"+
+  winner.amount
+  .toLocaleString(
+    "en-IN"
+  );
 
 
-  /* NUMBER BASED AMOUNT */
+  /* WINNER BOX */
 
-  const amountIndex =
-  (winner-1)
-  %
-  winningAmounts.length;
-
-
-  const winningAmount =
-  winningAmounts[
-    amountIndex
-  ];
+  document
+  .getElementById(
+    "blankMessage"
+  )
+  .style.display=
+  "none";
 
 
-  /* WINNER NUMBER */
+  document
+  .getElementById(
+    "winnerContent"
+  )
+  .style.display=
+  "block";
+
 
   document
   .getElementById(
@@ -1853,21 +1519,15 @@ function showWinner(){
   formatted;
 
 
-  /* WINNING AMOUNT */
-
   document
   .getElementById(
-    "winningAmount"
+    "countdownWinningAmount"
   )
   .innerText=
-  "🏆 WIN ₹"+
-  winningAmount
-  .toLocaleString(
-    "en-IN"
-  );
+  amountText;
 
 
-  /* MAIN RESULT */
+  /* FINAL RESULT */
 
   document
   .getElementById(
@@ -1878,21 +1538,13 @@ function showWinner(){
   formatted;
 
 
-  /* RESULT AMOUNT */
-
   document
   .getElementById(
-    "resultAmount"
+    "winnerAmount"
   )
   .innerText=
-  "💰 WIN ₹"+
-  winningAmount
-  .toLocaleString(
-    "en-IN"
-  );
+  amountText;
 
-
-  /* SHOW RESULT */
 
   document
   .getElementById(
@@ -1932,113 +1584,4 @@ function showWinner(){
 
   setTimeout(()=>{
 
-    const boom =
-    document.getElementById(
-      "boomSound"
-    );
-
-
-    boom.currentTime=0;
-
-    boom.volume=.7;
-
-
-    boom.play()
-    .catch(
-      ()=>{}
-    );
-
-  },400);
-
-
-  /* NEXT ROUND */
-
-  document
-  .getElementById(
-    "nextRound"
-  )
-  .style.display=
-  "block";
-
-}
-
-
-/* =========================
-   NEXT ROUND
-========================= */
-
-function startNewRound(){
-
-  gameStarted=false;
-
-
-  clearInterval(
-    timerInterval
-  );
-
-
-  document
-  .getElementById(
-    "startGame"
-  )
-  .disabled=false;
-
-
-  document
-  .getElementById(
-    "result"
-  )
-  .style.display=
-  "none";
-
-
-  document
-  .getElementById(
-    "nextRound"
-  )
-  .style.display=
-  "none";
-
-
-  document
-  .getElementById(
-    "tickets"
-  )
-  .classList.remove(
-    "hide"
-  );
-
-
-  document
-  .getElementById(
-    "countdownTicket"
-  )
-  .style.display=
-  "none";
-
-
-  document
-  .getElementById(
-    "timerBox"
-  )
-  .style.display=
-  "none";
-
-
-  document
-  .getElementById(
-    "status"
-  )
-  .style.display=
-  "none";
-
-
-  document
-  .getElementById(
-    "countdownTicketNumber"
-  )
-  .innerText="";
-
-
-  document
-  .getEl
+    const boomhs

@@ -120,13 +120,24 @@ body{
   opacity:.5;
 }
 
+/* TIMER + TICKET ROW */
+
+.timer-ticket-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:25px;
+  margin-top:20px;
+}
+
 /* TIMER */
 
 .timer-box{
   display:none;
+  flex:1;
+  max-width:430px;
   text-align:center;
   padding:25px;
-  margin-top:20px;
   border-radius:22px;
   background:
   linear-gradient(135deg,#111827,#172554);
@@ -139,35 +150,271 @@ body{
   font-size:14px;
   color:#cbd5e1;
   letter-spacing:2px;
+  font-weight:bold;
 }
+
+/* VIP TIMER */
 
 .timer{
-  margin-top:8px;
-  font-size:65px;
-  font-weight:bold;
-  color:#ff4d4d;
+  margin-top:12px;
+  font-size:72px;
+  font-weight:900;
+  letter-spacing:8px;
+  color:#fff;
+
+  padding:8px 20px;
+
+  border-radius:18px;
+
+  background:
+  linear-gradient(
+    135deg,
+    #ff004c,
+    #7c3aed,
+    #00eaff
+  );
+
+  background-size:300% 300%;
+
+  animation:
+  timerGradient 3s ease infinite,
+  timerPulse 1s infinite alternate;
+
   text-shadow:
-  0 0 10px red,
-  0 0 30px red;
+  0 0 5px white,
+  0 0 15px #00eaff,
+  0 0 30px #ff00cc,
+  0 0 50px gold;
+
+  box-shadow:
+  0 0 15px #00eaff,
+  0 0 35px #ff00cc,
+  0 0 60px gold;
 }
 
+@keyframes timerGradient{
+
+  0%{
+    background-position:0% 50%;
+  }
+
+  50%{
+    background-position:100% 50%;
+  }
+
+  100%{
+    background-position:0% 50%;
+  }
+
+}
+
+@keyframes timerPulse{
+
+  from{
+    transform:scale(1);
+    filter:brightness(1);
+  }
+
+  to{
+    transform:scale(1.05);
+    filter:brightness(1.7);
+  }
+
+}
+
+/* TIMER WARNING */
+
 .timer.warning{
-  animation:timerWarning .5s infinite alternate;
+  animation:
+  timerGradient 3s ease infinite,
+  timerWarning .5s infinite alternate;
 }
 
 @keyframes timerWarning{
 
   from{
     transform:scale(1);
-    color:#ff4d4d;
   }
 
   to{
     transform:scale(1.12);
-    color:white;
-    text-shadow:
-    0 0 10px white,
-    0 0 40px red;
+    filter:brightness(2);
+  }
+
+}
+
+/* COUNTDOWN TICKET */
+
+.countdown-ticket{
+  display:none;
+  width:220px;
+  min-height:180px;
+  padding:18px;
+  text-align:center;
+  border-radius:22px;
+  position:relative;
+  overflow:hidden;
+
+  background:
+  linear-gradient(
+    135deg,
+    #1e1b4b,
+    #581c87,
+    #075985
+  );
+
+  border:3px solid gold;
+
+  box-shadow:
+  0 0 15px gold,
+  0 0 35px #ff00cc,
+  0 0 60px #00eaff;
+
+  animation:
+  countdownTicketGlow 1s infinite alternate;
+}
+
+@keyframes countdownTicketGlow{
+
+  from{
+
+    transform:scale(1);
+
+    box-shadow:
+    0 0 15px gold,
+    0 0 30px #ff00cc;
+
+  }
+
+  to{
+
+    transform:scale(1.06);
+
+    box-shadow:
+    0 0 25px white,
+    0 0 50px #00eaff,
+    0 0 80px #ff00cc;
+
+  }
+
+}
+
+/* MOVING COLOR LIGHT */
+
+.countdown-ticket:before{
+
+  content:"";
+
+  position:absolute;
+
+  inset:-100%;
+
+  background:
+  conic-gradient(
+    transparent,
+    #ff00cc,
+    #00eaff,
+    gold,
+    transparent
+  );
+
+  animation:
+  ticketRotate 2s linear infinite;
+
+  opacity:.35;
+
+}
+
+@keyframes ticketRotate{
+
+  to{
+    transform:rotate(360deg);
+  }
+
+}
+
+.countdown-ticket-content{
+
+  position:relative;
+  z-index:2;
+
+}
+
+.countdown-ticket-icon{
+
+  font-size:42px;
+
+  animation:
+  ticketIcon .7s infinite alternate;
+
+}
+
+@keyframes ticketIcon{
+
+  from{
+
+    filter:
+    drop-shadow(0 0 5px gold);
+
+  }
+
+  to{
+
+    filter:
+    drop-shadow(0 0 15px white)
+    drop-shadow(0 0 30px #00eaff);
+
+  }
+
+}
+
+.countdown-ticket-label{
+
+  color:#fde047;
+
+  font-size:12px;
+
+  font-weight:bold;
+
+  margin-top:5px;
+
+}
+
+.countdown-ticket-number{
+
+  margin-top:8px;
+
+  font-size:38px;
+
+  font-weight:900;
+
+  letter-spacing:4px;
+
+  color:white;
+
+  text-shadow:
+  0 0 8px white,
+  0 0 20px #00eaff,
+  0 0 35px #ff00cc,
+  0 0 50px gold;
+
+  animation:
+  ticketNumberFlash .5s infinite alternate;
+
+}
+
+@keyframes ticketNumberFlash{
+
+  from{
+
+    filter:brightness(1);
+
+  }
+
+  to{
+
+    filter:brightness(2);
+
   }
 
 }
@@ -175,101 +422,163 @@ body{
 /* STATUS */
 
 .status{
+
   display:none;
+
   text-align:center;
+
   margin-top:15px;
+
   padding:12px;
+
   border-radius:12px;
+
   background:#111827;
+
   color:#facc15;
+
 }
 
 /* TICKETS AREA */
 
 .ticket-area{
+
   margin-top:20px;
+
   min-height:200px;
+
 }
 
 /* TICKET GRID */
 
 .tickets{
+
   display:grid;
+
   grid-template-columns:
   repeat(auto-fit,minmax(145px,1fr));
+
   gap:14px;
+
 }
 
 /* NORMAL TICKET */
 
 .ticket{
+
   position:relative;
+
   padding:15px;
+
   text-align:center;
+
   border-radius:16px;
+
   background:
-  linear-gradient(135deg,#111827,#312e81);
-  border:1px solid rgba(255,215,0,.6);
+  linear-gradient(
+    135deg,
+    #111827,
+    #312e81
+  );
+
+  border:
+  1px solid rgba(255,215,0,.6);
+
   box-shadow:
   0 7px 20px rgba(0,0,0,.5);
-  animation:ticketAppear .5s ease;
+
+  animation:
+  ticketAppear .5s ease;
+
 }
 
 @keyframes ticketAppear{
 
   from{
+
     transform:scale(.5);
+
     opacity:0;
+
   }
 
   to{
+
     transform:scale(1);
+
     opacity:1;
+
   }
 
 }
 
 .ticket-top{
+
   display:flex;
+
   justify-content:space-between;
+
   color:#cbd5e1;
+
   font-size:10px;
+
 }
 
 .ticket-icon{
+
   font-size:38px;
+
   margin:12px 0;
+
 }
 
 .ticket-number{
+
   color:#ffd700;
+
   font-size:25px;
+
   font-weight:bold;
+
 }
 
 .ticket-points{
+
   margin-top:8px;
+
   color:#86efac;
+
   font-size:13px;
+
 }
 
 /* HIDE TICKETS */
 
 .tickets.hide{
-  animation:hideTickets .8s forwards;
+
+  animation:
+  hideTickets .8s forwards;
+
 }
 
 @keyframes hideTickets{
 
   0%{
+
     opacity:1;
+
     transform:scale(1);
+
   }
 
   100%{
+
     opacity:0;
+
     transform:scale(.2);
+
     visibility:hidden;
+
   }
 
 }
@@ -277,16 +586,27 @@ body{
 /* RESULT AREA */
 
 .result{
+
   display:none;
+
   position:relative;
+
   margin-top:20px;
+
   padding:35px 15px 45px;
+
   text-align:center;
+
   border-radius:25px;
+
   overflow:hidden;
 
   background:
-  radial-gradient(circle,#312e81,#111827 65%);
+  radial-gradient(
+    circle,
+    #312e81,
+    #111827 65%
+  );
 
   border:3px solid gold;
 
@@ -294,14 +614,19 @@ body{
   0 0 20px gold,
   0 0 50px #7c3aed,
   0 0 100px #06b6d4;
+
 }
 
 /* COLORFUL LIGHT */
 
 .result:before{
+
   content:"";
+
   position:absolute;
+
   inset:-50%;
+
   background:
   conic-gradient(
     #ff0000,
@@ -312,30 +637,44 @@ body{
     #ff00cc,
     #ff0000
   );
-  animation:rotateLight 3s linear infinite;
+
+  animation:
+  rotateLight 3s linear infinite;
+
   opacity:.25;
+
 }
 
 @keyframes rotateLight{
 
   to{
+
     transform:rotate(360deg);
+
   }
 
 }
 
 .result-content{
+
   position:relative;
+
   z-index:2;
+
 }
 
 .result-title{
+
   font-size:22px;
+
   color:#ffd700;
+
   margin-bottom:20px;
+
   text-shadow:
   0 0 10px gold,
   0 0 30px orange;
+
 }
 
 /* BIG WINNER TICKET */
@@ -375,17 +714,31 @@ body{
 @keyframes winnerBoom{
 
   0%{
-    transform:scale(.1) rotate(-10deg);
+
+    transform:
+    scale(.1)
+    rotate(-10deg);
+
     opacity:0;
+
   }
 
   60%{
-    transform:scale(1.25) rotate(5deg);
+
+    transform:
+    scale(1.25)
+    rotate(5deg);
+
   }
 
   100%{
-    transform:scale(1) rotate(0);
+
+    transform:
+    scale(1)
+    rotate(0);
+
     opacity:1;
+
   }
 
 }
@@ -414,23 +767,33 @@ body{
 }
 
 .winner-icon{
+
   font-size:70px;
+
   animation:
   winnerIcon 1s infinite alternate;
+
 }
 
 @keyframes winnerIcon{
 
   from{
+
     transform:scale(1);
-    filter:drop-shadow(0 0 5px gold);
+
+    filter:
+    drop-shadow(0 0 5px gold);
+
   }
 
   to{
+
     transform:scale(1.15);
+
     filter:
     drop-shadow(0 0 15px white)
     drop-shadow(0 0 30px gold);
+
   }
 
 }
@@ -453,26 +816,35 @@ body{
   0 0 50px #ff00cc,
   0 0 80px gold;
 
-  animation:numberFlash .6s infinite alternate;
+  animation:
+  numberFlash .6s infinite alternate;
 
 }
 
 @keyframes numberFlash{
 
   from{
+
     filter:brightness(1);
+
   }
 
   to{
+
     filter:brightness(2);
+
   }
 
 }
 
 .winner-text{
+
   color:#fde047;
+
   font-size:18px;
+
   font-weight:bold;
+
 }
 
 /* RESULT BUTTON */
@@ -501,53 +873,99 @@ body{
 
 /* MOBILE */
 
-@media(max-width:500px){
+@media(max-width:600px){
 
   .telegram-banner{
+
     padding:11px;
+
   }
 
   .telegram-icon{
+
     font-size:25px;
+
   }
 
   .join-title{
+
     font-size:12px;
+
   }
 
   .join-subtitle{
+
     font-size:8px;
+
   }
 
   .join-button{
+
     padding:8px;
+
     font-size:10px;
+
   }
 
   .header h1{
+
     font-size:23px;
+
+  }
+
+  .timer-ticket-row{
+
+    flex-direction:column;
+
+    gap:15px;
+
+  }
+
+  .timer-box{
+
+    width:100%;
+
+    max-width:none;
+
   }
 
   .timer{
+
     font-size:55px;
+
+  }
+
+  .countdown-ticket{
+
+    width:90%;
+
   }
 
   .tickets{
-    grid-template-columns:repeat(2,1fr);
+
+    grid-template-columns:
+    repeat(2,1fr);
+
   }
 
   .winner-ticket{
+
     min-width:90%;
+
     padding:25px 15px;
+
   }
 
   .winner-number{
+
     font-size:55px;
+
   }
 
 }
 
 </style>
+
 </head>
 
 <body>
@@ -613,21 +1031,61 @@ body{
 </button>
 
 
-<!-- TIMER -->
+<!-- TIMER + COUNTDOWN TICKET -->
 
-<div
-  id="timerBox"
-  class="timer-box">
+<div class="timer-ticket-row">
 
-  <div class="timer-title">
-    NEXT RESULT IN
-  </div>
+
+  <!-- TIMER -->
 
   <div
-    id="timer"
-    class="timer">
+    id="timerBox"
+    class="timer-box">
 
-    60
+    <div class="timer-title">
+      ⚡ NEXT RESULT IN ⚡
+    </div>
+
+    <div
+      id="timer"
+      class="timer">
+
+      60
+
+    </div>
+
+  </div>
+
+
+  <!-- COUNTDOWN TICKET -->
+
+  <div
+    id="countdownTicket"
+    class="countdown-ticket">
+
+    <div class="countdown-ticket-content">
+
+      <div class="countdown-ticket-label">
+        🎟️ VIP TICKET
+      </div>
+
+      <div class="countdown-ticket-icon">
+        🎟️
+      </div>
+
+      <div
+        id="countdownTicketNumber"
+        class="countdown-ticket-number">
+
+        #000
+
+      </div>
+
+      <div class="countdown-ticket-label">
+        ✨ SELECTED TICKET ✨
+      </div>
+
+    </div>
 
   </div>
 
@@ -697,6 +1155,8 @@ body{
 </div>
 
 
+<!-- NEXT ROUND -->
+
 <button
   id="nextRound"
   class="next-round"
@@ -716,8 +1176,8 @@ body{
   preload="auto">
 
   <source
-  src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
-  type="audio/ogg">
+    src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
+    type="audio/ogg">
 
 </audio>
 
@@ -729,8 +1189,8 @@ body{
   preload="auto">
 
   <source
-  src="https://actions.google.com/sounds/v1/ambiences/electricity.ogg"
-  type="audio/ogg">
+    src="https://actions.google.com/sounds/v1/ambiences/electricity.ogg"
+    type="audio/ogg">
 
 </audio>
 
@@ -742,8 +1202,8 @@ body{
   preload="auto">
 
   <source
-  src="https://actions.google.com/sounds/v1/impacts/crash.ogg"
-  type="audio/ogg">
+    src="https://actions.google.com/sounds/v1/impacts/crash.ogg"
+    type="audio/ogg">
 
 </audio>
 
@@ -842,6 +1302,10 @@ function startGame(){
   .style.display="block";
 
   document
+  .getElementById("countdownTicket")
+  .style.display="block";
+
+  document
   .getElementById("status")
   .style.display="block";
 
@@ -857,11 +1321,41 @@ function startGame(){
   createTickets();
 
 
+  /* NEW RANDOM COUNTDOWN TICKET */
+
+  const countdownNumber =
+  Math.floor(
+    Math.random()*100
+  )+1;
+
+
+  document
+  .getElementById(
+    "countdownTicketNumber"
+  )
+  .innerText =
+  "#"+
+  String(countdownNumber)
+  .padStart(3,"0");
+
+
   time=60;
 
 
+  const timer =
+  document.getElementById("timer");
+
+  timer.classList.remove("warning");
+
+
+  clearInterval(timerInterval);
+
+
   timerInterval =
-  setInterval(countdown,1000);
+  setInterval(
+    countdown,
+    1000
+  );
 
 }
 
@@ -877,7 +1371,8 @@ function countdown(){
 
 
   timer.innerText =
-  String(time).padStart(2,"0");
+  String(time)
+  .padStart(2,"0");
 
 
   /* TIMER SOUND */
@@ -885,8 +1380,18 @@ function countdown(){
   playTick();
 
 
-  /* 30 SECOND POINT
-     TICKETS DISAPPEAR */
+  /* VIP WARNING */
+
+  if(time<=10){
+
+    timer.classList.add(
+      "warning"
+    );
+
+  }
+
+
+  /* 30 SECOND POINT */
 
   if(time===30){
 
@@ -920,10 +1425,14 @@ function countdown(){
 function hideTickets(){
 
   const tickets =
-  document.getElementById("tickets");
+  document.getElementById(
+    "tickets"
+  );
 
 
-  tickets.classList.add("hide");
+  tickets.classList.add(
+    "hide"
+  );
 
 
   document
@@ -952,19 +1461,26 @@ function showWinner(){
 
 
   document
-  .getElementById("winnerNumber")
+  .getElementById(
+    "winnerNumber"
+  )
   .innerText=
-  "#"+formatted;
+  "#"+
+  formatted;
 
 
   document
-  .getElementById("result")
+  .getElementById(
+    "result"
+  )
   .style.display=
   "block";
 
 
   document
-  .getElementById("status")
+  .getElementById(
+    "status"
+  )
   .innerText=
   "🎉 RESULT DECLARED — VIP WINNER";
 
@@ -975,6 +1491,7 @@ function showWinner(){
   document.getElementById(
     "electricSound"
   );
+
 
   electric.currentTime=0;
 
@@ -993,6 +1510,7 @@ function showWinner(){
       "boomSound"
     );
 
+
     boom.currentTime=0;
 
     boom.volume=.7;
@@ -1004,7 +1522,9 @@ function showWinner(){
 
 
   document
-  .getElementById("nextRound")
+  .getElementById(
+    "nextRound"
+  )
   .style.display=
   "block";
 
@@ -1019,28 +1539,74 @@ function startNewRound(){
 
   gameStarted=false;
 
+
   document
-  .getElementById("startGame")
+  .getElementById(
+    "startGame"
+  )
   .disabled=false;
 
+
   document
-  .getElementById("result")
+  .getElementById(
+    "result"
+  )
   .style.display=
   "none";
 
+
   document
-  .getElementById("nextRound")
+  .getElementById(
+    "nextRound"
+  )
   .style.display=
   "none";
 
-  document
-  .getElementById("tickets")
-  .classList.remove("hide");
 
   document
-  .getElementById("status")
+  .getElementById(
+    "tickets"
+  )
+  .classList.remove(
+    "hide"
+  );
+
+
+  document
+  .getElementById(
+    "countdownTicket"
+  )
+  .style.display=
+  "none";
+
+
+  document
+  .getElementById(
+    "timerBox"
+  )
+  .style.display=
+  "none";
+
+
+  document
+  .getElementById(
+    "status"
+  )
   .innerText=
   "🎮 Game Ready — Start New Round";
+
+
+  document
+  .getElementById(
+    "status"
+  )
+  .style.display=
+  "none";
+
+
+  clearInterval(
+    timerInterval
+  );
 
 }
 
@@ -1056,6 +1622,7 @@ function playTick(){
     "tickSound"
   );
 
+
   sound.currentTime=0;
 
   sound.volume=.25;
@@ -1068,4 +1635,4 @@ function playTick(){
 </script>
 
 </body>
-</html>
+  </html>
